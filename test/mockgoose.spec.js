@@ -132,10 +132,10 @@ describe('Mockgoose Tests', function () {
         expect(false).toBeTruthy();
     });
 
-    xit('should be able to find all models of a certain type', function (done) {
+    it('should be able to find all models of a certain type', function (done) {
         SimpleModel.findAll(function (err, models) {
             expect(err).toBeFalsy();
-            expect(models.length).toBe(3);
+            expect(models.length).toBe(6);
             done(err);
         });
     });

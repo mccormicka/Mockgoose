@@ -65,8 +65,13 @@ module.exports = function (Model) {
         });
     };
 
-    Model.findAll = function(done){
-        done(null,[this().collection.name]);
+    Model.findAll = function (done) {
+        var results = [];
+        var mods = models[this().collection.name];
+        for (var model in mods) {
+            results.push(mods[model]);
+        }
+        done(null, results);
     };
 
     Model.update = function () {
@@ -81,9 +86,9 @@ module.exports = function (Model) {
      * @returns {boolean}
      */
     Model.reset = function (type) {
-        if(!type){
+        if (!type) {
             models = {};
-        }else{
+        } else {
             delete models[type];
         }
         return true;
