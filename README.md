@@ -20,15 +20,24 @@ Currently supported model operations are.
     create();
     remove();
 //Simple find operations. (multiple and nested finds not currently supported)
+    
     find();
     findOne();
     findById();
+    Update() is not currently supported.
 
 Mockgoose comes with a reset() method that allows you to reset the Mockgoose database
-simply call mockgoose.reset() to delete all the collections and models in the database
-or call mockgoose.reset('schema name') to delete all the associated models for a schema.
+simply call 
 
-Update() is not currently supported.
+    mockgoose.reset() 
+
+to delete all the collections and models in the database
+or call 
+    
+    mockgoose.reset('schema name') 
+
+to delete all the associated models for a schema.
+
 
 ###TODO before releasing as npm
 * Setup test harness.
