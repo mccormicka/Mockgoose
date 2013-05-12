@@ -66,7 +66,7 @@ module.exports = function (Model) {
     };
 
     Model.findAll = function(){
-        return models;//[this().collection.name];
+        return [this().collection.name];
     };
 
     Model.update = function () {

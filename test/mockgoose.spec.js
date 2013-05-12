@@ -8,7 +8,8 @@ describe('Mockgoose Tests', function () {
     var TestModel = require('./TestModel')(mongoose);
 
     beforeEach(function (done) {
-        TestModel.create({email: 'valid@valid.com', password: 'password'}, function (err, model) {
+        TestModel.create({email: 'valid@valid.com', password: 'password'},
+            {email:'invalid@invalid.com', password:'password'}, function (err, model) {
             expect(model).toBeTruthy();
             done(err);
         });
@@ -24,7 +25,7 @@ describe('Mockgoose Tests', function () {
         expect(mockgoose).toBeTruthy();
     });
 
-    it('should be able to create a test model', function (done) {
+    it('should be able to create and save test model', function (done) {
         TestModel.create({email: 'email@email.com', password: 'supersecret'}, function (err, model) {
             expect(err).toBeFalsy();
             expect(model).toBeTruthy();
@@ -76,5 +77,46 @@ describe('Mockgoose Tests', function () {
                 });
             });
     });
+
+    it('should be able to find an item by id', function (done) {
+        TestModel.create({email: 'one@one.com', password: 'password'},
+            {email: 'two@two.com', password: 'password'}, function (err, one, two) {
+                expect(err).toBeFalsy();
+                TestModel.findById(two._id, function (err, model) {
+                    expect(err).toBeFalsy();
+                    expect(model._id.toString()).toBe(two._id.toString());
+                    done(err);
+                });
+            });
+    });
+
+    it('should be able to findOne model by using a simple query', function (done) {
+        TestModel.findOne({email:'valid@valid.com'}, function(err, model){
+            expect(err).toBeFalsy();
+            expect(model.email).toBe('valid@valid.com');
+            done(err);
+        });
+    });
+
+    xit('should be able to findOne model by using a slightly complex query', function () {
+        expect(false).toBeTruthy();
+    });
+
+    xit('should be able to find multiple model by using a simple query', function () {
+        expect(false).toBeTruthy();
+    });
+
+    xit('should be able to find multiple model by using a slightly complex query', function () {
+        expect(false).toBeTruthy();
+    });
+
+    xit('should be able to find all models of a certain type', function () {
+        expect(false).toBeTruthy();
+    });
+
+    xit('should be able to remove a model', function () {
+        expect(false).toBeTruthy();
+    });
+
 
 });
