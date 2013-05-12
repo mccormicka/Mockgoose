@@ -46,28 +46,27 @@ module.exports = function (Model) {
 //        };
 
     Model.find = function mockFind(query, cb) {
-        var results =  findMockQuery2(this().collection.name, query);
+        var results = findModelQuery(this().collection.name, query);
         cb(null, results);
         return results;
     };
 
     Model.findOne = function (query, cb) {
-        var results =  findMockQuery2(this().collection.name, query);
-        cb(null,results[0]);
+        var results = findModelQuery(this().collection.name, query);
+        cb(null, results[0]);
         return results[0];
 
     };
 
     Model.remove = function (query, cb) {
         var type = this().collection.name;
-        var results = findMockQuery2(type, query);
-        for(var i = 0; i < results.length; i ++){
+        var results = findModelQuery(type, query);
+        for (var i = 0; i < results.length; i++) {
             delete models[type][results[i]._id.toString()];
         }
-        if( results.length === 1)
-        {
+        if (results.length === 1) {
             cb(null, results[0]);
-        }else{
+        } else {
             cb(null, results);
         }
     };
@@ -105,37 +104,31 @@ module.exports = function (Model) {
 //
 //-------------------------------------------------------------------------
 
+/**
+ * Converts the object into an array.
+ * @param items
+ * @returns {Array}
+ */
+function objectToArray(items) {
+    var results = [];
+    for (var model in items) {
+        results.push(items[model]);
+    }
+    return results;
+}
+
+/**
+ * Creates a new instance from the model so that
+ * if the original is updated but not saved it is
+ * not manipulated in the database.
+ * @param item
+ * @returns {item.mockModel}
+ */
 function cloneItem(item) {
     return new item.mockModel(item);
 }
 
-function cloneMock(item, callBack) {
-    var clone = cloneItem(item);
-    if (clone) {
-        callBack(null, clone);
-    } else {
-        callBack('MOCK ERROR: Cloning mock mongoose object.' + item);
-    }
-}
-
-function foundObject(items, query, key, q, callBack) {
-    if (items[key][q].toString() === query[q].toString()) {
-        var allMatch = true;
-        for (var qq in query) {
-            if (items[key][qq].toString() !== query[qq].toString()) {
-                allMatch = false;
-                break;
-            }
-        }
-        if (allMatch) {
-            cloneMock(items[key], callBack);
-            return true;
-        }
-    }
-    return false;
-}
-
-function foundObject2(items, query, key, q) {
+function findModel(items, query, key, q) {
     if (items[key][q].toString() === query[q].toString()) {
         var allMatch = true;
         for (var qq in query) {
@@ -151,22 +144,13 @@ function foundObject2(items, query, key, q) {
     return false;
 }
 
-function objectToArray(items){
-    var results = [];
-    for (var model in items) {
-        results.push(items[model]);
-    }
-    return results;
-}
-
-function findMockQuery2(type, query) {
+function findModelQuery(type, query) {
     var items = models[type];
     var results = {};
     for (var key in items) {
         for (var q in query) {
-            var item = foundObject2(items, query, key, q);
-            if(item)
-            {
+            var item = findModel(items, query, key, q);
+            if (item) {
                 results[item._id] = item;
             }
         }
@@ -174,33 +158,20 @@ function findMockQuery2(type, query) {
     return objectToArray(results);
 }
 
-function findMockQuery(type, query, callBack) {
-    var items = models[type];
-    for (var key in items) {
-        for (var q in query) {
-            if (foundObject(items, query, key, q, callBack)) {
-                return;
-            }
-        }
-    }
-    callBack(null, null);
-}
-
 function validatePath(model, pathName, type, error) {
     var path = model.schema.paths[pathName];
     if (path.options.unique) {
         var query = {};
         query[pathName] = model[pathName];
-        findMockQuery(type, query, function (err, value) {
-            if (value) {
-                var errMessage = util.format('E11000 duplicate key error index: %s', pathName);
-                var code = 11000;
-                error = new Error(errMessage, code);
-                error.name = 'MongoError';
-                error.code = code;
-                return;
-            }
-        });
+        var results = findModelQuery(type, query);
+        if (results.length > 0) {
+            var errMessage = util.format('E11000 duplicate key error index: %s', pathName);
+            var code = 11000;
+            error = new Error(errMessage, code);
+            error.name = 'MongoError';
+            error.code = code;
+            return error;
+        }
     }
     return error;
 }
