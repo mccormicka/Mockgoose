@@ -46,32 +46,34 @@ module.exports = function (Model) {
 //        };
 
     Model.find = function mockFind(query, cb) {
-        return findMockQuery(this().collection.name, query, cb);
+        var results =  findMockQuery2(this().collection.name, query);
+        cb(null, results);
+        return results;
     };
 
     Model.findOne = function (query, cb) {
-        return findMockQuery(this().collection.name, query, cb);
+        var results =  findMockQuery2(this().collection.name, query);
+        cb(null,results[0]);
+        return results[0];
+
     };
 
     Model.remove = function (query, cb) {
         var type = this().collection.name;
-        findMockQuery(type, query, function (err, value) {
-            if (value) {
-                delete models[type][value._id.toString()];
-                cb(null, value);
-            } else {
-                cb(err);
-            }
-        });
+        var results = findMockQuery2(type, query);
+        for(var i = 0; i < results.length; i ++){
+            delete models[type][results[i]._id.toString()];
+        }
+        if( results.length === 1)
+        {
+            cb(null, results[0]);
+        }else{
+            cb(null, results);
+        }
     };
 
     Model.findAll = function (done) {
-        var results = [];
-        var mods = models[this().collection.name];
-        for (var model in mods) {
-            results.push(mods[model]);
-        }
-        done(null, results);
+        done(null, objectToArray(models[this().collection.name]));
     };
 
     Model.update = function () {
@@ -131,6 +133,45 @@ function foundObject(items, query, key, q, callBack) {
         }
     }
     return false;
+}
+
+function foundObject2(items, query, key, q) {
+    if (items[key][q].toString() === query[q].toString()) {
+        var allMatch = true;
+        for (var qq in query) {
+            if (items[key][qq].toString() !== query[qq].toString()) {
+                allMatch = false;
+                break;
+            }
+        }
+        if (allMatch) {
+            return cloneItem(items[key]);
+        }
+    }
+    return false;
+}
+
+function objectToArray(items){
+    var results = [];
+    for (var model in items) {
+        results.push(items[model]);
+    }
+    return results;
+}
+
+function findMockQuery2(type, query) {
+    var items = models[type];
+    var results = {};
+    for (var key in items) {
+        for (var q in query) {
+            var item = foundObject2(items, query, key, q);
+            if(item)
+            {
+                results[item._id] = item;
+            }
+        }
+    }
+    return objectToArray(results);
 }
 
 function findMockQuery(type, query, callBack) {

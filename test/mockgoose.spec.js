@@ -21,7 +21,6 @@ describe('Mockgoose Tests', function () {
                     {name: 'one', value: 'two'},
                     {name: 'two', value: 'one'},
                     {name: 'two', value: 'two'},
-                    {name: 'two', value: 'two'},
                     function (err, models) {
                         expect(err).toBeFalsy();
                         expect(models).toBeTruthy();
@@ -124,23 +123,43 @@ describe('Mockgoose Tests', function () {
         });
     });
 
-    xit('should be able to find multiple model by using a simple query', function () {
-        expect(false).toBeTruthy();
+    it('should be able to find multiple model by using a simple query', function (done) {
+        SimpleModel.find({name: 'one'}, function (err, models) {
+            expect(err).toBeFalsy();
+            expect(models.length).toBe(3);
+            done(err);
+        });
     });
 
-    xit('should be able to find multiple model by using a slightly complex query', function () {
-        expect(false).toBeTruthy();
+    it('should be able to find multiple model by using a slightly complex query', function (done) {
+        SimpleModel.find({name: 'one', value:'two'}, function (err, models) {
+            expect(err).toBeFalsy();
+            expect(models.length).toBe(2);
+            done(err);
+        });
     });
 
     it('should be able to find all models of a certain type', function (done) {
         SimpleModel.findAll(function (err, models) {
             expect(err).toBeFalsy();
-            expect(models.length).toBe(6);
+            expect(models.length).toBe(5);
             done(err);
         });
     });
 
     it('should be able to remove a model', function (done) {
+        SimpleModel.remove({name: 'one'}, function (err, models) {
+            expect(err).toBeFalsy();
+            expect(models.length).toBe(3);
+            SimpleModel.findOne({name: 'one'}, function (err, model) {
+                expect(err).toBeFalsy();
+                expect(model).toBeFalsy();
+                done(err);
+            });
+        });
+    });
+
+    it('should be able to remove multiple model', function (done) {
         AccountModel.remove({email: 'valid@valid.com'}, function (err, model) {
             expect(err).toBeFalsy();
             expect(model.email).toBe('valid@valid.com');
