@@ -65,19 +65,21 @@ module.exports = function (Model) {
         });
     };
 
+    Model.findAll = function(){
+        return models;//[this().collection.name];
+    };
+
     Model.update = function () {
         throw new Error('Model updates are not supported by MockGoose please use save() isntead ', arguments);
     };
 
-    Model.cleanup = function () {
-        var type = this().collection.name;
-        delete models[type];
-    };
-
-    Model.cleanupAll = function () {
-        models = {};
-    };
-
+    /**
+     * Mockgoose method to allow resetting of the models.
+     * reset() will wipe the entire database.
+     * reset('schema name') will remove all models associated with the schema.
+     * @param type
+     * @returns {boolean}
+     */
     Model.reset = function (type) {
         if(!type){
             models = {};

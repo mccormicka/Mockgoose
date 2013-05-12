@@ -26,6 +26,9 @@ Currently supported model operations are.
     findById();
     Update() is not currently supported.
 
+##Validators
+Mockgoose includes support for validators and the unique field key.
+
 Mockgoose comes with a reset() method that allows you to reset the Mockgoose database
 simply call 
 

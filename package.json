@@ -1,42 +1,44 @@
 {
-    "name": "Mockgoose",
-    "description": "Mongoose in memory database mock to allow for testing of applications that rely on Mongoose.",
-    "version": "0.0.1",
-    "author":{
-        "name": "Anthony McCormick",
-        "email": "anthony.mccormick AT gmail.com"
-    },
-    "keywords": [
-        "mongodb",
-        "mongoose",
-        "datastore",
-        "nosql",
-        "sql",
-        "db",
-        "database",
-        "mock",
-        "stub",
-        "in memory"
-    ],
-    "scripts": {
-        "test": "node test/tests"
-    },
-    "main": "Mockgoose",
-    "engines": {
-        "node": ">=0.6.19"
-    },
-    "dependencies": {
-    },
-    "devDependencies": {
-    },
-    "bugs": {
-        "url": ""
-    },
-    "repository": {
-        "type": "git",
-        "url": ""
-    },
-    "homepage": "",
-    "readmeFilename": "README.md"
-
+  "name": "Mockgoose",
+  "description": "Mongoose in memory database mock to allow for testing of applications that rely on Mongoose.",
+  "version": "0.0.1",
+  "author": {
+    "name": "Anthony McCormick",
+    "email": "anthony.mccormick AT gmail.com"
+  },
+  "keywords": [
+    "mongodb",
+    "mongoose",
+    "datastore",
+    "nosql",
+    "sql",
+    "db",
+    "database",
+    "mock",
+    "stub",
+    "in memory"
+  ],
+  "scripts": {
+    "test": "./node_modules/jasmine-node/bin/jasmine-node test/"
+  },
+  "main": "Mockgoose",
+  "engines": {
+    "node": ">=0.6.19"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "jasmine-node": "~1.7.0",
+    "mongoose": "~3.6.10",
+    "mongoose-validator": "~0.2.1",
+    "bcrypt": "~0.7.5"
+  },
+  "bugs": {
+    "url": ""
+  },
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "homepage": "",
+  "readmeFilename": "README.md"
 }
