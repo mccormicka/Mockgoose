@@ -4,6 +4,15 @@ Mockgoose is a simplified in memory database that allows you to perform actions 
 
 The main purpose of Mockgoose as you may have guessed from the name is to allow you to mock out your mongoose database during testing so that you do not have to spin up a new database for every test and teardown that same database afterwards.
 
+##Install
+To install the latest official version, use NPM:
+
+    npm install mockgoose --save-dev
+
+To run the tests and see what is supported by Mockgoose navigate to the Mockgoose folder and run
+
+    npm test
+
 ##Usage
 You simply require Mongoose and Mockgoose and wrap Mongoose with Mockgoose.
 
@@ -40,8 +49,4 @@ or call
     mockgoose.reset('schema name') 
 
 to delete all the associated models for a schema.
-
-
-###TODO before releasing as npm
-* Setup test harness.
 

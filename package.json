@@ -33,12 +33,12 @@
     "bcrypt": "~0.7.5"
   },
   "bugs": {
-    "url": ""
+    "url": "https://github.com/mccormicka/Mockgoose/issues"
   },
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "https://github.com/mccormicka/Mockgoose"
   },
-  "homepage": "",
+  "homepage": "https://github.com/mccormicka/Mockgoose",
   "readmeFilename": "README.md"
 }

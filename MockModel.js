@@ -72,6 +72,7 @@ module.exports = function (Model) {
     };
 
     Model.findAll = function (done) {
+        console.log('Find all Called.')
         done(null, objectToArray(models[this().collection.name]));
     };
 

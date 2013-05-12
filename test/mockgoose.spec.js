@@ -94,18 +94,6 @@ describe('Mockgoose Tests', function () {
             });
     });
 
-    it('should be able to find an item by id', function (done) {
-        AccountModel.create({email: 'one@one.com', password: 'password'},
-            {email: 'two@two.com', password: 'password'}, function (err, one, two) {
-                expect(err).toBeFalsy();
-                AccountModel.findById(two._id, function (err, model) {
-                    expect(err).toBeFalsy();
-                    expect(model._id.toString()).toBe(two._id.toString());
-                    done(err);
-                });
-            });
-    });
-
     it('should be able to findOne model by using a simple query', function (done) {
         AccountModel.findOne({email: 'valid@valid.com'}, function (err, model) {
             expect(err).toBeFalsy();
