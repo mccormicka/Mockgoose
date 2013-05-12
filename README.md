@@ -9,7 +9,7 @@ To install the latest official version, use NPM:
 
     npm install mockgoose --save-dev
 
-To run the tests and see what is supported by Mockgoose navigate to the Mockgoose folder and run
+To run the tests and see what is supported by Mockgoose navigate to the Mockgoose folder and run the test suite
 
     npm test
 
@@ -28,7 +28,8 @@ Currently supported model operations are.
     save();
     create();
     remove();
-//Simple find operations. (multiple and nested finds not currently supported)
+
+Simple find operations. (multiple and nested finds not currently supported)
     
     find();
     findOne();
