@@ -140,8 +140,16 @@ describe('Mockgoose Tests', function () {
         });
     });
 
-    xit('should be able to remove a model', function () {
-        expect(false).toBeTruthy();
+    it('should be able to remove a model', function (done) {
+        AccountModel.remove({email: 'valid@valid.com'}, function (err, model) {
+            expect(err).toBeFalsy();
+            expect(model.email).toBe('valid@valid.com');
+            AccountModel.findOne({email: 'valid@valid.com'}, function (err, model) {
+                expect(err).toBeFalsy();
+                expect(model).toBeFalsy();
+                done(err);
+            });
+        });
     });
 
 });
