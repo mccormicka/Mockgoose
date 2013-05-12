@@ -7,22 +7,22 @@ The main purpose of Mockgoose as you may have guessed from the name is to allow 
 ##Usage
 You simply require Mongoose and Mockgoose and wrap Mongoose with Mockgoose.
 
-var mongoose = require('mongoose');
-var mockgoose = require('Mockgoose');
+    var mongoose = require('mongoose');
+    var mockgoose = require('Mockgoose');
 
-mockgoose(mongoose);
+    mockgoose(mongoose);
 
 Once Mongoose has been wrapped by Mockgoose all calls to connect() and createConnection() will be intercepted by Mockgoose so that no MongoDB instance is created.
 
 Currently supported model operations are.
 
-save();
-create();
-remove();
+    save();
+    create();
+    remove();
 //Simple find operations. (multiple and nested finds not currently supported)
-find();
-findOne();
-findById();
+    find();
+    findOne();
+    findById();
 
 Mockgoose comes with a reset() method that allows you to reset the Mockgoose database
 simply call mockgoose.reset() to delete all the collections and models in the database
