@@ -4,7 +4,7 @@ Mockgoose is a simplified in memory database that allows you to perform actions 
 
 The main purpose of Mockgoose as you may have guessed from the name is to allow you to mock out your mongoose database during testing so that you do not have to spin up a new database for every test and teardown that same database afterwards.
 
-#Mockgoose has a very simple Api you simply Mongoose and Mockgoose and wrap mongoose with Mockgoose.
+Mockgoose has a very simple Api you simply Mongoose and Mockgoose and wrap mongoose with Mockgoose.
 
 var mongoose = require('mongoose');
 var mockgoose = require('Mockgoose');
@@ -23,11 +23,12 @@ find();
 findOne();
 findById();
 
-#Mockgoose comes with a reset() method that allows you to reset the Mockgoose database
+Mockgoose comes with a reset() method that allows you to reset the Mockgoose database
 simply call mockgoose.reset() to delete all the collections and models in the database
 or call mockgoose.reset('schema name') to delete all the associated models for a schema.
 
 Update() is not currently supported.
 
-
+#TODO before releasing as npm
+* Setup test harness.
 
