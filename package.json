@@ -1,7 +1,7 @@
 {
   "name": "mockgoose",
   "description": "Mongoose in memory database mock to allow for testing of applications that rely on Mongoose.",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "author": {
     "name": "Anthony McCormick",
     "email": "anthony.mccormick AT gmail.com"

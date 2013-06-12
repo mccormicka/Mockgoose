@@ -170,44 +170,6 @@ function findModel(items, query, key, q) {
     return false;
 }
 
-// function findModel(items, query, key, q) {
-//     if (typeof query[q] === 'object') {
-//         var matches = false;
-//         if (query[q].$in) {
-//             for (var i in query[q].$in) {
-//                 if (contains(items[key][q], query[q].$in[i])) {
-//                     matches = true;
-//                     break;
-//                 }
-//             }
-//         } else {
-//             if (items[key][q].toString() === query[q].toString()) {
-//                 var allMatch = true;
-//                 for (var qq in query) {
-
-//                     if (typeof query[q] === 'object') {
-//                         if (query[q].$in) {
-//                             for (var item in query[q].$in) {
-//                                 if (contains(items[key][q], item)) {
-//                                     allMatch = true;
-//                                     break;
-//                                 }
-//                             }
-//                         }
-//                     } else if (items[key][qq].toString() !== query[qq].toString()) {
-//                         allMatch = false;
-//                         break;
-//                     }
-//                 }
-//                 if (allMatch) {
-//                     return cloneItem(items[key]);
-//                 }
-//             }
-//         }
-//     }
-//     return false;
-// }
-
 
 function findModelQuery(type, query) {
     var items = models[type];
