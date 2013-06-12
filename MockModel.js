@@ -58,21 +58,27 @@ module.exports = function (Model) {
 
     };
 
+    Model.prototype.remove = function(cb){
+        console.log(this);
+        Model.remove({_id: this._id}, cb);
+    };
+
     Model.remove = function (query, cb) {
         var type = this().collection.name;
         var results = findModelQuery(type, query);
         for (var i = 0; i < results.length; i++) {
             delete models[type][results[i]._id.toString()];
         }
-        if (results.length === 1) {
-            cb(null, results[0]);
-        } else {
-            cb(null, results);
+        if(cb){
+            if (results.length === 1) {
+                cb(null, results[0]);
+            } else {
+                cb(null, results);
+            }    
         }
     };
 
     Model.findAll = function (done) {
-        console.log('Find all Called.')
         done(null, objectToArray(models[this().collection.name]));
     };
 

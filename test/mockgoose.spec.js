@@ -9,6 +9,7 @@ describe('Mockgoose Tests', function () {
     var SimpleModel = require('./models/SimpleModel')(mongoose);
 
     beforeEach(function (done) {
+        mockgoose.reset();
         AccountModel.create(
             {email: 'valid@valid.com', password: 'password'},
             {email: 'invalid@invalid.com', password: 'password'},
@@ -143,6 +144,22 @@ describe('Mockgoose Tests', function () {
                 expect(err).toBeFalsy();
                 expect(model).toBeFalsy();
                 done(err);
+            });
+        });
+    });
+
+    it('should be able to remove a model from a model object', function (done) {
+        SimpleModel.find({name: 'one'}, function (err, result) {
+            expect(err).toBeFalsy();
+            expect(result.length).toBe(3);
+            result[0].remove(function (err, model) {
+                expect(err).toBeFalsy();
+                expect(model).toBeDefined();
+                SimpleModel.find({name:'one'}, function(err, models){
+                    expect(err).toBeFalsy();
+                    expect(models.length).toBe(2);
+                    done(err);
+                });
             });
         });
     });
