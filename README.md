@@ -36,6 +36,10 @@ Simple find operations. (multiple and nested finds not currently supported)
     findById();
     Update() is not currently supported.
 
+##Operators
+
+$in     
+
 ##Validators
 Mockgoose includes support for validators and the unique field key.
 
@@ -50,4 +54,11 @@ or call
     mockgoose.reset('schema name') 
 
 to delete all the associated models for a schema.
+
+
+CHANGELOG
+
+#0.0.2 
+
+Added support for $in operator for finds
 

@@ -159,4 +159,50 @@ describe('Mockgoose Tests', function () {
         });
     });
 
+    it('should be able to find a model $in', function (done) {
+        AccountModel.create(
+            {email: 'multiples@valid.com', password: 'password', values:['one', 'two']},
+            {email: 'multiples@invalid.com', password: 'password', values:['two', 'three']},
+            function (err, models) {                
+                AccountModel.findOne({values:{$in:['three']}}, function(err, result){
+                    expect(result).toBeDefined();
+                    if(result){
+                        expect(result.values[1]).toBe('three');    
+                    }
+                    done(err);
+                });
+            });
+    });
+
+    it('should be able to find models $in with more than one value', function (done) {
+        AccountModel.create(
+            {email: 'multiples@valid.com', password: 'password', values:['one', 'two']},
+            {email: 'multiples@invalid.com', password: 'password', values:['two', 'three']},
+            function (err, models) {
+                AccountModel.find({values:{$in:['two']}}, function(err, result){
+                    expect(result).toBeDefined();;
+                    if(result){
+                        expect(result.length).toBe(2);    
+                    }
+                    done(err);
+                });
+            });
+    });
+
+
+    it('should be able to find models $in with multiple values', function (done) {
+        AccountModel.create(
+            {email: 'multiples@valid.com', password: 'password', values:['one', 'two']},
+            {email: 'multiples@invalid.com', password: 'password', values:['two', 'three']},
+            function (err, models) {                
+                AccountModel.find({values:{$in:['two', 'three']}}, function(err, result){
+                    expect(result).toBeDefined();
+                    if(result){
+                        expect(result.length).toBe(2);    
+                    }
+                    done(err);
+                });
+            });
+    });
+
 });

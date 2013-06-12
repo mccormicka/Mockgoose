@@ -129,11 +129,35 @@ function cloneItem(item) {
     return new item.mockModel(item);
 }
 
+function contains(obj, target) {
+    if (obj === null) return false;
+    return obj.indexOf(target) !== -1;
+}
+
+function matchParams(item, query, q){
+    if(typeof item[q] === 'string'){
+        if (item[q].toString() === query[q].toString()) {
+            return true;
+        }
+    }
+    if (typeof query[q] === 'object') {
+        if (query[q].$in) {
+            for (var i in query[q].$in) {                
+                if (contains(item[q], query[q].$in[i])) {
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
+}
+
 function findModel(items, query, key, q) {
-    if (items[key][q].toString() === query[q].toString()) {
+    var item = items[key];
+    if(matchParams(item, query, q)){
         var allMatch = true;
         for (var qq in query) {
-            if (items[key][qq].toString() !== query[qq].toString()) {
+            if(!matchParams(item, query, qq)){
                 allMatch = false;
                 break;
             }
@@ -142,8 +166,48 @@ function findModel(items, query, key, q) {
             return cloneItem(items[key]);
         }
     }
+    
     return false;
 }
+
+// function findModel(items, query, key, q) {
+//     if (typeof query[q] === 'object') {
+//         var matches = false;
+//         if (query[q].$in) {
+//             for (var i in query[q].$in) {
+//                 if (contains(items[key][q], query[q].$in[i])) {
+//                     matches = true;
+//                     break;
+//                 }
+//             }
+//         } else {
+//             if (items[key][q].toString() === query[q].toString()) {
+//                 var allMatch = true;
+//                 for (var qq in query) {
+
+//                     if (typeof query[q] === 'object') {
+//                         if (query[q].$in) {
+//                             for (var item in query[q].$in) {
+//                                 if (contains(items[key][q], item)) {
+//                                     allMatch = true;
+//                                     break;
+//                                 }
+//                             }
+//                         }
+//                     } else if (items[key][qq].toString() !== query[qq].toString()) {
+//                         allMatch = false;
+//                         break;
+//                     }
+//                 }
+//                 if (allMatch) {
+//                     return cloneItem(items[key]);
+//                 }
+//             }
+//         }
+//     }
+//     return false;
+// }
+
 
 function findModelQuery(type, query) {
     var items = models[type];

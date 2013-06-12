@@ -24,7 +24,8 @@ module.exports = function (mongoose) {
             type: String,
             required: true,
             validate: [validate({message: 'min.length:6'}, 'len', 6)]
-        }
+        },
+        values:[]
     });
 
     /**
