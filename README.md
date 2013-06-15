@@ -69,3 +69,9 @@ Added support for $pull operator
 Added support for update();
 Added support for findOneAndUpdate()
 
+#0.0.7
+Added support for $pull of multiple items at once.
+{$pull:{values:{name:{$in:['one', 'two']}}}}
+
+
+

@@ -217,11 +217,18 @@ function pullItem(model, pulls){
             var values = model[pull];
             var match = findMatch(values, pulls[pull]);
             if(match.length > 0){
-                var index = values.indexOf(match[0]);
-                values.splice(index, 1);
+                for( var i in match ){
+                    console.log('Matches ', match[i], ' values ', values);
+                    var index = values.indexOf(match[i]);
+                    console.log('Index is ', index);
+                    if(index > -1){
+                        values.splice(index, 1);
+                    }
+                }
             }
         }
     }
+    console.log(model);
 }
 
 function foundModel(item, query, q) {
@@ -245,8 +252,14 @@ function findMatch(items, query){
     for (var key in items) {
         for (var q in query) {
             var item = foundModel(items[key], query, q);
+
             if (item) {
-                results[item._id] = item;
+                if(item._id){
+                    results[item._id] = item;
+                }else{
+                   results[Math.random()] = item;
+                   console.log(results);
+                }                
             }
         }
     }

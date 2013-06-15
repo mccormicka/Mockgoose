@@ -251,7 +251,7 @@ describe('Mockgoose Tests', function () {
             });
     });
 
-    it('should be able to pull items from nested documents array', function (done) {
+    iit('should be able to pull items from nested documents array', function (done) {
         AccountModel.create(
             {email: 'tester@valid.com', password: 'password', values:['one', 'two']},
             function (err, model) {   
@@ -275,6 +275,22 @@ describe('Mockgoose Tests', function () {
                     if(result){    
                         expect(result.values.length).toBe(1);    
                         expect(result.values[0].name).toBe('two');    
+                    }
+                    done(err);
+                });
+            });
+    });
+
+    it('should be able to pull multiple items from nested documents array by property', function (done) {
+        AccountModel.create(
+            {email: 'multiples@valid.com', password: 'password', values:[{name:'one'}, {name:'two'}, {name:'three'}]},
+            function (err, model) {                
+                AccountModel.findOneAndUpdate({email:'multiples@valid.com'}, {$pull:{values:{name:{$in:['one', 'two']}}}}, function(err, result){
+                    expect(result).toBeDefined();
+                    console.log('Results are ---- ', result);
+                    if(result){    
+                        expect(result.values.length).toBe(1);    
+                        expect(result.values[0].name).toBe('three');    
                     }
                     done(err);
                 });
