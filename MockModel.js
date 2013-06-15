@@ -15,7 +15,6 @@ module.exports = function (Model) {
         if (!models[type]) {
             models[type] = {};
         }
-
         model.validate(function (err) {
             if (err) {
                 return cb(err);
@@ -137,7 +136,19 @@ function cloneItem(item) {
 
 function contains(obj, target) {
     if (obj === null) return false;
-    return obj.indexOf(target) !== -1;
+    for( var item in obj){
+        var validItem = true;
+        for( var prop in target){
+            if(obj[item][prop] !== target[prop]){
+                validItem = false;
+                break;
+            }
+        }
+        if(validItem){
+            return true;
+        }
+    }
+    return false;
 }
 
 function matchParams(item, query, q){
