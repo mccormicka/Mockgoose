@@ -54,11 +54,52 @@ module.exports = function (Model) {
         var results = findModelQuery(this().collection.name, query);
         cb(null, results[0]);
         return results[0];
+    };
 
+    Model.findOneAndUpdate = function(query, update, options, cb){
+        if ('function' === typeof options) {
+            cb = options;
+            options = null;
+        }
+        Model.findOne(query, function(err, result){
+            if(err){
+                cb(err, null);
+            }else{
+                result.update(update, options, cb);
+            }
+        });
+    };
+
+    Model.prototype.update = function(update, options, cb){
+        if ('function' === typeof options) {
+            cb = options;
+            options = null;
+        }
+        for(var item in update){
+            updateItem(this, item, update);
+        }
+        cb(null, this);
+    };
+
+    Model.update = function(query, update, options, cb){
+        Model.find(query, function(err, result){
+            if(err){
+                cb(err, null);
+            }else{
+                for(var i in result){
+                    result[i].update(update, options, function(err, result){
+                        if(err){
+                            cb(err, 0);
+                            return;
+                        }
+                    });
+                }
+                cb(null, result.length);
+            }
+        });
     };
 
     Model.prototype.remove = function(cb){
-        console.log(this);
         Model.remove({_id: this._id}, cb);
     };
 
@@ -79,10 +120,6 @@ module.exports = function (Model) {
 
     Model.findAll = function (done) {
         done(null, objectToArray(models[this().collection.name]));
-    };
-
-    Model.update = function () {
-        throw new Error('Model updates are not supported by MockGoose please use save() isntead ', arguments);
     };
 
     /**
@@ -131,24 +168,18 @@ function objectToArray(items) {
  * @returns {item.mockModel}
  */
 function cloneItem(item) {
-    return new item.mockModel(item);
+    if(item.mockModel){
+        return new item.mockModel(item);
+    }else{
+        console.log('Returning actual model this may be mutated!');
+        return item;
+    }
+
 }
 
 function contains(obj, target) {
-    if (obj === null) return false;
-    for( var item in obj){
-        var validItem = true;
-        for( var prop in target){
-            if(obj[item][prop] !== target[prop]){
-                validItem = false;
-                break;
-            }
-        }
-        if(validItem){
-            return true;
-        }
-    }
-    return false;
+    if (!obj) return false;
+    return obj.indexOf(target) !== -1;
 }
 
 function matchParams(item, query, q){
@@ -169,8 +200,31 @@ function matchParams(item, query, q){
     return false;
 }
 
-function findModel(items, query, key, q) {
-    var item = items[key];
+function updateItem(model, item, update){
+    switch(item){
+        case '$pull':
+            pullItem(model, update[item]);
+        break;
+        default:
+            model[item] = update[item];
+        break;
+    }
+}
+
+function pullItem(model, pulls){
+    for( var pull in pulls){
+        if(pulls.hasOwnProperty(pull)){
+            var values = model[pull];
+            var match = findMatch(values, pulls[pull]);
+            if(match.length > 0){
+                var index = values.indexOf(match[0]);
+                values.splice(index, 1);
+            }
+        }
+    }
+}
+
+function foundModel(item, query, q) {
     if(matchParams(item, query, q)){
         var allMatch = true;
         for (var qq in query) {
@@ -180,26 +234,28 @@ function findModel(items, query, key, q) {
             }
         }
         if (allMatch) {
-            return cloneItem(items[key]);
+            return cloneItem(item);
         }
     }
-    
     return false;
 }
 
-
-function findModelQuery(type, query) {
-    var items = models[type];
+function findMatch(items, query){
     var results = {};
     for (var key in items) {
         for (var q in query) {
-            var item = findModel(items, query, key, q);
+            var item = foundModel(items[key], query, q);
             if (item) {
                 results[item._id] = item;
             }
         }
     }
     return objectToArray(results);
+}
+
+function findModelQuery(type, query) {
+    var items = models[type];
+    return findMatch(items, query);
 }
 
 function validatePath(model, pathName, type, error) {

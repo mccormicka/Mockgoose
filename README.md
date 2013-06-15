@@ -34,11 +34,13 @@ Simple find operations. (multiple and nested finds not currently supported)
     find();
     findOne();
     findById();
-    Update() is not currently supported.
+    findOneAndUpdate();
+    Update();
 
 ##Operators
 
-$in     
+$in 
+$pull    
 
 ##Validators
 Mockgoose includes support for validators and the unique field key.
@@ -61,4 +63,9 @@ CHANGELOG
 #0.0.2 
 
 Added support for $in operator for finds
+
+#0.0.6
+Added support for $pull operator
+Added support for update();
+Added support for findOneAndUpdate()
 

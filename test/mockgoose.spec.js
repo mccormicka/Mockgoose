@@ -222,4 +222,64 @@ describe('Mockgoose Tests', function () {
             });
     });
 
+    it('should be able to update models', function (done) {
+        AccountModel.create(
+            {email: 'multiples@valid.com', password: 'password', values:['one','two']},
+            function (err, model) {                
+                AccountModel.findOneAndUpdate({email:'multiples@valid.com'}, {email:'updatedemail'}, function(err, result){
+                    expect(result).toBeDefined();
+                    if(result){
+                        expect(result.email).toBe('updatedemail');    
+                    }
+                    done(err);
+                });
+            });
+    });
+
+    it('should be able to update multiple values in models', function (done) {
+        AccountModel.create(
+            {email: 'multiples@valid.com', password: 'password', values:['one', 'two']},
+            function (err, model) {                
+                AccountModel.findOneAndUpdate({email:'multiples@valid.com'}, {email:'updatedemail', password:'updated'}, function(err, result){
+                    expect(result).toBeDefined();
+                    if(result){
+                        expect(result.email).toBe('updatedemail');    
+                        expect(result.password).toBe('updated');    
+                    }
+                    done(err);
+                });
+            });
+    });
+
+    it('should be able to pull items from nested documents array', function (done) {
+        AccountModel.create(
+            {email: 'tester@valid.com', password: 'password', values:['one', 'two']},
+            function (err, model) {   
+                AccountModel.findOneAndUpdate({email:'tester@valid.com'}, {$pull:{values:'one'}}, function(err, result){
+                    expect(result).toBeDefined();
+                    if(result){    
+                        expect(result.values.length).toBe(1);    
+                        expect(result.values[0]).toBe('two');    
+                    }
+                    done(err);
+                });
+            });
+    });
+
+    it('should be able to pull items from nested documents array by property', function (done) {
+        AccountModel.create(
+            {email: 'multiples@valid.com', password: 'password', values:[{name:'one'}, {name:'two'}]},
+            function (err, model) {                
+                AccountModel.findOneAndUpdate({email:'multiples@valid.com'}, {$pull:{values:{name:{$in:['one']}}}}, function(err, result){
+                    expect(result).toBeDefined();
+                    if(result){    
+                        expect(result.values.length).toBe(1);    
+                        expect(result.values[0].name).toBe('two');    
+                    }
+                    done(err);
+                });
+            });
+    });
+
+
 });
