@@ -218,9 +218,7 @@ function pullItem(model, pulls){
             var match = findMatch(values, pulls[pull]);
             if(match.length > 0){
                 for( var i in match ){
-                    console.log('Matches ', match[i], ' values ', values);
                     var index = values.indexOf(match[i]);
-                    console.log('Index is ', index);
                     if(index > -1){
                         values.splice(index, 1);
                     }
@@ -228,7 +226,6 @@ function pullItem(model, pulls){
             }
         }
     }
-    console.log(model);
 }
 
 function foundModel(item, query, q) {
@@ -258,7 +255,6 @@ function findMatch(items, query){
                     results[item._id] = item;
                 }else{
                    results[Math.random()] = item;
-                   console.log(results);
                 }                
             }
         }
