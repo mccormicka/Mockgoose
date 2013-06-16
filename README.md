@@ -73,5 +73,7 @@ Added support for findOneAndUpdate()
 Added support for $pull of multiple items at once.
 {$pull:{values:{name:{$in:['one', 'two']}}}}
 
+#0.0.8 
+Fixed findOneAndUpdate() so that it saves the object after updating if no error is thrown
 
 

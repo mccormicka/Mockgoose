@@ -65,7 +65,13 @@ module.exports = function (Model) {
             if(err){
                 cb(err, null);
             }else{
-                result.update(update, options, cb);
+                result.update(update, options, function(err, result){
+                    if(err){
+                        cb(err,result);
+                    }else{
+                        result.save(cb);
+                    }
+                });
             }
         });
     };
@@ -114,7 +120,7 @@ module.exports = function (Model) {
                 cb(null, results[0]);
             } else {
                 cb(null, results);
-            }    
+            }
         }
     };
 
@@ -190,7 +196,7 @@ function matchParams(item, query, q){
     }
     if (typeof query[q] === 'object') {
         if (query[q].$in) {
-            for (var i in query[q].$in) {                
+            for (var i in query[q].$in) {
                 if (contains(item[q], query[q].$in[i])) {
                     return true;
                 }
@@ -202,11 +208,11 @@ function matchParams(item, query, q){
 
 function updateItem(model, item, update){
     switch(item){
-        case '$pull':
-            pullItem(model, update[item]);
+    case '$pull':
+        pullItem(model, update[item]);
         break;
-        default:
-            model[item] = update[item];
+    default:
+        model[item] = update[item];
         break;
     }
 }
@@ -254,8 +260,8 @@ function findMatch(items, query){
                 if(item._id){
                     results[item._id] = item;
                 }else{
-                   results[Math.random()] = item;
-                }                
+                    results[Math.random()] = item;
+                }
             }
         }
     }

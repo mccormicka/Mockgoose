@@ -226,12 +226,29 @@ describe('Mockgoose Tests', function () {
         AccountModel.create(
             {email: 'multiples@valid.com', password: 'password', values:['one','two']},
             function (err, model) {                
-                AccountModel.findOneAndUpdate({email:'multiples@valid.com'}, {email:'updatedemail'}, function(err, result){
+                AccountModel.findOneAndUpdate({email:'multiples@valid.com'}, {email:'updatedemail@email.com'}, function(err, result){
                     expect(result).toBeDefined();
                     if(result){
-                        expect(result.email).toBe('updatedemail');    
+                        expect(result.email).toBe('updatedemail@email.com');    
                     }
                     done(err);
+                });
+            });
+    });
+
+    it('should be able to update models and saved model changed', function (done) {
+        AccountModel.create(
+            {email: 'multiples@valid.com', password: 'password', values:['one','two']},
+            function (err, model) {                
+                AccountModel.findOneAndUpdate({email:'multiples@valid.com'}, {email:'updatedemails@email.com'}, function(err, result){
+                    expect(result).toBeDefined();
+                    if(result){
+                        expect(result.email).toBe('updatedemails@email.com');    
+                    }
+                    AccountModel.findOne({email:'updatedemails@email.com'}, function(err, found){
+                        expect(found).toBeDefined();
+                        done(err);
+                    })
                 });
             });
     });
@@ -240,18 +257,18 @@ describe('Mockgoose Tests', function () {
         AccountModel.create(
             {email: 'multiples@valid.com', password: 'password', values:['one', 'two']},
             function (err, model) {                
-                AccountModel.findOneAndUpdate({email:'multiples@valid.com'}, {email:'updatedemail', password:'updated'}, function(err, result){
+                AccountModel.findOneAndUpdate({email:'multiples@valid.com'}, {email:'updatedemail@email.com', values:['updated']}, function(err, result){
                     expect(result).toBeDefined();
                     if(result){
-                        expect(result.email).toBe('updatedemail');    
-                        expect(result.password).toBe('updated');    
+                        expect(result.email).toBe('updatedemail@email.com');    
+                        expect(result.values[0]).toEqual('updated');    
                     }
                     done(err);
                 });
             });
     });
 
-    iit('should be able to pull items from nested documents array', function (done) {
+    it('should be able to pull items from nested documents array', function (done) {
         AccountModel.create(
             {email: 'tester@valid.com', password: 'password', values:['one', 'two']},
             function (err, model) {   
@@ -287,7 +304,6 @@ describe('Mockgoose Tests', function () {
             function (err, model) {                
                 AccountModel.findOneAndUpdate({email:'multiples@valid.com'}, {$pull:{values:{name:{$in:['one', 'two']}}}}, function(err, result){
                     expect(result).toBeDefined();
-                    console.log('Results are ---- ', result);
                     if(result){    
                         expect(result.values.length).toBe(1);    
                         expect(result.values[0].name).toBe('three');    
