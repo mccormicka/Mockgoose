@@ -9,7 +9,8 @@ module.exports = function (mongoose) {
     var schema = new Schema({
         type: {type: String, 'default': TYPE},
         name:String,
-        value:String
+        value:String,
+        bool:Boolean
     });
 
     /**

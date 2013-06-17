@@ -203,6 +203,9 @@ function matchParams(item, query, q){
             }
         }
     }
+    if(typeof item[q] === 'boolean'){
+        return item[q] === query[q];
+    }
     return false;
 }
 

@@ -164,6 +164,21 @@ describe('Mockgoose Tests', function () {
         });
     });
 
+    it('should match boolean values', function (done) {
+        SimpleModel.create(
+            {name:'true', password:'something', bool:true},
+            {name:'false', password:'something', bool:false}, function(err, result){
+            
+            SimpleModel.findOne({bool:true}, function(err, result){
+                expect(result.name).toBe('true');
+            });
+            SimpleModel.findOne({bool:false}, function(err, result){
+                expect(result.name).toBe('false');
+            });
+            done();
+        })
+    });
+
     it('should be able to remove multiple model', function (done) {
         AccountModel.remove({email: 'valid@valid.com'}, function (err, model) {
             expect(err).toBeFalsy();
@@ -312,6 +327,5 @@ describe('Mockgoose Tests', function () {
                 });
             });
     });
-
 
 });

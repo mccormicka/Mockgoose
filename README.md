@@ -76,4 +76,8 @@ Added support for $pull of multiple items at once.
 #0.0.8 
 Fixed findOneAndUpdate() so that it saves the object after updating if no error is thrown
 
+#0.0.9
+Fixed boolean comparisons
+
+
 
