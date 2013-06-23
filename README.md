@@ -79,5 +79,6 @@ Fixed findOneAndUpdate() so that it saves the object after updating if no error 
 #0.0.9
 Fixed boolean comparisons
 
-
+#0.0.10
+Removed findAll() and made find() and findOne() work with empty objects {} to keep inline with Mongoose API.
 

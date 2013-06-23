@@ -45,14 +45,28 @@ module.exports = function (Model) {
 //        };
 
     Model.find = function mockFind(query, cb) {
-        var results = findModelQuery(this().collection.name, query);
+        var results;
+        if(isEmpty(query)){
+            results = objectToArray(models[this().collection.name]);
+            cb(null, results);
+            return results;
+        }
+        results = findModelQuery(this().collection.name, query);
         cb(null, results);
         return results;
     };
 
+    function isEmpty(obj) {
+        for(var i in obj) { return false; }
+        return true;
+    }
+
     Model.findOne = function (query, cb) {
-        var results = findModelQuery(this().collection.name, query);
-        cb(null, results[0]);
+        var results = this.find(query, function(err, result){
+            cb(null, result[0]);
+            return result[0];
+        }) 
+        // findModelQuery(this().collection.name, query);
         return results[0];
     };
 
@@ -124,9 +138,6 @@ module.exports = function (Model) {
         }
     };
 
-    Model.findAll = function (done) {
-        done(null, objectToArray(models[this().collection.name]));
-    };
 
     /**
      * Mockgoose method to allow resetting of the models.

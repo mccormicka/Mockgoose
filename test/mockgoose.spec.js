@@ -129,7 +129,7 @@ describe('Mockgoose Tests', function () {
     });
 
     it('should be able to find all models of a certain type', function (done) {
-        SimpleModel.findAll(function (err, models) {
+        SimpleModel.find({},function (err, models) {
             expect(err).toBeFalsy();
             expect(models.length).toBe(5);
             done(err);
@@ -327,5 +327,27 @@ describe('Mockgoose Tests', function () {
                 });
             });
     });
+
+    it('should find all models if an empty {} object is passed to find', function(done){
+        SimpleModel.find({},function(err, result){
+            expect(err).toBeFalsy();
+            expect(result).toBeTruthy();
+            if(result){
+                expect(result.length).toBe(5);
+            }
+            done();
+        });
+    });
+
+    it('should find a models if an empty {} object is passed to findOne', function(done){
+        SimpleModel.findOne({},function(err, result){
+            expect(err).toBeFalsy();
+            expect(result).toBeTruthy();
+            if(result){
+                expect(result.type).toBe('simple');
+            }
+            done();
+        });
+    })
 
 });
