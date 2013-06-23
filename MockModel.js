@@ -65,8 +65,7 @@ module.exports = function (Model) {
         var results = this.find(query, function(err, result){
             cb(null, result[0]);
             return result[0];
-        }) 
-        // findModelQuery(this().collection.name, query);
+        });
         return results[0];
     };
 
@@ -78,7 +77,7 @@ module.exports = function (Model) {
         Model.findOne(query, function(err, result){
             if(err){
                 cb(err, null);
-            }else{
+            }else if(result){
                 result.update(update, options, function(err, result){
                     if(err){
                         cb(err,result);
@@ -86,6 +85,10 @@ module.exports = function (Model) {
                         result.save(cb);
                     }
                 });
+            }else if(options.upsert){
+                Model.create(update, cb);
+            }else{
+                cb(null, null);
             }
         });
     };

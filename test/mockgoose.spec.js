@@ -348,6 +348,26 @@ describe('Mockgoose Tests', function () {
             }
             done();
         });
-    })
+    });
+
+    it('should be able to findOneAndUpdate with an upsert', function(done){
+        SimpleModel.findOneAndUpdate({name:'upsert'}, {name:'upsert'}, {upsert:true}, function(err, result){
+            expect(err).toBeFalsy();
+            expect(result).toBeTruthy();
+            if(result){
+                expect(result.name).toBe('upsert');
+                SimpleModel.findOne({name:'upsert'}, function(err, result){
+                    expect(err).toBeFalsy();
+                    expect(result).toBeTruthy();
+                    expect(result.name).toBe('upsert');
+                    done(err);
+                })    
+            }else{
+                done(err);
+            }
+        });
+    });
+
+
 
 });
