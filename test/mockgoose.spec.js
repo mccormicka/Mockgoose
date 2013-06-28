@@ -237,7 +237,7 @@ describe('Mockgoose Tests', function () {
             });
     });
 
-    it('should be able to update models', function (done) {
+    it('should be able to findOneAndUpdate models', function (done) {
         AccountModel.create(
             {email: 'multiples@valid.com', password: 'password', values:['one','two']},
             function (err, model) {                
@@ -251,7 +251,7 @@ describe('Mockgoose Tests', function () {
             });
     });
 
-    it('should be able to update models and saved model changed', function (done) {
+    it('should be able to findOneAndUpdate models and saved model changed', function (done) {
         AccountModel.create(
             {email: 'multiples@valid.com', password: 'password', values:['one','two']},
             function (err, model) {                
@@ -268,7 +268,7 @@ describe('Mockgoose Tests', function () {
             });
     });
 
-    it('should be able to update multiple values in models', function (done) {
+    it('should be able to findOneAndUpdate multiple values in models', function (done) {
         AccountModel.create(
             {email: 'multiples@valid.com', password: 'password', values:['one', 'two']},
             function (err, model) {                
@@ -281,6 +281,45 @@ describe('Mockgoose Tests', function () {
                     done(err);
                 });
             });
+    });
+
+    it('should be able to update items', function(done){
+        AccountModel.create({email:'testing@testing.com', password: 'password', values:['one', 'two']}, function(err, model){
+            expect(model).toBeDefined();
+            if(model){
+                AccountModel.update({email:'testing@testing.com'},{email:'updated@testing.com'}, function(err, result){
+                    expect(result).toBe(1);
+                    AccountModel.findOne({email:'updated@testing.com'}, function(err, result){
+                        if(result){
+                            expect(result.email).toBe('updated@testing.com');
+                        }
+                        done(err);
+                    });
+                });
+            }else{
+                done(err);
+            }
+            
+        });
+    });
+
+    it('should be able to update items', function(done){
+        AccountModel.create({email:'testing@testing.com', password: 'password', values:['one', 'two']}, function(err, model){
+            expect(model).toBeDefined();
+            if(model){
+                model.update({email:'testing@testing.com'},{email:'updated@testing.com'}, function(err, result){
+                    expect(result).toBe(1);
+                    AccountModel.findOne({email:'updated@testing.com'}, function(err, result){
+                        if(result){
+                            expect(result.email).toBe('updated@testing.com');
+                        }
+                        done(err);
+                    })
+                });
+            }else{
+                done(err);
+            }
+        });
     });
 
     it('should be able to pull items from nested documents array', function (done) {

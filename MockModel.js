@@ -78,7 +78,7 @@ module.exports = function (Model) {
             if(err){
                 cb(err, null);
             }else if(result){
-                result.update(update, options, function(err, result){
+                result.update(update, options, function(err, success){
                     if(err){
                         cb(err,result);
                     }else{
@@ -101,21 +101,22 @@ module.exports = function (Model) {
         for(var item in update){
             updateItem(this, item, update);
         }
-        cb(null, this);
+        cb(null, 1);
     };
 
     Model.update = function(query, update, options, cb){
+        if ('function' === typeof options) {
+            cb = options;
+            options = null;
+        }
         Model.find(query, function(err, result){
             if(err){
                 cb(err, null);
             }else{
                 for(var i in result){
-                    result[i].update(update, options, function(err, result){
-                        if(err){
-                            cb(err, 0);
-                            return;
-                        }
-                    });
+                    for(var item in update){
+                        updateItem(result[i], item, update);
+                    }
                 }
                 cb(null, result.length);
             }

@@ -85,3 +85,6 @@ Removed findAll() and made find() and findOne() work with empty objects {} to ke
 #0.0.11 
 Added support for findAndUpdate() {upsert:true} option.
 
+#0.0.12
+Fixed Update() method so that it works correctly with static and model updates.
+
