@@ -23,7 +23,7 @@ module.exports = function (Model) {
                 if (err) {
                     return cb(err, null);
                 }
-                console.log(model.mockModel);
+
                 var modelID = model._id.toString();
                 var temp = JSON.parse(JSON.stringify(model));
                 temp.mockModel = Model;
@@ -116,12 +116,18 @@ module.exports = function (Model) {
             if(err){
                 cb(err, null);
             }else{
+                var saveCount = 0;
                 for(var i in result){
                     for(var item in update){
                         updateItem(result[i], item, update);
                     }
+                    result[i].save(function(){
+                        saveCount++;
+                        if(saveCount == result.length){
+                            cb(null, result.length);
+                        }
+                    });
                 }
-                cb(null, result.length);
             }
         });
     };

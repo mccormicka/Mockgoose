@@ -413,10 +413,10 @@ describe('Mockgoose Tests', function () {
                 expect(err).toBeNull();
                 expect(result).toBeDefined();
                 if(result){
-                    AccountModel.update({},{$push:{values:{name:'pushed'}}}, function(err, result){
+                    AccountModel.update({email:'pushed@pushed.com'},{$push:{values:{name:'pushed'}}}, function(err, result){
                         console.log('err,', err, result);
                         expect(err).toBeNull();
-                        expect(result).toBe(3);
+                        expect(result).toBe(1);
                         if(result){
                             AccountModel.findOne({email:'pushed@pushed.com'}, function(err, pushed){
                                 expect(err).toBeNull();
