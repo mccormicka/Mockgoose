@@ -407,20 +407,19 @@ describe('Mockgoose Tests', function () {
         });
     });
 
-    iit('should be able to use $push with a static update', function(done){
+    it('should be able to use $push with a static update', function(done){
         AccountModel.create({email: 'pushed@pushed.com', password: 'password', values:[{name:'one'}, {name:'two'}, {name:'three'}]},
             function(err, result){
                 expect(err).toBeNull();
                 expect(result).toBeDefined();
                 if(result){
                     AccountModel.update({email:'pushed@pushed.com'},{$push:{values:{name:'pushed'}}}, function(err, result){
-                        console.log('err,', err, result);
                         expect(err).toBeNull();
                         expect(result).toBe(1);
                         if(result){
                             AccountModel.findOne({email:'pushed@pushed.com'}, function(err, pushed){
                                 expect(err).toBeNull();
-                                if(result){
+                                if(pushed){
                                     expect(pushed.values[3]).toEqual({name:'pushed'});
                                     done(err);
                                 }else{
@@ -444,7 +443,6 @@ describe('Mockgoose Tests', function () {
                 expect(result).toBeDefined();
                 if(result){
                     result.update({$push:{values:{name:'pushed'}}}, function(err, result){
-                        console.log('err,', err, result);
                         expect(err).toBeNull();
                         expect(result).toBe(1);
                         if(result){
@@ -467,6 +465,64 @@ describe('Mockgoose Tests', function () {
             });
     });
 
+    it('should be able to use $push with a multi 0  update', function(done){
+        AccountModel.create({email: 'pushed@pushed.com', password: 'password', values:['one', 'two','three']},
+            function(err, result){
+                expect(err).toBeNull();
+                expect(result).toBeDefined();
+                if(result){
+                    AccountModel.update({},{$push:{values:'pushed'}}, {multi:0}, function(err, result){
+                        expect(err).toBeNull();
+                        expect(result).toBe(1);
+                        if(result){
+                            AccountModel.find({values:{$in:['pushed']}}, function(err, pushed){
+                                expect(err).toBeNull();
+                                if(pushed){
+                                    expect(pushed.length).toBe(1);
+                                    expect(pushed[0].values).toContain('pushed');
+                                    done(err);
+                                }else{
+                                    done('Error finding model');
+                                }
+                            });
+                        }else{
+                            done('Error updating model with $push');
+                        }
+                    });
+                }else{
+                    done('Error creating model');
+                }
+            });
+    });
 
+    it('should be able to use $push with a multi 1  update', function(done){
+        AccountModel.create({email: 'pushed@pushed.com', password: 'password', values:['one', 'two','three']},
+            function(err, result){
+                expect(err).toBeNull();
+                expect(result).toBeDefined();
+                if(result){
+                    AccountModel.update({},{$push:{values:'pushed'}}, {multi:1}, function(err, result){
+                        expect(err).toBeNull();
+                        expect(result).toBe(3);
+                        if(result){
+                            AccountModel.find({values:{$in:['pushed']}}, function(err, pushed){
+                                expect(err).toBeNull();
+                                if(pushed){
+                                    expect(pushed.length).toBe(3);
+                                    expect(pushed[2].values).toContain('pushed');
+                                    done(err);
+                                }else{
+                                    done('Error finding model');
+                                }
+                            });
+                        }else{
+                            done('Error updating model with $push');
+                        }
+                    });
+                }else{
+                    done('Error creating model');
+                }
+            });
+    });
 
 });

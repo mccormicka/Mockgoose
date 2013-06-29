@@ -48,7 +48,7 @@ module.exports = function (Model) {
     Model.find = function mockFind(query, cb) {
         var results;
         if(isEmpty(query)){
-            results = objectToArray(models[this().collection.name]);
+            results = objectToArray(cloneItems(models[this().collection.name]));
             cb(null, results);
             return results;
         }
@@ -116,17 +116,27 @@ module.exports = function (Model) {
             if(err){
                 cb(err, null);
             }else{
-                var saveCount = 0;
-                for(var i in result){
-                    for(var item in update){
-                        updateItem(result[i], item, update);
-                    }
-                    result[i].save(function(){
-                        saveCount++;
-                        if(saveCount == result.length){
-                            cb(null, result.length);
+                if(options && options.multi){
+                    var saveCount = 0;
+                    for(var i in result){
+                        for(var item in update){
+                            updateItem(result[i], item, update);
                         }
-                    });
+                        result[i].save(function(){
+                            saveCount++;
+                            if(saveCount == result.length){
+                                cb(null, result.length);
+                            }
+                        });
+                    }
+                }else{
+                    for(var item in update){
+                            updateItem(result[0], item, update);
+                        }
+                    result[0].save(function(err, result){
+
+                        cb(err, 1);
+                    })
                 }
             }
         });
@@ -190,6 +200,14 @@ function objectToArray(items) {
     return results;
 }
 
+function cloneItems(items){
+    var clones = {};
+    for(var item in items ){
+        clones[item] = cloneItem(items[item]);
+    }
+    return clones;
+}
+
 /**
  * Creates a new instance from the model so that
  * if the original is updated but not saved it is
@@ -204,7 +222,15 @@ function cloneItem(item) {
         console.log('Returning actual model this may be mutated!');
         return item;
     }
+}
 
+function objectIndexOf(arr, o) {    
+    for (var i = 0; i < arr.length; i++) {
+        if (arr[i].x == o.x && arr[i].y == o.y) {
+            return i;
+        }
+    }
+    return -1;
 }
 
 function contains(obj, target) {
@@ -292,7 +318,7 @@ function foundModel(item, query, q) {
             }
         }
         if (allMatch) {
-            return cloneItem(item);
+            return item;//return cloneItem(item);
         }
     }
     return false;
@@ -313,7 +339,7 @@ function findMatch(items, query){
             }
         }
     }
-    return objectToArray(results);
+    return objectToArray(cloneItems(results));
 }
 
 function findModelQuery(type, query) {

@@ -40,7 +40,13 @@ Simple find operations. (multiple and nested finds not currently supported)
 ##Operators
 
 $in 
-$pull    
+$pull   
+$push 
+$each
+
+##Options
+multi 0/1 defaults to 0 
+upsert true/false defaults to false
 
 ##Validators
 Mockgoose includes support for validators and the unique field key.
@@ -87,4 +93,8 @@ Added support for findAndUpdate() {upsert:true} option.
 
 #0.0.12
 Fixed Update() method so that it works correctly with static and model updates.
+
+#0.0.13
+Added support for $push with $each and {multi:0/1}
+
 
