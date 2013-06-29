@@ -407,6 +407,66 @@ describe('Mockgoose Tests', function () {
         });
     });
 
+    iit('should be able to use $push with a static update', function(done){
+        AccountModel.create({email: 'pushed@pushed.com', password: 'password', values:[{name:'one'}, {name:'two'}, {name:'three'}]},
+            function(err, result){
+                expect(err).toBeNull();
+                expect(result).toBeDefined();
+                if(result){
+                    AccountModel.update({},{$push:{values:{name:'pushed'}}}, function(err, result){
+                        console.log('err,', err, result);
+                        expect(err).toBeNull();
+                        expect(result).toBe(3);
+                        if(result){
+                            AccountModel.findOne({email:'pushed@pushed.com'}, function(err, pushed){
+                                expect(err).toBeNull();
+                                if(result){
+                                    expect(pushed.values[3]).toEqual({name:'pushed'});
+                                    done(err);
+                                }else{
+                                    done('Error finding model');
+                                }
+                            });
+                        }else{
+                            done('Error updating model with $push');
+                        }
+                    });
+                }else{
+                    done('Error creating model');
+                }
+            });
+    });
+
+    it('should be able to use $push with a update', function(done){
+        AccountModel.create({email: 'pushed@pushed.com', password: 'password', values:[{name:'one'}, {name:'two'}, {name:'three'}]},
+            function(err, result){
+                expect(err).toBeNull();
+                expect(result).toBeDefined();
+                if(result){
+                    result.update({$push:{values:{name:'pushed'}}}, function(err, result){
+                        console.log('err,', err, result);
+                        expect(err).toBeNull();
+                        expect(result).toBe(1);
+                        if(result){
+                            AccountModel.findOne({email:'pushed@pushed.com'}, function(err, pushed){
+                                expect(err).toBeNull();
+                                if(result){
+                                    expect(pushed.values[3]).toEqual({name:'pushed'});
+                                    done(err);
+                                }else{
+                                    done('Error finding model');
+                                }
+                            });
+                        }else{
+                            done('Error updating model with $push');
+                        }
+                    });
+                }else{
+                    done('Error creating model');
+                }
+            });
+    });
+
 
 
 });

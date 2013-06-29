@@ -23,6 +23,7 @@ module.exports = function (Model) {
                 if (err) {
                     return cb(err, null);
                 }
+                console.log(model.mockModel);
                 var modelID = model._id.toString();
                 var temp = JSON.parse(JSON.stringify(model));
                 temp.mockModel = Model;
@@ -101,7 +102,9 @@ module.exports = function (Model) {
         for(var item in update){
             updateItem(this, item, update);
         }
-        cb(null, 1);
+        this.save(function(err, result){
+            cb(err, 1);
+        });
     };
 
     Model.update = function(query, update, options, cb){
@@ -229,6 +232,9 @@ function updateItem(model, item, update){
     case '$pull':
         pullItem(model, update[item]);
         break;
+    case '$push':
+        pushItem(model, update[item]);
+        break;
     default:
         model[item] = update[item];
         break;
@@ -248,6 +254,24 @@ function pullItem(model, pulls){
                     }
                 }
             }
+        }
+    }
+}
+
+function pushItem(model, pushes){
+    for(var push in pushes){
+        if(pushes.hasOwnProperty(push)){
+            var temp = [];
+            if(model[push]){
+                temp = temp.concat(model[push]);
+            }
+            var updates = pushes[push];
+            if(updates.$each){
+                temp = temp.concat(updates.$each);
+            }else{
+                temp.push(updates);
+            }
+            model[push] = temp;
         }
     }
 }
