@@ -448,8 +448,39 @@ describe('Mockgoose Tests', function () {
                         if(result){
                             AccountModel.findOne({email:'pushed@pushed.com'}, function(err, pushed){
                                 expect(err).toBeNull();
-                                if(result){
+                                if(pushed){
+                                    expect(pushed.values.length).toBe(4);
                                     expect(pushed.values[3]).toEqual({name:'pushed'});
+                                    done(err);
+                                }else{
+                                    done('Error finding model');
+                                }
+                            });
+                        }else{
+                            done('Error updating model with $push');
+                        }
+                    });
+                }else{
+                    done('Error creating model');
+                }
+            });
+    });
+
+    it('should be able to use $push with an $each', function(done){
+        AccountModel.create({email: 'pushed@pushed.com', password: 'password', values:[{name:'one'}, {name:'two'}, {name:'three'}]},
+            function(err, result){
+                expect(err).toBeNull();
+                expect(result).toBeDefined();
+                if(result){
+                    result.update({$push:{values:{$each:[{name:'pushed'},{name:'pushed2'}]}}}, function(err, result){
+                        expect(err).toBeNull();
+                        expect(result).toBe(1);
+                        if(result){
+                            AccountModel.findOne({email:'pushed@pushed.com'}, function(err, pushed){
+                                expect(err).toBeNull();
+                                if(pushed){
+                                    expect(pushed.values.length).toBe(5);
+                                    expect(pushed.values[4]).toEqual({name:'pushed2'});
                                     done(err);
                                 }else{
                                     done('Error finding model');
