@@ -27,6 +27,7 @@ module.exports = function (Model) {
                 var modelID = model._id.toString();
                 var temp = JSON.parse(JSON.stringify(model));
                 temp.mockModel = Model;
+                temp._id = modelID;
                 models[type][modelID] = temp;
                 if (!cb) {
                     throw new Error('Mongoose save callback must be defined!');
@@ -129,14 +130,15 @@ module.exports = function (Model) {
                             }
                         });
                     }
-                }else{
+                }else if(result.length > 0 ){
                     for(var item in update){
                             updateItem(result[0], item, update);
                         }
                     result[0].save(function(err, result){
-
                         cb(err, 1);
-                    })
+                    });
+                }else{
+                    cb(null, 0);
                 }
             }
         });
@@ -240,8 +242,10 @@ function contains(obj, target) {
 
 function matchParams(item, query, q){
     if(typeof item[q] === 'string'){
-        if (item[q].toString() === query[q].toString()) {
-            return true;
+        if(item[q] && query[q]){
+            if (item[q].toString() === query[q].toString()) {
+                return true;
+            }
         }
     }
     if (typeof query[q] === 'object') {

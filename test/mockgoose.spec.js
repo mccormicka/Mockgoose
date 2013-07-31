@@ -1,5 +1,5 @@
 describe('Mockgoose Tests', function () {
-    "use strict";
+    'use strict';
 
     var mockgoose = require('../Mockgoose');
     var mongoose = require('mongoose');
@@ -221,7 +221,6 @@ describe('Mockgoose Tests', function () {
             });
     });
 
-
     it('should be able to find models $in with multiple values', function (done) {
         AccountModel.create(
             {email: 'multiples@valid.com', password: 'password', values:['one', 'two']},
@@ -299,7 +298,6 @@ describe('Mockgoose Tests', function () {
             }else{
                 done(err);
             }
-            
         });
     });
 
@@ -556,4 +554,24 @@ describe('Mockgoose Tests', function () {
             });
     });
 
+    it('Have the same _id after doing an update', function (done) {
+        AccountModel.create({email:'testing@testing.com', password: 'password', values:['one', 'two']}, function(err, model){
+            expect(model).toBeDefined();
+            if(model){
+                model.update({email:'updated@testing.com'}, function(err, result){
+                    expect(result).toBe(1);
+                    AccountModel.findOne({_id:model._id}, function(err, result){
+                        expect(result).toBeDefined();
+                        if(result){
+                            expect(result.email).toBe('updated@testing.com');
+                        }
+                        done(err);
+                    });
+                });
+            }else{
+                done(err);
+            }
+
+        });
+    });
 });
