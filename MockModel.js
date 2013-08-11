@@ -25,7 +25,7 @@ module.exports = function (Model) {
                 }
 
                 var modelID = model._id.toString();
-                var temp = JSON.parse(JSON.stringify(model));
+                var temp = model.toObject();
                 temp.mockModel = Model;
                 temp._id = modelID;
                 models[type][modelID] = temp;
