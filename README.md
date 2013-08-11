@@ -66,35 +66,42 @@ to delete all the associated models for a schema.
 
 CHANGELOG
 
-#0.0.2 
+#0.0.14
+Removed toJSON copy inside mock model so that 3rd party libraries can manipulate mongoose json output without it affecting
+mockgoose.
 
-Added support for $in operator for finds
+#0.0.13
+Added support for $push with $each and {multi:0/1}
+
+#0.0.12
+Fixed Update() method so that it works correctly with static and model updates.
+
+#0.0.11
+Added support for findAndUpdate() {upsert:true} option.
+
+#0.0.10
+Removed findAll() and made find() and findOne() work with empty objects {} to keep inline with Mongoose API.
+
+#0.0.9
+Fixed boolean comparisons
+
+#0.0.8
+Fixed findOneAndUpdate() so that it saves the object after updating if no error is thrown
+
+#0.0.7
+Added support for $pull of multiple items at once.
+{$pull:{values:{name:{$in:['one', 'two']}}}}
 
 #0.0.6
 Added support for $pull operator
 Added support for update();
 Added support for findOneAndUpdate()
 
-#0.0.7
-Added support for $pull of multiple items at once.
-{$pull:{values:{name:{$in:['one', 'two']}}}}
+#0.0.2 
 
-#0.0.8 
-Fixed findOneAndUpdate() so that it saves the object after updating if no error is thrown
+Added support for $in operator for finds
 
-#0.0.9
-Fixed boolean comparisons
 
-#0.0.10
-Removed findAll() and made find() and findOne() work with empty objects {} to keep inline with Mongoose API.
 
-#0.0.11 
-Added support for findAndUpdate() {upsert:true} option.
-
-#0.0.12
-Fixed Update() method so that it works correctly with static and model updates.
-
-#0.0.13
-Added support for $push with $each and {multi:0/1}
 
 
