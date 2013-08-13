@@ -74,7 +74,7 @@ module.exports = function (Model) {
     Model.findOneAndUpdate = function(query, update, options, cb){
         if ('function' === typeof options) {
             cb = options;
-            options = null;
+            options = {};
         }
         Model.findOne(query, function(err, result){
             if(err){

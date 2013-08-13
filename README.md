@@ -66,6 +66,9 @@ to delete all the associated models for a schema.
 
 CHANGELOG
 
+#0.0.15
+Fixed NPE when passing null options to update
+
 #0.0.14
 Removed toJSON copy inside mock model so that 3rd party libraries can manipulate mongoose json output without it affecting
 mockgoose.
