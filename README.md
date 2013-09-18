@@ -28,6 +28,7 @@ Currently supported model operations are.
     save();
     create();
     remove();
+    count();
 
 Simple find operations. (multiple and nested finds not currently supported)
     
