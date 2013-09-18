@@ -87,11 +87,17 @@ describe('Mockgoose Tests', function () {
         AccountModel.create({email: 'one@one.com', password: 'password'},
             {email: 'two@two.com', password: 'password'}, function (err, one, two) {
                 expect(err).toBeFalsy();
-                AccountModel.findById(two._id, function (err, model) {
-                    expect(err).toBeFalsy();
-                    expect(model._id.toString()).toBe(two._id.toString());
-                    done(err);
-                });
+                expect(two).toBeDefined();
+                if(two){
+                    AccountModel.findById(two._id, function (err, model) {
+                        expect(err).toBeFalsy();
+                        expect(model._id.toString()).toBe(two._id.toString());
+                        done(err);
+                    });
+                }else{
+                    done('Error creating items' + err + one + two );
+                }
+
             });
     });
 
@@ -106,9 +112,14 @@ describe('Mockgoose Tests', function () {
     it('should be able to findOne model by using a slightly complex query', function (done) {
         SimpleModel.findOne({name: 'one', value: 'two'}, function (err, model) {
             expect(err).toBeFalsy();
-            expect(model.name).toBe('one');
-            expect(model.value).toBe('two');
-            done(err);
+            if(model){
+                expect(model.name).toBe('one');
+                expect(model.value).toBe('two');
+                done(err);
+            }else{
+                done('Error finding model' + err + model);
+            }
+
         });
     });
 
@@ -168,14 +179,23 @@ describe('Mockgoose Tests', function () {
         SimpleModel.create(
             {name:'true', password:'something', bool:true},
             {name:'false', password:'something', bool:false}, function(){
-            
+
             SimpleModel.findOne({bool:true}, function(err, result){
-                expect(result.name).toBe('true');
+                if(result){
+                    expect(result.name).toBe('true');
+                    SimpleModel.findOne({bool:false}, function(err, result){
+                        if(result){
+                            expect(result.name).toBe('false');
+                            done(err);
+                        }else{
+                            done('Unable to find' + err + result);
+                        }
+                    });
+                }else{
+                    done('Unable to find' + err + result);
+                }
+
             });
-            SimpleModel.findOne({bool:false}, function(err, result){
-                expect(result.name).toBe('false');
-            });
-            done();
         });
     });
 
@@ -265,7 +285,7 @@ describe('Mockgoose Tests', function () {
                 AccountModel.findOneAndUpdate({email:'multiples@valid.com'}, {email:'updatedemails@email.com'}, function(err, result){
                     expect(result).toBeDefined();
                     if(result){
-                        expect(result.email).toBe('updatedemails@email.com');    
+                        expect(result.email).toBe('updatedemails@email.com');
                     }
                     AccountModel.findOne({email:'updatedemails@email.com'}, function(err, found){
                         expect(found).toBeDefined();
@@ -282,7 +302,7 @@ describe('Mockgoose Tests', function () {
                 AccountModel.findOneAndUpdate({email:'multiples@valid.com'}, {email:'updatedemail@email.com', values:['updated']}, function(err, result){
                     expect(result).toBeDefined();
                     if(result){
-                        expect(result.email).toBe('updatedemail@email.com');    
+                        expect(result.email).toBe('updatedemail@email.com');
                         expect(result.values[0]).toEqual('updated');
                         done(err);
                     }else{
@@ -341,8 +361,8 @@ describe('Mockgoose Tests', function () {
             function () {
                 AccountModel.findOneAndUpdate({email:'tester@valid.com'}, {$pull:{values:'one'}}, function(err, result){
                     expect(result).toBeDefined();
-                    if(result){    
-                        expect(result.values.length).toBe(1);    
+                    if(result){
+                        expect(result.values.length).toBe(1);
                         expect(result.values[0]).toBe('two');
                         done(err);
                     }else{
@@ -358,10 +378,14 @@ describe('Mockgoose Tests', function () {
             function () {
                 AccountModel.findOneAndUpdate({email:'multiples@valid.com'}, {$pull:{values:{name:{$in:['one']}}}}, function(err, result){
                     expect(result).toBeDefined();
-                    if(result){    
-                        expect(result.values.length).toBe(1);    
-                        expect(result.values[0].name).toBe('two');
-                        done(err);
+                    if(result){
+                        expect(result.values.length).toBe(1);
+                        if(result.values.length === 1){
+                            expect(result.values[0].name).toBe('two');
+                            done(err);
+                        }else{
+                            done('Invalid value length', result.values);
+                        }
                     }else{
                         done('Error finding models');
                     }
@@ -375,10 +399,14 @@ describe('Mockgoose Tests', function () {
             function () {
                 AccountModel.findOneAndUpdate({email:'multiples@valid.com'}, {$pull:{values:{name:{$in:['one', 'two']}}}}, function(err, result){
                     expect(result).toBeDefined();
-                    if(result){    
-                        expect(result.values.length).toBe(1);    
-                        expect(result.values[0].name).toBe('three');
-                        done(err);
+                    if(result){
+                        expect(result.values.length).toBe(1);
+                        if(result.values.length === 1){
+                            expect(result.values[0].name).toBe('three');
+                            done(err);
+                        }else{
+                            done('invalid values length');
+                        }
                     }else{
                         done('Error finding models');
                     }
@@ -417,8 +445,12 @@ describe('Mockgoose Tests', function () {
                 SimpleModel.findOne({name:'upsert'}, function(err, result){
                     expect(err).toBeFalsy();
                     expect(result).toBeTruthy();
-                    expect(result.name).toBe('upsert');
-                    done(err);
+                    if(result){
+                        expect(result.name).toBe('upsert');
+                        done(err);
+                    }else{
+                        done('Unable to find ' + err + result);
+                    }
                 });
             }else{
                 done(err);
