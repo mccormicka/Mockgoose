@@ -25,13 +25,12 @@ module.exports = function (mongoose) {
 
         var connection = mongoose.originalConnection.call(mongoose, database, function (err) {
             if (openListener) {
-                openListener();
+                openListener(err);
             }
         });
 
         var originalModel = connection.model;
         connection.model = function (type, schema) {
-            console.log('Mockgoose Model ', type);
             var model = originalModel.call(connection, type, schema);
             mock(model);
             if(!module.exports.reset()){

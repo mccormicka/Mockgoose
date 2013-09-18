@@ -167,7 +167,7 @@ describe('Mockgoose Tests', function () {
     it('should match boolean values', function (done) {
         SimpleModel.create(
             {name:'true', password:'something', bool:true},
-            {name:'false', password:'something', bool:false}, function(err, result){
+            {name:'false', password:'something', bool:false}, function(){
             
             SimpleModel.findOne({bool:true}, function(err, result){
                 expect(result.name).toBe('true');
@@ -176,7 +176,7 @@ describe('Mockgoose Tests', function () {
                 expect(result.name).toBe('false');
             });
             done();
-        })
+        });
     });
 
     it('should be able to remove multiple model', function (done) {
@@ -195,13 +195,15 @@ describe('Mockgoose Tests', function () {
         AccountModel.create(
             {email: 'multiples@valid.com', password: 'password', values:['one', 'two']},
             {email: 'multiples@invalid.com', password: 'password', values:['two', 'three']},
-            function (err, models) {                
+            function () {
                 AccountModel.findOne({values:{$in:['three']}}, function(err, result){
                     expect(result).toBeDefined();
                     if(result){
-                        expect(result.values[1]).toBe('three');    
+                        expect(result.values[1]).toBe('three');
+                        done(err);
+                    }else{
+                        done('Error finding model');
                     }
-                    done(err);
                 });
             });
     });
@@ -210,13 +212,15 @@ describe('Mockgoose Tests', function () {
         AccountModel.create(
             {email: 'multiples@valid.com', password: 'password', values:['one', 'two']},
             {email: 'multiples@invalid.com', password: 'password', values:['two', 'three']},
-            function (err, models) {
+            function () {
                 AccountModel.find({values:{$in:['two']}}, function(err, result){
-                    expect(result).toBeDefined();;
+                    expect(result).toBeDefined();
                     if(result){
-                        expect(result.length).toBe(2);    
+                        expect(result.length).toBe(2);
+                        done(err);
+                    }else{
+                        done('Error finding models');
                     }
-                    done(err);
                 });
             });
     });
@@ -225,13 +229,15 @@ describe('Mockgoose Tests', function () {
         AccountModel.create(
             {email: 'multiples@valid.com', password: 'password', values:['one', 'two']},
             {email: 'multiples@invalid.com', password: 'password', values:['two', 'three']},
-            function (err, models) {                
+            function () {
                 AccountModel.find({values:{$in:['two', 'three']}}, function(err, result){
                     expect(result).toBeDefined();
                     if(result){
-                        expect(result.length).toBe(2);    
+                        expect(result.length).toBe(2);
+                        done(err);
+                    }else{
+                        done('Error finding models');
                     }
-                    done(err);
                 });
             });
     });
@@ -239,13 +245,15 @@ describe('Mockgoose Tests', function () {
     it('should be able to findOneAndUpdate models', function (done) {
         AccountModel.create(
             {email: 'multiples@valid.com', password: 'password', values:['one','two']},
-            function (err, model) {                
+            function () {
                 AccountModel.findOneAndUpdate({email:'multiples@valid.com'}, {email:'updatedemail@email.com'}, function(err, result){
                     expect(result).toBeDefined();
                     if(result){
-                        expect(result.email).toBe('updatedemail@email.com');    
+                        expect(result.email).toBe('updatedemail@email.com');
+                        done(err);
+                    }else{
+                        done('Error finding models');
                     }
-                    done(err);
                 });
             });
     });
@@ -253,7 +261,7 @@ describe('Mockgoose Tests', function () {
     it('should be able to findOneAndUpdate models and saved model changed', function (done) {
         AccountModel.create(
             {email: 'multiples@valid.com', password: 'password', values:['one','two']},
-            function (err, model) {                
+            function () {
                 AccountModel.findOneAndUpdate({email:'multiples@valid.com'}, {email:'updatedemails@email.com'}, function(err, result){
                     expect(result).toBeDefined();
                     if(result){
@@ -262,7 +270,7 @@ describe('Mockgoose Tests', function () {
                     AccountModel.findOne({email:'updatedemails@email.com'}, function(err, found){
                         expect(found).toBeDefined();
                         done(err);
-                    })
+                    });
                 });
             });
     });
@@ -270,14 +278,16 @@ describe('Mockgoose Tests', function () {
     it('should be able to findOneAndUpdate multiple values in models', function (done) {
         AccountModel.create(
             {email: 'multiples@valid.com', password: 'password', values:['one', 'two']},
-            function (err, model) {                
+            function () {
                 AccountModel.findOneAndUpdate({email:'multiples@valid.com'}, {email:'updatedemail@email.com', values:['updated']}, function(err, result){
                     expect(result).toBeDefined();
                     if(result){
                         expect(result.email).toBe('updatedemail@email.com');    
-                        expect(result.values[0]).toEqual('updated');    
+                        expect(result.values[0]).toEqual('updated');
+                        done(err);
+                    }else{
+                        done('Error finding models');
                     }
-                    done(err);
                 });
             });
     });
@@ -291,8 +301,10 @@ describe('Mockgoose Tests', function () {
                     AccountModel.findOne({email:'updated@testing.com'}, function(err, result){
                         if(result){
                             expect(result.email).toBe('updated@testing.com');
+                            done(err);
+                        }else{
+                            done('Error finding models');
                         }
-                        done(err);
                     });
                 });
             }else{
@@ -305,14 +317,17 @@ describe('Mockgoose Tests', function () {
         AccountModel.create({email:'testing@testing.com', password: 'password', values:['one', 'two']}, function(err, model){
             expect(model).toBeDefined();
             if(model){
-                model.update({email:'testing@testing.com'},{email:'updated@testing.com'}, function(err, result){
+                model.update({email:'updated@testing.com'}, function(err, result){
                     expect(result).toBe(1);
+                    console.log('Results is', result);
                     AccountModel.findOne({email:'updated@testing.com'}, function(err, result){
                         if(result){
                             expect(result.email).toBe('updated@testing.com');
+                            done(err);
+                        }else{
+                            done('Error finding models');
                         }
-                        done(err);
-                    })
+                    });
                 });
             }else{
                 done(err);
@@ -323,14 +338,16 @@ describe('Mockgoose Tests', function () {
     it('should be able to pull items from nested documents array', function (done) {
         AccountModel.create(
             {email: 'tester@valid.com', password: 'password', values:['one', 'two']},
-            function (err, model) {   
+            function () {
                 AccountModel.findOneAndUpdate({email:'tester@valid.com'}, {$pull:{values:'one'}}, function(err, result){
                     expect(result).toBeDefined();
                     if(result){    
                         expect(result.values.length).toBe(1);    
-                        expect(result.values[0]).toBe('two');    
+                        expect(result.values[0]).toBe('two');
+                        done(err);
+                    }else{
+                        done('Error finding item');
                     }
-                    done(err);
                 });
             });
     });
@@ -338,14 +355,16 @@ describe('Mockgoose Tests', function () {
     it('should be able to pull items from nested documents array by property', function (done) {
         AccountModel.create(
             {email: 'multiples@valid.com', password: 'password', values:[{name:'one'}, {name:'two'}]},
-            function (err, model) {                
+            function () {
                 AccountModel.findOneAndUpdate({email:'multiples@valid.com'}, {$pull:{values:{name:{$in:['one']}}}}, function(err, result){
                     expect(result).toBeDefined();
                     if(result){    
                         expect(result.values.length).toBe(1);    
-                        expect(result.values[0].name).toBe('two');    
+                        expect(result.values[0].name).toBe('two');
+                        done(err);
+                    }else{
+                        done('Error finding models');
                     }
-                    done(err);
                 });
             });
     });
@@ -353,14 +372,16 @@ describe('Mockgoose Tests', function () {
     it('should be able to pull multiple items from nested documents array by property', function (done) {
         AccountModel.create(
             {email: 'multiples@valid.com', password: 'password', values:[{name:'one'}, {name:'two'}, {name:'three'}]},
-            function (err, model) {                
+            function () {
                 AccountModel.findOneAndUpdate({email:'multiples@valid.com'}, {$pull:{values:{name:{$in:['one', 'two']}}}}, function(err, result){
                     expect(result).toBeDefined();
                     if(result){    
                         expect(result.values.length).toBe(1);    
-                        expect(result.values[0].name).toBe('three');    
+                        expect(result.values[0].name).toBe('three');
+                        done(err);
+                    }else{
+                        done('Error finding models');
                     }
-                    done(err);
                 });
             });
     });
@@ -398,7 +419,7 @@ describe('Mockgoose Tests', function () {
                     expect(result).toBeTruthy();
                     expect(result.name).toBe('upsert');
                     done(err);
-                })    
+                });
             }else{
                 done(err);
             }
@@ -538,8 +559,13 @@ describe('Mockgoose Tests', function () {
                                 expect(err).toBeNull();
                                 if(pushed){
                                     expect(pushed.length).toBe(3);
-                                    expect(pushed[2].values).toContain('pushed');
-                                    done(err);
+                                    if(pushed.length === 3){
+                                        expect(pushed[2].values).toContain('pushed');
+                                        done(err);
+                                    }else{
+                                        done('error finding pushed items!' + pushed);
+                                    }
+
                                 }else{
                                     done('Error finding model');
                                 }
@@ -574,4 +600,22 @@ describe('Mockgoose Tests', function () {
 
         });
     });
+
+    it('Count the number of items in a {} query', function (done) {
+        SimpleModel.count({}, function(err, count){
+            expect(err).toBeNull();
+            expect(count).toBe(5);
+            done(err);
+        });
+    });
+
+    it('Count the number of items in {query:query}', function (done) {
+        SimpleModel.count({name:'one'}, function(err, count){
+            expect(err).toBeNull();
+            expect(count).toBe(3);
+            done(err);
+        });
+    });
+
+
 });

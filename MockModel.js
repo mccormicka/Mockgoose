@@ -48,7 +48,7 @@ module.exports = function (Model) {
 
     Model.find = function mockFind(query, cb) {
         var results;
-        if(isEmpty(query)){
+        if (isEmpty(query)) {
             results = objectToArray(cloneItems(models[this().collection.name]));
             cb(null, results);
             return results;
@@ -59,92 +59,74 @@ module.exports = function (Model) {
     };
 
     function isEmpty(obj) {
-        for(var i in obj) { return false; }
+        for (var i in obj) {
+            if (obj.hasOwnProperty(i)) {
+                return false;
+            }
+        }
         return true;
     }
 
     Model.findOne = function (query, cb) {
-        var results = this.find(query, function(err, result){
+        var results = this.find(query, function (err, result) {
             cb(null, result[0]);
             return result[0];
         });
         return results[0];
     };
 
-    Model.findOneAndUpdate = function(query, update, options, cb){
+    Model.findOneAndUpdate = function (query, update, options, cb) {
         if ('function' === typeof options) {
             cb = options;
             options = {};
         }
-        Model.findOne(query, function(err, result){
-            if(err){
+        Model.findOne(query, function (err, result) {
+            if (err) {
                 cb(err, null);
-            }else if(result){
-                result.update(update, options, function(err, success){
-                    if(err){
-                        cb(err,result);
-                    }else{
+            } else if (result) {
+                result.update(update, options, function (err) {
+                    if (err) {
+                        cb(err, result);
+                    } else {
                         result.save(cb);
                     }
                 });
-            }else if(options.upsert){
+            } else if (options.upsert) {
                 Model.create(update, cb);
-            }else{
+            } else {
                 cb(null, null);
             }
         });
     };
 
-    Model.prototype.update = function(update, options, cb){
+    Model.prototype.update = function (update, options, cb) {
         if ('function' === typeof options) {
             cb = options;
             options = null;
         }
-        for(var item in update){
+        for (var item in update) {
             updateItem(this, item, update);
         }
-        this.save(function(err, result){
+        this.save(function (err) {
             cb(err, 1);
         });
     };
 
-    Model.update = function(query, update, options, cb){
+    Model.update = function (query, update, options, cb) {
         if ('function' === typeof options) {
             cb = options;
             options = null;
         }
-        Model.find(query, function(err, result){
-            if(err){
+        Model.find(query, function (err, result) {
+            if (err) {
                 cb(err, null);
-            }else{
-                if(options && options.multi){
-                    var saveCount = 0;
-                    for(var i in result){
-                        for(var item in update){
-                            updateItem(result[i], item, update);
-                        }
-                        result[i].save(function(){
-                            saveCount++;
-                            if(saveCount == result.length){
-                                cb(null, result.length);
-                            }
-                        });
-                    }
-                }else if(result.length > 0 ){
-                    for(var item in update){
-                            updateItem(result[0], item, update);
-                        }
-                    result[0].save(function(err, result){
-                        cb(err, 1);
-                    });
-                }else{
-                    cb(null, 0);
-                }
+            } else {
+                updateMultipleItems(options, result, update, cb);
             }
         });
     };
 
-    Model.prototype.remove = function(cb){
+    Model.prototype.remove = function (cb) {
         Model.remove({_id: this._id}, cb);
     };
 
@@ -154,7 +136,7 @@ module.exports = function (Model) {
         for (var i = 0; i < results.length; i++) {
             delete models[type][results[i]._id.toString()];
         }
-        if(cb){
+        if (cb) {
             if (results.length === 1) {
                 cb(null, results[0]);
             } else {
@@ -163,6 +145,11 @@ module.exports = function (Model) {
         }
     };
 
+    Model.count = function (query, cb) {
+        Model.find(query, function (err, result) {
+            cb(err, result.length);
+        });
+    };
 
     /**
      * Mockgoose method to allow resetting of the models.
@@ -189,6 +176,38 @@ module.exports = function (Model) {
 //
 //-------------------------------------------------------------------------
 
+function updateMultipleItems(options, result, update, cb) {
+    if (options && options.multi) {
+        var saveCount = 0;
+        for (var i in result) {
+            var updatedItem = result[i];
+            for (var item in update) {
+                updateItem(updatedItem, item, update);
+            }
+            /*jshint -W083 */
+            result[i].save(function () {
+                saveCount++;
+                if (saveCount === result.length) {
+                    cb(null, result.length);
+                }
+            });
+        }
+    } else if (result.length > 0) {
+        updateItems(update, result, cb);
+    } else {
+        cb(null, 0);
+    }
+}
+
+function updateItems(update, result, cb) {
+    for (var item in update) {
+        updateItem(result[0], item, update);
+    }
+    result[0].save(function (err) {
+        cb(err, 1);
+    });
+}
+
 /**
  * Converts the object into an array.
  * @param items
@@ -202,9 +221,9 @@ function objectToArray(items) {
     return results;
 }
 
-function cloneItems(items){
+function cloneItems(items) {
     var clones = {};
-    for(var item in items ){
+    for (var item in items) {
         clones[item] = cloneItem(items[item]);
     }
     return clones;
@@ -218,55 +237,72 @@ function cloneItems(items){
  * @returns {item.mockModel}
  */
 function cloneItem(item) {
-    if(item.mockModel){
+    if (item.mockModel) {
         return new item.mockModel(item);
-    }else{
+    } else {
         console.log('Returning actual model this may be mutated!');
         return item;
     }
 }
 
-function objectIndexOf(arr, o) {    
-    for (var i = 0; i < arr.length; i++) {
-        if (arr[i].x == o.x && arr[i].y == o.y) {
-            return i;
-        }
-    }
-    return -1;
-}
-
 function contains(obj, target) {
-    if (!obj) return false;
+    if (!obj) {
+        return false;
+    }
     return obj.indexOf(target) !== -1;
 }
 
-function matchParams(item, query, q){
-    if(typeof item[q] === 'string'){
-        if(item[q] && query[q]){
+function matchStringParams(item, q, query) {
+    if (typeof item[q] === 'string') {
+        if (item[q] && query[q]) {
             if (item[q].toString() === query[q].toString()) {
                 return true;
             }
         }
     }
-    if (typeof query[q] === 'object') {
-        if (query[q].$in) {
-            for (var i in query[q].$in) {
-                if (contains(item[q], query[q].$in[i])) {
-                    return true;
-                }
-            }
-        }
-    }
-    if(typeof item[q] === 'boolean'){
-        return item[q] === query[q];
-    }
     return false;
 }
+function matchedObjectContains(query, q, item) {
+    var result = false;
+    for (var i in query[q].$in) {
+        if (contains(item[q], query[q].$in[i])) {
+            result = true;
+            break;
+        }
+    }
+    return result;
+}
+function matchObjectParams(query, q, item) {
+    var result = false;
+    if (typeof query[q] === 'object') {
+        if (query[q].$in) {
+            result = matchedObjectContains(query, q, item);
+        }
+    }
+    return result;
+}
 
-function updateItem(model, item, update){
-    switch(item){
+function matchBooleanParams(item, q, query) {
+    if (typeof item[q] === 'boolean') {
+        return item[q] === query[q];
+    }
+}
+
+function matchParams(item, query, q) {
+    var result = matchStringParams(item, q, query, result);
+    if (!result) {
+        result = matchObjectParams(query, q, item);
+    }
+    if (!result) {
+        result = matchBooleanParams(item, q, query);
+    }
+    return result;
+}
+
+function updateItem(model, item, update) {
+    switch (item) {
     case '$pull':
-        pullItem(model, update[item]);
+        pullItems(model, update[item]);
         break;
     case '$push':
         pushItem(model, update[item]);
@@ -277,34 +313,40 @@ function updateItem(model, item, update){
     }
 }
 
-function pullItem(model, pulls){
-    for( var pull in pulls){
-        if(pulls.hasOwnProperty(pull)){
-            var values = model[pull];
-            var match = findMatch(values, pulls[pull]);
-            if(match.length > 0){
-                for( var i in match ){
-                    var index = values.indexOf(match[i]);
-                    if(index > -1){
-                        values.splice(index, 1);
-                    }
-                }
+function pullItem(match, values) {
+    for (var i in match) {
+        if (match.hasOwnProperty(i)) {
+            var index = values.indexOf(match[i]);
+            if (index > -1) {
+                values.splice(index, 1);
             }
         }
     }
 }
 
-function pushItem(model, pushes){
-    for(var push in pushes){
-        if(pushes.hasOwnProperty(push)){
+function pullItems(model, pulls) {
+    for (var pull in pulls) {
+        if (pulls.hasOwnProperty(pull)) {
+            var values = model[pull];
+            var match = findMatch(values, pulls[pull]);
+            if (match.length > 0) {
+                pullItem(match, values);
+            }
+        }
+    }
+}
+
+function pushItem(model, pushes) {
+    for (var push in pushes) {
+        if (pushes.hasOwnProperty(push)) {
             var temp = [];
-            if(model[push]){
+            if (model[push]) {
                 temp = temp.concat(model[push]);
             }
             var updates = pushes[push];
-            if(updates.$each){
+            if (updates.$each) {
                 temp = temp.concat(updates.$each);
-            }else{
+            } else {
                 temp.push(updates);
             }
             model[push] = temp;
@@ -312,15 +354,21 @@ function pushItem(model, pushes){
     }
 }
 
-function foundModel(item, query, q) {
-    if(matchParams(item, query, q)){
-        var allMatch = true;
-        for (var qq in query) {
-            if(!matchParams(item, query, qq)){
+function allParamsMatch(query, item) {
+    var allMatch = true;
+    for (var qq in query) {
+        if (query.hasOwnProperty(qq)) {
+            if (!matchParams(item, query, qq)) {
                 allMatch = false;
                 break;
             }
         }
+    }
+    return allMatch;
+}
+function foundModel(item, query, q) {
+    if (matchParams(item, query, q)) {
+        var allMatch = allParamsMatch(query, item);
         if (allMatch) {
             return item;//return cloneItem(item);
         }
@@ -328,18 +376,25 @@ function foundModel(item, query, q) {
     return false;
 }
 
-function findMatch(items, query){
+function buildResults(query, q, items, key, results) {
+    if (query.hasOwnProperty(q)) {
+        var item = foundModel(items[key], query, q);
+        if (item) {
+            if (item._id) {
+                results[item._id] = item;
+            } else {
+                results[Math.random()] = item;
+            }
+        }
+    }
+}
+
+function findMatch(items, query) {
     var results = {};
     for (var key in items) {
-        for (var q in query) {
-            var item = foundModel(items[key], query, q);
-
-            if (item) {
-                if(item._id){
-                    results[item._id] = item;
-                }else{
-                    results[Math.random()] = item;
-                }
+        if (items.hasOwnProperty(key)) {
+            for (var q in query) {
+                buildResults(query, q, items, key, results);
             }
         }
     }
@@ -373,7 +428,9 @@ function validateOptions(type, model, cb) {
     var error = null;
     if (!models[type][model._id.toString()]) {
         for (var pathName in model.schema.paths) {
-            error = validatePath(model, pathName, type, error);
+            if (model.schema.paths.hasOwnProperty(pathName)) {
+                error = validatePath(model, pathName, type, error);
+            }
         }
     }
     cb(error);

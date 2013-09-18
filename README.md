@@ -66,6 +66,11 @@ to delete all the associated models for a schema.
 
 CHANGELOG
 
+#0.0.16
+Added the Model.count() method.
+Fixed various issues with jshint
+Added grunt runner so you can just call grunt and it will run jshint and the jasmine tests
+
 #0.0.15
 Fixed NPE when passing null options to update
 

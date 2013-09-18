@@ -80,4 +80,4 @@ module.exports = function (mongoose) {
     });
 
     return db.model(TYPE, schema);
-}
+};
