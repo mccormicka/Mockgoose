@@ -649,5 +649,11 @@ describe('Mockgoose Tests', function () {
         });
     });
 
-
+    it('Should NOT return an error when connecting to Mockgoose', function (done) {
+        mongoose.createConnection('mongodb://localhost:3001/TestingDB', function(err, result){
+            expect(err).toBeNull();
+            expect(result).toBeTruthy();
+            done();
+        });
+    });
 });

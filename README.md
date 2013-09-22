@@ -67,6 +67,12 @@ to delete all the associated models for a schema.
 
 CHANGELOG
 
+#0.0.18
+Removed connection error as we always error due to the fact Mockgoose is a mock and never really connects.
+
+#0.0.17
+Minor bug fixes
+
 #0.0.16
 Added the Model.count() method.
 Fixed various issues with jshint

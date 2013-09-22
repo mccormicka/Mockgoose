@@ -23,9 +23,10 @@ module.exports = function (mongoose) {
         dbIndex = tempAddress.indexOf('/');
         database = tempAddress.slice(dbIndex+1);
 
-        var connection = mongoose.originalConnection.call(mongoose, database, function (err) {
+        var connection = mongoose.originalConnection.call(mongoose, database, function () {
             if (openListener) {
-                openListener(err);
+                //Always return true as we are faking it.
+                openListener(null, connection);
             }
         });
 
