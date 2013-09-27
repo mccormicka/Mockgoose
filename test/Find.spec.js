@@ -336,6 +336,85 @@ describe('Mockgoose Find Tests', function () {
         });
     });
 
+    ddescribe('findByIdAndUpdate', function () {
+        it('should be able to findByIdAndUpdate models', function (done) {
+            AccountModel.create(
+                {email: 'multiples@valid.com', password: 'password', values: ['one', 'two']},
+                function (err, result) {
+                    var id = result._id;
+                    AccountModel.findByIdAndUpdate(id, {email: 'updatedemail@email.com'}, function (err, result) {
+                        expect(result).toBeDefined();
+                        if (result) {
+                            expect(result.email).toBe('updatedemail@email.com');
+                            done(err);
+                        } else {
+                            done('Error finding models');
+                        }
+                    });
+                });
+        });
+
+        it('should be able to findOneAndUpdate models and saved model changed', function (done) {
+            AccountModel.create(
+                {email: 'multiples@valid.com', password: 'password', values: ['one', 'two']},
+                function (err, result) {
+                    var id = result._id;
+                    AccountModel.findByIdAndUpdate(id, {email: 'updatedemails@email.com'}, function (err, result) {
+                        expect(result).toBeDefined();
+                        if (result) {
+                            expect(result.email).toBe('updatedemails@email.com');
+                        }
+                        AccountModel.findOne({email: 'updatedemails@email.com'}, function (err, found) {
+                            expect(found).toBeDefined();
+                            done(err);
+                        });
+                    });
+                });
+        });
+
+        it('should be able to findByIdAndUpdate multiple values in models', function (done) {
+            AccountModel.create(
+                {email: 'multiples@valid.com', password: 'password', values: ['one', 'two']},
+                function (err, result) {
+                    var id = result._id;
+                    AccountModel.findByIdAndUpdate(id,
+                        {email: 'updatedemail@email.com', values: ['updated']}, function (err, result) {
+                            expect(result).toBeDefined();
+                            if (result) {
+                                expect(result.email).toBe('updatedemail@email.com');
+                                expect(result.values[0]).toEqual('updated');
+                                done(err);
+                            } else {
+                                done('Error finding models');
+                            }
+                        });
+                });
+        });
+
+        it('should be able to findByIdAndUpdate with an upsert', function (done) {
+            SimpleModel.findByIdAndUpdate('upsert-id', {name: 'upsert'}, {upsert: true}, function (err, result) {
+                expect(err).toBeFalsy();
+                expect(result).toBeTruthy();
+                if (result) {
+                    expect(result.name).toBe('upsert');
+                    expect(result._id).toBeDefined();
+                    SimpleModel.findOne({name: 'upsert'}, function (err, result) {
+                        expect(err).toBeFalsy();
+                        expect(result).toBeTruthy();
+                        if (result) {
+                            expect(result.name).toBe('upsert');
+                            done(err);
+                        } else {
+                            done('Unable to find ' + err + result);
+                        }
+                    });
+                } else {
+                    done(err);
+                }
+            });
+        });
+    });
+
     describe('$in', function () {
         it('should be able to find a model $in', function (done) {
             AccountModel.create(

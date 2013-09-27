@@ -30,11 +30,12 @@ Currently supported model operations are.
     remove();
     count();
     find();
-    findOne();
     findById();
-    findOneAndUpdate();
     findByIdAndRemove();
+    findByIdAndUpdate();
+    findOne();
     findOneAndRemove();
+    findOneAndUpdate();
     Update();
 
 ##Operators
@@ -66,6 +67,9 @@ to delete all the associated models for a schema.
 
 
 CHANGELOG
+
+#0.0.21
+Added tests for findOneAndUpdate / findByIdAndUpdate
 
 #0.0.20
 Added all find methods and aligned api's so that the fields and options.fields values work.
