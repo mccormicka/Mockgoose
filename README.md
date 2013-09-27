@@ -29,25 +29,25 @@ Currently supported model operations are.
     create();
     remove();
     count();
-
-Simple find operations. (multiple and nested finds not currently supported)
-    
     find();
     findOne();
     findById();
     findOneAndUpdate();
+    findByIdAndRemove();
+    findOneAndRemove();
     Update();
 
 ##Operators
 
-$in 
-$pull   
-$push 
-$each
+    $in
+    $pull
+    $push
+    $each
 
 ##Options
-multi 0/1 defaults to 0 
-upsert true/false defaults to false
+
+    multi 0/1 defaults to 0
+    upsert true/false defaults to false
 
 ##Validators
 Mockgoose includes support for validators and the unique field key.
@@ -66,6 +66,9 @@ to delete all the associated models for a schema.
 
 
 CHANGELOG
+
+#0.0.20
+Added all find methods and aligned api's so that the fields and options.fields values work.
 
 #0.0.19
 Large code refactor to make the project more maintainable in preparation for API alignment.

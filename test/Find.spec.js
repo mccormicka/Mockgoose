@@ -389,4 +389,61 @@ describe('Mockgoose Find Tests', function () {
         });
     });
 
+    describe('findByIdAndRemove', function () {
+        it('Be able to remove an item by its id', function (done) {
+            SimpleModel.create(
+                {name: 'one', value: 'one'}, function (err, result) {
+                    SimpleModel.findByIdAndRemove(result._id, function(err, removed){
+                        expect(err).toBeNull();
+                        if(removed){
+                            expect(removed._id.toString()).toEqual(result._id.toString());
+                            SimpleModel.findOne({id:result._id}, function(err, item){
+                                expect(item).toBeUndefined();
+                                done(err);
+                            });
+                        }
+                        else{
+                            done('Error removing item!');
+                        }
+                    });
+                });
+        });
+
+        it('Not return an item if no item found to remove', function (done) {
+            SimpleModel.findByIdAndRemove('somerandomid', function(err, removed){
+                expect(err).toBeNull();
+                expect(removed).toBeNull();
+                done(err);
+            });
+        });
+    });
+
+    describe('findOneAndRemove', function () {
+        it('Be able to remove an item by its field', function (done) {
+            SimpleModel.create(
+                {name: 'unique', value: 'one'}, function (err, result) {
+                    SimpleModel.findOneAndRemove({name:'unique'}, function(err, removed){
+                        expect(err).toBeNull();
+                        if(removed){
+                            expect(removed._id.toString()).toEqual(result._id.toString());
+                            SimpleModel.findOne({id:result._id}, function(err, item){
+                                expect(item).toBeUndefined();
+                                done(err);
+                            });
+                        }
+                        else{
+                            done('Error removing item!');
+                        }
+                    });
+                });
+        });
+
+        it('Not return an item if no item found to remove', function (done) {
+            SimpleModel.findOneAndRemove({name:'somerandomid'}, function(err, removed){
+                expect(err).toBeNull();
+                expect(removed).toBeNull();
+                done(err);
+            });
+        });
+    });
 });
