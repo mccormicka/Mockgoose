@@ -1,13 +1,15 @@
 'use strict';
+var logger = require('nodelogger').Logger(__filename);
+var EventEmitter = require('events').EventEmitter;
 
-var mock = require('./MockModel');
+var mock = require('./lib/Model');
 module.exports = function (mongoose) {
     if( !mongoose.originalConnection){
         mongoose.originalConnection = mongoose.createConnection;
     }
 
     mongoose.createConnection = function (address, openListener) {
-        console.log('Creating Mockgoose database ', address);
+        logger.info('Creating Mockgoose database ', address);
 
         var tempAddress = address;
         var base = 'mongodb://';
@@ -45,13 +47,13 @@ module.exports = function (mongoose) {
 
     mongoose.connect= function(address){
         var connection = mongoose.createConnection(address, function(){
-            console.log('TODO dispatch open event here');
+            logger.info('Connected to Mockgoose', address);
+            EventEmitter.emit('connected');
         });
         return connection;
     };
 
     module.exports.reset = function(){
-        console.log('resetting mockgoose');
         return false;
     };
     return mongoose;

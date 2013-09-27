@@ -29,12 +29,12 @@ module.exports = function (grunt) {
             options: {
                 jshintrc: '.jshintrc'
             },
-            files: { src: ['Mockgoose.js', 'MockModel.js','lib/**/*.js', 'test/**/*.js']}
+            files: { src: ['Mockgoose.js', 'lib/**/*.js', 'test/**/*.js']}
         },
 
         //Files to watch and actions to take when they are changed.
         watch: {
-            files: ['Mockgoose.js', 'MockModel.js','lib/**/*.js', 'test/**/*.spec.js'],
+            files: ['Mockgoose.js', 'lib/**/*.js', 'test/**/*.spec.js'],
             tasks: ['jshint', 'jasmine_node']
         }
     });

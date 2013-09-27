@@ -67,6 +67,9 @@ to delete all the associated models for a schema.
 
 CHANGELOG
 
+#0.0.19
+Large code refactor to make the project more maintainable in preparation for API alignment.
+
 #0.0.18
 Removed connection error as we always error due to the fact Mockgoose is a mock and never really connects.
 
