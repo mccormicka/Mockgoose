@@ -26,7 +26,8 @@
     "node": ">=0.6.19"
   },
   "dependencies": {
-    "nodelogger": "https://github.com/mccormicka/nodelogger/archive/master.tar.gz"
+    "nodelogger": "https://github.com/mccormicka/nodelogger/archive/master.tar.gz",
+    "mongoosemask": "0.0.2"
   },
   "devDependencies": {
     "mongoose": "~3.6.10",
