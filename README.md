@@ -68,6 +68,11 @@ to delete all the associated models for a schema.
 
 CHANGELOG
 
+#0.2.1
+Fixed a bug where find on number values was not working correctly.
+
+    find({value:1}, function(err,result){});
+
 #0.2.0
 Increment version number, fixed event emitter bug.
 

@@ -129,9 +129,36 @@ describe('Mockgoose Find Tests', function () {
             });
         });
 
+        iit('Be able to find an object by int value', function (done) {
+
+            var schema = new mongoose.Schema({
+                name:String,
+                value:Number
+            });
+
+            var Model = mongoose.connection.model('Numbers', schema);
+            Model.create({name:'one', value:1}, {name:'two', value:2}, function(err, one, two){
+                console.log('Error creating models', err, one, two);
+                Model.find({value:2}, function(err, results){
+                    expect(err).toBeNull();
+                    expect(results).toBeDefined();
+                    if(results){
+                        expect(results.length).toBe(1);
+                        if(results.length === 1){
+                            expect(results[0].name).toBe('two');
+                        }
+                        done(err);
+                    }else{
+                        done('Error finding result by Number value');
+                    }
+                });
+            });
+        });
+
+
         it('Be able to pass a fields object to find', function (done) {
-            SimpleModel.create({name: 'fields', value: 'one', type: 'blue', bool: 1}, function () {
-                SimpleModel.find({name: 'fields'}, {name: 0, value: 1, type: 1, bool: 0}, function (err, models) {
+            SimpleModel.create({name: 'fields', value: 'one', type: 'blue', bool: 1}, function (err, result) {
+                SimpleModel.find({name: 'fields'}, {name: 0, value: 1, type: 1, bool: 0, _id:1}, function (err, models) {
                     expect(err).toBeFalsy();
                     expect(models.length).toBe(1);
                     if (models[0]) {
@@ -139,6 +166,10 @@ describe('Mockgoose Find Tests', function () {
                         expect(model.name).toBeUndefined();
                         expect(model.value).toBe('one');
                         expect(model.type).toBe('blue');
+                        //Make sure our mask does not remove methods.
+                        expect(typeof model.save === 'function').toBe(true);
+                        //Make sure it also does not convert object types.
+                        expect(model._id).toEqual(result._id);
                         done(err);
                     } else {
                         done('Error finding model' + err + models);
