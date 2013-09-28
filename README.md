@@ -68,6 +68,9 @@ to delete all the associated models for a schema.
 
 CHANGELOG
 
+#0.2.3
+Added dependency on lodash
+
 #0.2.2
 Minor update
 
