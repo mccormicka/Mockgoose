@@ -30,6 +30,7 @@ module.exports = function (mongoose) {
                 //Always return true as we are faking it.
                 openListener(null, connection);
             }
+            logger.info('Connected to Mockgoose', address);
         });
 
         var originalModel = connection.model;
@@ -45,11 +46,8 @@ module.exports = function (mongoose) {
         return connection;
     };
 
-    mongoose.connect= function(address){
-        var connection = mongoose.createConnection(address, function(){
-            logger.info('Connected to Mockgoose', address);
-            EventEmitter.emit('connected');
-        });
+    mongoose.connect= function(address, callback){
+        var connection = mongoose.createConnection(address, callback);
         return connection;
     };
 

@@ -336,7 +336,7 @@ describe('Mockgoose Find Tests', function () {
         });
     });
 
-    ddescribe('findByIdAndUpdate', function () {
+    describe('findByIdAndUpdate', function () {
         it('should be able to findByIdAndUpdate models', function (done) {
             AccountModel.create(
                 {email: 'multiples@valid.com', password: 'password', values: ['one', 'two']},

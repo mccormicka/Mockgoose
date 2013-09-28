@@ -68,6 +68,9 @@ to delete all the associated models for a schema.
 
 CHANGELOG
 
+#0.2.0
+Increment version number, fixed event emitter bug.
+
 #0.0.21
 Added tests for findOneAndUpdate / findByIdAndUpdate
 
