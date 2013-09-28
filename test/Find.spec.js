@@ -129,7 +129,7 @@ describe('Mockgoose Find Tests', function () {
             });
         });
 
-        iit('Be able to find an object by int value', function (done) {
+        it('Be able to find an object by int value', function (done) {
 
             var schema = new mongoose.Schema({
                 name:String,
@@ -138,7 +138,6 @@ describe('Mockgoose Find Tests', function () {
 
             var Model = mongoose.connection.model('Numbers', schema);
             Model.create({name:'one', value:1}, {name:'two', value:2}, function(err, one, two){
-                console.log('Error creating models', err, one, two);
                 Model.find({value:2}, function(err, results){
                     expect(err).toBeNull();
                     expect(results).toBeDefined();

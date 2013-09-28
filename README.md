@@ -68,6 +68,9 @@ to delete all the associated models for a schema.
 
 CHANGELOG
 
+#0.2.2
+Minor update
+
 #0.2.1
 Fixed a bug where find on number values was not working correctly.
 
