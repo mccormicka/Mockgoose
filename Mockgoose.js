@@ -1,6 +1,6 @@
 'use strict';
 var logger = require('nodelogger').Logger(__filename);
-var EventEmitter = require('events').EventEmitter;
+var _ = require('lodash');
 
 var mock = require('./lib/Model');
 module.exports = function (mongoose) {
@@ -8,29 +8,40 @@ module.exports = function (mongoose) {
         mongoose.originalConnection = mongoose.createConnection;
     }
 
-    mongoose.createConnection = function (address, openListener) {
-        logger.info('Creating Mockgoose database ', address);
-
-        var tempAddress = address;
-        var base = 'mongodb://';
-        var database;
-        if (address.indexOf(base) > -1) {
-            tempAddress = address.slice(base.length);
+    mongoose.createConnection = function (host, database, port, options, callback) {
+        if(_.isFunction(database)){
+            callback = database;
+            database = null;
         }
-        var dbIndex = tempAddress.indexOf(':');
-        //We have a port
-        if (dbIndex === -1) {
-            dbIndex = tempAddress.indexOf('/');
+        if(!_.isString(database)){
+            database = host.slice(host.lastIndexOf('/')+1);
         }
-        dbIndex = tempAddress.indexOf('/');
-        database = tempAddress.slice(dbIndex+1);
-
-        var connection = mongoose.originalConnection.call(mongoose, database, function () {
-            if (openListener) {
-                //Always return true as we are faking it.
-                openListener(null, connection);
+        if (_.isFunction(database)) {
+            callback = database;
+            options = {};
+        } else if (_.isFunction(port)) {
+            callback = port;
+            options = {};
+        } else if (_.isFunction(options)) {
+            callback = options;
+            options = {};
+        }
+        if(_.isObject(options)){
+            if(_.isString(options.db)){
+                database = options.db;
             }
-            logger.info('Connected to Mockgoose', address);
+            options = {};
+        }
+        if(_.isUndefined(options)){
+            options = {};
+        }
+
+        logger.info('Creating Mockgoose database: ', database, ' options: ', options);
+        var connection = mongoose.originalConnection.call(mongoose, database, options, function () {
+            if (callback) {
+                //Always return true as we are faking it.
+                callback(null, connection);
+            }
         });
 
         var originalModel = connection.model;
@@ -46,8 +57,8 @@ module.exports = function (mongoose) {
         return connection;
     };
 
-    mongoose.connect= function(address, callback){
-        var connection = mongoose.createConnection(address, callback);
+    mongoose.connect= function(host, database, port, options, callback){
+        var connection = mongoose.createConnection(host, database, port, options, callback);
         return connection;
     };
 

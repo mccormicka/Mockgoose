@@ -67,6 +67,16 @@ to delete all the associated models for a schema.
 
 
 CHANGELOG
+#0.2.4
+Aligned Mockgoose.connect() and Mockgoose.createConnection() with the Mongoose API.
+You can now pass host, database, port, options, callback to the connections in the same manner as
+mongoose http://mongoosejs.com/docs/api.html#connection_Connection.
+
+The only options value that will be used is the db value all other options will be ignored.
+
+Adresses issue 1
+https://github.com/mccormicka/Mockgoose/issues/1
+
 
 #0.2.3
 Added dependency on lodash
