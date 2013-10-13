@@ -1,5 +1,5 @@
 'use strict';
-var logger = require('nodelogger').Logger(__filename);
+var debug = require('debug')('mockgoose:main');
 var _ = require('lodash');
 
 var mock = require('./lib/Model');
@@ -51,7 +51,7 @@ module.exports = function (mongoose) {
             options = {};
         }
 
-        logger.info('Creating Mockgoose database: ', database, ' options: ', options);
+        debug('Creating Mockgoose database: ' + database + ' options: ' + options);
         var connection = mongoose.originalConnection.call(mongoose, database, options, function () {
             if (callback) {
                 //Always return true as we are faking it.
