@@ -69,13 +69,16 @@ to delete all the associated models for a schema.
 
 CHANGELOG
 
-##0.2.5
+###0.2.6
+Made model names case insensitive 'SimpleModel' and 'simplemodel' are now classed as the same model.
+
+###0.2.5
 Added sort to find operations.
 Fixed an issue with calling mongoose.model('modelName') without a schema that
 was returning a real Mongoose Model it now correctly returns a Mocked Mongoose Model.
 Fixed count() so that you do not need to pass a query as the first param
 
-##0.2.4
+###0.2.4
 Aligned Mockgoose.connect() and Mockgoose.createConnection() with the Mongoose API.
 You can now pass host, database, port, options, callback to the connections in the same manner as
 mongoose http://mongoosejs.com/docs/api.html#connection_Connection.
@@ -86,75 +89,75 @@ Adresses issue 1
 https://github.com/mccormicka/Mockgoose/issues/1
 
 
-##0.2.3
+###0.2.3
 Added dependency on lodash
 
-##0.2.2
+###0.2.2
 Minor update
 
-##0.2.1
+###0.2.1
 Fixed a bug where find on number values was not working correctly.
 
     find({value:1}, function(err,result){});
 
-##0.2.0
+###0.2.0
 Increment version number, fixed event emitter bug.
 
-##0.0.21
+###0.0.21
 Added tests for findOneAndUpdate / findByIdAndUpdate
 
-##0.0.20
+###0.0.20
 Added all find methods and aligned api's so that the fields and options.fields values work.
 
-##0.0.19
+###0.0.19
 Large code refactor to make the project more maintainable in preparation for API alignment.
 
-##0.0.18
+###0.0.18
 Removed connection error as we always error due to the fact Mockgoose is a mock and never really connects.
 
-##0.0.17
+###0.0.17
 Minor bug fixes
 
-##0.0.16
+###0.0.16
 Added the Model.count() method.
 Fixed various issues with jshint
 Added grunt runner so you can just call grunt and it will run jshint and the jasmine tests
 
-##0.0.15
+###0.0.15
 Fixed NPE when passing null options to update
 
-##0.0.14
+###0.0.14
 Removed toJSON copy inside mock model so that 3rd party libraries can manipulate mongoose json output without it affecting
 mockgoose.
 
-##0.0.13
+###0.0.13
 Added support for $push with $each and {multi:0/1}
 
-##0.0.12
+###0.0.12
 Fixed Update() method so that it works correctly with static and model updates.
 
-##0.0.11
+###0.0.11
 Added support for findAndUpdate() {upsert:true} option.
 
-##0.0.10
+###0.0.10
 Removed findAll() and made find() and findOne() work with empty objects {} to keep inline with Mongoose API.
 
-##0.0.9
+###0.0.9
 Fixed boolean comparisons
 
-##0.0.8
+###0.0.8
 Fixed findOneAndUpdate() so that it saves the object after updating if no error is thrown
 
-##0.0.7
+###0.0.7
 Added support for $pull of multiple items at once.
 {$pull:{values:{name:{$in:['one', 'two']}}}}
 
-##0.0.6
+###0.0.6
 Added support for $pull operator
 Added support for update();
 Added support for findOneAndUpdate()
 
-##0.0.2
+###0.0.2
 
 Added support for $in operator for finds
 

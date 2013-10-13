@@ -13,6 +13,9 @@ module.exports = function (mongoose) {
     }
 
     mongoose.model = function (name, schema, collection, skipInit) {
+        if (name) {
+            name = name.toLowerCase();
+        }
         var model = Models[name];
         if (model) {
             return model;

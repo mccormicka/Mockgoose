@@ -97,7 +97,6 @@ describe('Mockgoose Tests', function () {
         });
     });
 
-
     it('Should NOT return an error when connecting to Mockgoose through createConnection', function (done) {
         mongoose.createConnection('mongodb://localhost:3001/TestingDB', function (err, result) {
             expect(err).toBeNull();
@@ -115,7 +114,7 @@ describe('Mockgoose Tests', function () {
     });
 
     it('Be able to connect with just a host', function (done) {
-        expect(function(){
+        expect(function () {
             mongoose.connect('mongodb://localhost:3001/TestingDB');
             done();
         }).not.toThrow();
@@ -130,14 +129,14 @@ describe('Mockgoose Tests', function () {
     });
 
     it('Be able to connect with just a host and database', function (done) {
-        expect(function(){
-            mongoose.connect('mongodb://localhost:3001/','TestingDB');
+        expect(function () {
+            mongoose.connect('mongodb://localhost:3001/', 'TestingDB');
             done();
         }).not.toThrow();
     });
 
     it('Be able to connect with just a host and database and callback', function (done) {
-        mongoose.connect('mongodb://localhost:3001/','TestingDB', function (err, result) {
+        mongoose.connect('mongodb://localhost:3001/', 'TestingDB', function (err, result) {
             expect(err).toBeNull();
             expect(result).toBeTruthy();
             done();
@@ -145,14 +144,14 @@ describe('Mockgoose Tests', function () {
     });
 
     it('Be able to connect with just a host and database and port', function (done) {
-        expect(function(){
-            mongoose.connect('mongodb://localhost:3001/','TestingDB', 8080);
+        expect(function () {
+            mongoose.connect('mongodb://localhost:3001/', 'TestingDB', 8080);
             done();
         }).not.toThrow();
     });
 
     it('Be able to connect with just a host and database and port and callback', function (done) {
-        mongoose.connect('mongodb://localhost:3001/','TestingDB', '8080', function (err, result) {
+        mongoose.connect('mongodb://localhost:3001/', 'TestingDB', '8080', function (err, result) {
             expect(err).toBeNull();
             expect(result).toBeTruthy();
             done();
@@ -160,19 +159,39 @@ describe('Mockgoose Tests', function () {
     });
 
     it('Be able to connect with just a host and database and port and options', function (done) {
-        expect(function(){
-            mongoose.connect('mongodb://localhost:3001/','TestingDB', 8080, {db:'something'});
+        expect(function () {
+            mongoose.connect('mongodb://localhost:3001/', 'TestingDB', 8080, {db: 'something'});
             done();
         }).not.toThrow();
     });
 
     it('Be able to connect with just a host and database and port and options and callback', function (done) {
-        mongoose.connect('mongodb://localhost:3001/','TestingDB', '8080', {db:'something'}, function (err, result) {
+        mongoose.connect('mongodb://localhost:3001/', 'TestingDB', '8080', {db: 'something'}, function (err, result) {
             expect(err).toBeNull();
             expect(result).toBeTruthy();
             done();
         });
     });
 
+    it('Be able to retrieve a model by string', function (done) {
+        var Model = mongoose.model('Simple');
+        expect(Model).toBeDefined();
+        done();
+    });
+
+    it('Be able to retrieve a model case insensitive', function (done) {
+        var Model = mongoose.model('simple');
+        expect(Model).toBeDefined();
+        var Model2 = mongoose.model('Simple');
+        expect(Model2).toBeDefined();
+        done();
+    });
+
+    it('Fail gracefully if null passed as model type', function (done) {
+        expect(function () {
+            mongoose.model(null);
+        }).toThrow();
+        done();
+    });
 
 });
