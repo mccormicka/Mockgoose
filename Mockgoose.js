@@ -3,18 +3,33 @@ var logger = require('nodelogger').Logger(__filename);
 var _ = require('lodash');
 
 var mock = require('./lib/Model');
+var db = require('./lib/db');
+var Models = {};
+
 module.exports = function (mongoose) {
-    if( !mongoose.originalConnection){
+    if (!mongoose.originalConnection) {
         mongoose.originalConnection = mongoose.createConnection;
+        mongoose.originalModel = mongoose.model;
     }
 
+    mongoose.model = function (name, schema, collection, skipInit) {
+        var model = Models[name];
+        if (model) {
+            return model;
+        }
+        model = mongoose.originalModel(name, schema, collection, skipInit);
+        mock(model);
+        Models[name] = model;
+        return model;
+    };
+
     mongoose.createConnection = function (host, database, port, options, callback) {
-        if(_.isFunction(database)){
+        if (_.isFunction(database)) {
             callback = database;
             database = null;
         }
-        if(!_.isString(database)){
-            database = host.slice(host.lastIndexOf('/')+1);
+        if (!_.isString(database)) {
+            database = host.slice(host.lastIndexOf('/') + 1);
         }
         if (_.isFunction(database)) {
             callback = database;
@@ -26,13 +41,13 @@ module.exports = function (mongoose) {
             callback = options;
             options = {};
         }
-        if(_.isObject(options)){
-            if(_.isString(options.db)){
+        if (_.isObject(options)) {
+            if (_.isString(options.db)) {
                 database = options.db;
             }
             options = {};
         }
-        if(_.isUndefined(options)){
+        if (_.isUndefined(options)) {
             options = {};
         }
 
@@ -43,27 +58,24 @@ module.exports = function (mongoose) {
                 callback(null, connection);
             }
         });
-
-        var originalModel = connection.model;
-        connection.model = function (type, schema) {
-            var model = originalModel.call(connection, type, schema);
-            mock(model);
-            if(!module.exports.reset()){
-                module.exports.reset = model.reset;
-            }
-            return model;
-        };
-        mongoose.connection.model = connection.model;
+        mongoose.connection.model = mongoose.model;
         return connection;
     };
 
-    mongoose.connect= function(host, database, port, options, callback){
+    mongoose.connect = function (host, database, port, options, callback) {
         var connection = mongoose.createConnection(host, database, port, options, callback);
         return connection;
     };
 
-    module.exports.reset = function(){
-        return false;
+    module.exports.reset = function (type) {
+        if (!type) {
+            _.map(Models, function (value, key) {
+                delete Models[key];
+            });
+        } else {
+            delete Models[type];
+        }
+        db.reset(type);
     };
     return mongoose;
 };

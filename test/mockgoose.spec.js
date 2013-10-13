@@ -89,6 +89,15 @@ describe('Mockgoose Tests', function () {
         });
     });
 
+    it('Count the number of items if no object passed', function (done) {
+        SimpleModel.count(function (err, count) {
+            expect(err).toBeNull();
+            expect(count).toBe(5);
+            done(err);
+        });
+    });
+
+
     it('Should NOT return an error when connecting to Mockgoose through createConnection', function (done) {
         mongoose.createConnection('mongodb://localhost:3001/TestingDB', function (err, result) {
             expect(err).toBeNull();

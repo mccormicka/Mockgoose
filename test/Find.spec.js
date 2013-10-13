@@ -7,6 +7,7 @@ describe('Mockgoose Find Tests', function () {
     mongoose.createConnection('mongodb://localhost:3001/TestingDB');
     var AccountModel = require('./models/AccountModel')(mongoose);
     var SimpleModel = require('./models/SimpleModel')(mongoose);
+    var IndexModel = require('./models/IndexModel')(mongoose);
 
     beforeEach(function (done) {
         mockgoose.reset();
@@ -132,32 +133,31 @@ describe('Mockgoose Find Tests', function () {
         it('Be able to find an object by int value', function (done) {
 
             var schema = new mongoose.Schema({
-                name:String,
-                value:Number
+                name: String,
+                value: Number
             });
 
             var Model = mongoose.connection.model('Numbers', schema);
-            Model.create({name:'one', value:1}, {name:'two', value:2}, function(){
-                Model.find({value:2}, function(err, results){
+            Model.create({name: 'one', value: 1}, {name: 'two', value: 2}, function () {
+                Model.find({value: 2}, function (err, results) {
                     expect(err).toBeNull();
                     expect(results).toBeDefined();
-                    if(results){
+                    if (results) {
                         expect(results.length).toBe(1);
-                        if(results.length === 1){
+                        if (results.length === 1) {
                             expect(results[0].name).toBe('two');
                         }
                         done(err);
-                    }else{
+                    } else {
                         done('Error finding result by Number value');
                     }
                 });
             });
         });
 
-
         it('Be able to pass a fields object to find', function (done) {
             SimpleModel.create({name: 'fields', value: 'one', type: 'blue', bool: 1}, function (err, result) {
-                SimpleModel.find({name: 'fields'}, {name: 0, value: 1, type: 1, bool: 0, _id:1}, function (err, models) {
+                SimpleModel.find({name: 'fields'}, {name: 0, value: 1, type: 1, bool: 0, _id: 1}, function (err, models) {
                     expect(err).toBeFalsy();
                     expect(models.length).toBe(1);
                     if (models[0]) {
@@ -502,16 +502,16 @@ describe('Mockgoose Find Tests', function () {
         it('Be able to remove an item by its id', function (done) {
             SimpleModel.create(
                 {name: 'one', value: 'one'}, function (err, result) {
-                    SimpleModel.findByIdAndRemove(result._id, function(err, removed){
+                    SimpleModel.findByIdAndRemove(result._id, function (err, removed) {
                         expect(err).toBeNull();
-                        if(removed){
+                        if (removed) {
                             expect(removed._id.toString()).toEqual(result._id.toString());
-                            SimpleModel.findOne({id:result._id}, function(err, item){
+                            SimpleModel.findOne({id: result._id}, function (err, item) {
                                 expect(item).toBeUndefined();
                                 done(err);
                             });
                         }
-                        else{
+                        else {
                             done('Error removing item!');
                         }
                     });
@@ -519,7 +519,7 @@ describe('Mockgoose Find Tests', function () {
         });
 
         it('Not return an item if no item found to remove', function (done) {
-            SimpleModel.findByIdAndRemove('somerandomid', function(err, removed){
+            SimpleModel.findByIdAndRemove('somerandomid', function (err, removed) {
                 expect(err).toBeNull();
                 expect(removed).toBeNull();
                 done(err);
@@ -531,16 +531,16 @@ describe('Mockgoose Find Tests', function () {
         it('Be able to remove an item by its field', function (done) {
             SimpleModel.create(
                 {name: 'unique', value: 'one'}, function (err, result) {
-                    SimpleModel.findOneAndRemove({name:'unique'}, function(err, removed){
+                    SimpleModel.findOneAndRemove({name: 'unique'}, function (err, removed) {
                         expect(err).toBeNull();
-                        if(removed){
+                        if (removed) {
                             expect(removed._id.toString()).toEqual(result._id.toString());
-                            SimpleModel.findOne({id:result._id}, function(err, item){
+                            SimpleModel.findOne({id: result._id}, function (err, item) {
                                 expect(item).toBeUndefined();
                                 done(err);
                             });
                         }
-                        else{
+                        else {
                             done('Error removing item!');
                         }
                     });
@@ -548,11 +548,103 @@ describe('Mockgoose Find Tests', function () {
         });
 
         it('Not return an item if no item found to remove', function (done) {
-            SimpleModel.findOneAndRemove({name:'somerandomid'}, function(err, removed){
+            SimpleModel.findOneAndRemove({name: 'somerandomid'}, function (err, removed) {
                 expect(err).toBeNull();
                 expect(removed).toBeNull();
                 done(err);
             });
         });
+
+        it('Be able to sort items by field in ascending order Numeric', function (done) {
+            IndexModel.create({name: 'zzz', value: 1}, {name: 'aaa', value: 2}, function (err, results) {
+                expect(err).toBeNull();
+                expect(results).toBeDefined();
+                if(results){
+                    IndexModel.findOne({}, {}, {sort: {value: 1}}, function(err, model){
+                        expect(err).toBeNull();
+                        expect(model).toBeDefined();
+                        if(model){
+                            expect(model.name).toBe('zzz');
+                            expect(model.value).toBe(1);
+                            done(err);
+                        }else{
+                            done('Error finding models');
+                        }
+                    });
+                }else{
+                    done('Error creating Models!');
+                }
+            });
+        });
+
+        it('Be able to sort items by field in descending order Numeric', function (done) {
+            IndexModel.create({name: 'zzz', value: 1}, {name: 'aaa', value: 2}, function (err, results) {
+                expect(err).toBeNull();
+                expect(results).toBeDefined();
+                if(results){
+                    IndexModel.findOne({}, {}, {sort: {value: -1}}, function(err, model){
+                        expect(err).toBeNull();
+                        expect(model).toBeDefined();
+                        if(model){
+                            expect(model.name).toBe('aaa');
+                            expect(model.value).toBe(2);
+                            done(err);
+                        }else{
+                            done('Error finding models');
+                        }
+                    });
+                }else{
+                    done('Error creating Models!');
+                }
+
+            });
+        });
+
+
+        it('Be able to sort items by field in ascending order Alpha', function (done) {
+            IndexModel.create({name: 'zzz', value: 1}, {name: 'aaa', value: 2}, function (err, results) {
+                expect(err).toBeNull();
+                expect(results).toBeDefined();
+                if(results){
+                    IndexModel.findOne({}, {}, {sort: {name: 1}}, function(err, model){
+                        expect(err).toBeNull();
+                        expect(model).toBeDefined();
+                        if(model){
+                            expect(model.name).toBe('aaa');
+                            expect(model.value).toBe(2);
+                            done(err);
+                        }else{
+                            done('Error finding models');
+                        }
+                    });
+                }else{
+                    done('Error creating Models!');
+                }
+            });
+        });
+
+        it('Be able to sort items by field in descending order Alpha', function (done) {
+            IndexModel.create({name: 'zzz', value: 1}, {name: 'aaa', value: 2}, function (err, results) {
+                expect(err).toBeNull();
+                expect(results).toBeDefined();
+                if(results){
+                    IndexModel.findOne({}, {}, {sort: {name: -1}}, function(err, model){
+                        expect(err).toBeNull();
+                        expect(model).toBeDefined();
+                        if(model){
+                            expect(model.name).toBe('zzz');
+                            expect(model.value).toBe(1);
+                            done(err);
+                        }else{
+                            done('Error finding models');
+                        }
+                    });
+                }else{
+                    done('Error creating Models!');
+                }
+
+            });
+        });
+
     });
 });
