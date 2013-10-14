@@ -69,6 +69,11 @@ to delete all the associated models for a schema.
 
 CHANGELOG
 
+###0.2.7
+Fixed connect/createConnection issue where connect was delegating to createConnection instead of returning
+the first mongoose connection.
+
+
 ###0.2.6
 Made model names case insensitive 'SimpleModel' and 'simplemodel' are now classed as the same model.
 

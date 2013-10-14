@@ -1,16 +1,16 @@
 'use strict';
-module.exports = function (mongoose) {
+module.exports = function (connection) {
 
-    var db = mongoose.connection,
-        Schema = mongoose.Schema;
+    var db = connection;
 
     var TYPE = 'simple';
+    var schema = connection.model('____' + TYPE, {}).schema;
 
-    var schema = new Schema({
+    schema.add({
         type: {type: String, 'default': TYPE},
-        name:String,
-        value:String,
-        bool:Boolean
+        name: String,
+        value: String,
+        bool: Boolean
     });
 
     /**

@@ -2,9 +2,10 @@ describe('Mockgoose model validation Tests', function () {
     'use strict';
 
     var mockgoose = require('../Mockgoose');
-    var mongoose = require('mongoose');
+    var Mongoose = require('mongoose').Mongoose;
+    var mongoose = new Mongoose();
     mockgoose(mongoose);
-    mongoose.createConnection('mongodb://localhost:3001/TestingDB');
+    mongoose.connect('mongodb://localhost:3001/TestingDB');
     var AccountModel = require('./models/AccountModel')(mongoose);
     var SimpleModel = require('./models/SimpleModel')(mongoose);
 
