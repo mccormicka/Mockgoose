@@ -197,6 +197,14 @@ describe('Mockgoose Find Tests', function () {
             });
         });
 
+        /**
+         * http://mongoosejs.com/docs/api.html#model_Model.find
+         * Returns: <Query>
+         */
+        it('should return a mongoose Query object', function () {
+            expect(SimpleModel.find({}) instanceof mongoose.Query).toBeTruthy();
+        });
+
     });
 
     describe('findOne', function () {
