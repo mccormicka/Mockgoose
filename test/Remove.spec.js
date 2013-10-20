@@ -5,7 +5,7 @@ describe('Mockgoose Remove Tests', function () {
     var Mongoose = require('mongoose').Mongoose;
     var mongoose = new Mongoose();
     mockgoose(mongoose);
-    mongoose.connect('mongodb://localhost:3001/TestingDB');
+    mongoose.connect('mongodb://localhost/TestingDB');
     var AccountModel = require('./models/AccountModel')(mongoose);
     var SimpleModel = require('./models/SimpleModel')(mongoose);
 
@@ -55,9 +55,8 @@ describe('Mockgoose Remove Tests', function () {
         SimpleModel.find({name: 'one'}, function (err, result) {
             expect(err).toBeFalsy();
             expect(result.length).toBe(3);
-            result[0].remove(function (err, model) {
+            result[0].remove(function (err) {
                 expect(err).toBeFalsy();
-                expect(model).toBeDefined();
                 SimpleModel.find({name: 'one'}, function (err, models) {
                     expect(err).toBeFalsy();
                     expect(models.length).toBe(2);
@@ -68,9 +67,8 @@ describe('Mockgoose Remove Tests', function () {
     });
 
     it('should be able to remove multiple model', function (done) {
-        AccountModel.remove({email: 'valid@valid.com'}, function (err, model) {
+        AccountModel.remove({email: 'valid@valid.com'}, function (err) {
             expect(err).toBeFalsy();
-            expect(model.email).toBe('valid@valid.com');
             AccountModel.findOne({email: 'valid@valid.com'}, function (err, model) {
                 expect(err).toBeFalsy();
                 expect(model).toBeFalsy();

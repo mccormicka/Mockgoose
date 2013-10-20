@@ -5,10 +5,11 @@ describe('Mockgoose Find Tests', function () {
     var Mongoose = require('mongoose').Mongoose;
     var mongoose = new Mongoose();
     mockgoose(mongoose);
-    mongoose.connect('mongodb://localhost:3001/TestingDB');
+    mongoose.connect('mongodb://localhost/TestingDB');
     var AccountModel = require('./models/AccountModel')(mongoose);
     var SimpleModel = require('./models/SimpleModel')(mongoose);
     var IndexModel = require('./models/IndexModel')(mongoose);
+    var ObjectId = require('mongodb').BSONPure.ObjectID;
 
     beforeEach(function (done) {
         mockgoose.reset();
@@ -45,7 +46,7 @@ describe('Mockgoose Find Tests', function () {
         done();
     });
 
-    describe('Find', function () {
+    ddescribe('Find', function () {
 
         it('should be able to find an item by id', function (done) {
             AccountModel.create({email: 'one@one.com', password: 'password'},
@@ -161,9 +162,9 @@ describe('Mockgoose Find Tests', function () {
             });
         });
 
-        it('Be able to pass a fields object to find', function (done) {
+        it('Be able to pass a fields include object to find', function (done) {
             SimpleModel.create({name: 'fields', value: 'one', type: 'blue', bool: 1}, function (err, result) {
-                SimpleModel.find({name: 'fields'}, {name: 0, value: 1, type: 1, bool: 0, _id: 1}, function (err, models) {
+                SimpleModel.find({name: 'fields'}, {value: 1, type: 1, _id: 1}, function (err, models) {
                     expect(err).toBeFalsy();
                     expect(models.length).toBe(1);
                     if (models[0]) {
@@ -182,12 +183,34 @@ describe('Mockgoose Find Tests', function () {
                     }
                 });
             });
-
         });
 
-        it('Be able to pass a fields string to find', function (done) {
+        it('Be able to pass a fields exclude object to find', function (done) {
+            SimpleModel.create({name: 'fields', value: 'one', type: 'blue', bool: 1}, function (err, result) {
+                SimpleModel.find({name: 'fields'}, {name: 0, bool: 0}, function (err, models) {
+                    expect(err).toBeFalsy();
+                    expect(models.length).toBe(1);
+                    if (models[0]) {
+                        var model = models[0];
+                        expect(model.name).toBeUndefined();
+                        expect(model.bool).toBeUndefined();
+                        expect(model.value).toBe('one');
+                        expect(model.type).toBe('blue');
+                        //Make sure our mask does not remove methods.
+                        expect(typeof model.save === 'function').toBe(true);
+                        //Make sure it also does not convert object types.
+                        expect(model._id).toEqual(result._id);
+                        done(err);
+                    } else {
+                        done('Error finding model' + err + models);
+                    }
+                });
+            });
+        });
+
+        it('Be able to pass a fields include string to find', function (done) {
             SimpleModel.create({name: 'fields', value: 'one', type: 'blue', bool: 1}, function () {
-                SimpleModel.find({type: 'blue'}, '-name value type -bool', function (err, models) {
+                SimpleModel.find({type: 'blue'}, 'value type', function (err, models) {
                     expect(err).toBeFalsy();
                     expect(models.length).toBe(1);
                     if (models) {
@@ -203,9 +226,55 @@ describe('Mockgoose Find Tests', function () {
             });
         });
 
+        it('Be able to pass a fields exclude string to find', function (done) {
+            SimpleModel.create({name: 'fields', value: 'one', type: 'blue', bool: 1}, function () {
+                SimpleModel.find({type: 'blue'}, '-name -bool', function (err, models) {
+                    expect(err).toBeFalsy();
+                    expect(models.length).toBe(1);
+                    if (models) {
+                        var model = models[0];
+                        expect(model.name).toBeUndefined();
+                        expect(model.value).toBe('one');
+                        expect(model.type).toBe('blue');
+                        done(err);
+                    } else {
+                        done('Error finding model' + err + models);
+                    }
+                });
+            });
+        });
+
+        it('Should throw an error if you pass a mixed include/exclude object', function (done) {
+            SimpleModel.create({name: 'fields', value: 'one', type: 'blue', bool: 1}, function () {
+                SimpleModel.findOne({type: 'blue'}, {value: 1, type: 0}, function (err, model) {
+                    expect(err).toBeDefined();
+                    if(err){
+                        expect(err.name).toBe('MongoError');
+                        expect(err.message).toBe('You cannot currently mix including and excluding fields. Contact us if this is an issue.');
+                    }
+                    expect(model).toBeUndefined();
+                    done();
+                });
+            });
+        });
+
+        it('Should throw an error if you pass a mixed include/exclude string', function (done) {
+            SimpleModel.create({name: 'fields', value: 'one', type: 'blue', bool: 1}, function () {
+                SimpleModel.findOne({type: 'blue'}, '-name value type -bool', function (err, model) {
+                    expect(err).toBeDefined();
+                    if(err){
+                        expect(err.name).toBe('MongoError');
+                        expect(err.message).toBe('You cannot currently mix including and excluding fields. Contact us if this is an issue.');
+                    }
+                    expect(model).toBeUndefined();
+                    done();
+                });
+            });
+        });
+
     });
 
-    describe('findOne', function () {
+    ddescribe('findOne', function () {
 
         it('should be able to findOne model by using a simple query', function (done) {
             AccountModel.findOne({email: 'valid@valid.com'}, function (err, model) {
@@ -230,7 +299,7 @@ describe('Mockgoose Find Tests', function () {
 
         it('Be able to pass a fields object to findOne', function (done) {
             SimpleModel.create({name: 'fields', value: 'one', type: 'blue', bool: 1}, function () {
-                SimpleModel.findOne({type: 'blue'}, {name: 0, value: 1, type: 1, bool: 0}, function (err, model) {
+                SimpleModel.findOne({type: 'blue'}, {value: 1, type: 1}, function (err, model) {
                     expect(err).toBeFalsy();
                     if (model) {
                         expect(model.name).toBeUndefined();
@@ -245,9 +314,9 @@ describe('Mockgoose Find Tests', function () {
 
         });
 
-        it('Be able to pass a fields string to findOne', function (done) {
+        it('Be able to pass a fields includes string to findOne', function (done) {
             SimpleModel.create({name: 'fields', value: 'one', type: 'blue', bool: 1}, function () {
-                SimpleModel.findOne({type: 'blue'}, '-name value type -bool', function (err, model) {
+                SimpleModel.findOne({type: 'blue'}, 'value type', function (err, model) {
                     expect(err).toBeFalsy();
                     if (model) {
                         expect(model.name).toBeUndefined();
@@ -295,10 +364,10 @@ describe('Mockgoose Find Tests', function () {
                 done();
             });
         });
-
     });
 
-    describe('findOneAndUpdate', function () {
+    ddescribe('findOneAndUpdate', function () {
+
         it('should be able to findOneAndUpdate models', function (done) {
             AccountModel.create(
                 {email: 'multiples@valid.com', password: 'password', values: ['one', 'two']},
@@ -373,7 +442,8 @@ describe('Mockgoose Find Tests', function () {
         });
     });
 
-    describe('findByIdAndUpdate', function () {
+    ddescribe('findByIdAndUpdate', function () {
+
         it('should be able to findByIdAndUpdate models', function (done) {
             AccountModel.create(
                 {email: 'multiples@valid.com', password: 'password', values: ['one', 'two']},
@@ -452,7 +522,8 @@ describe('Mockgoose Find Tests', function () {
         });
     });
 
-    describe('$in', function () {
+    ddescribe('$in', function () {
+
         it('should be able to find a model $in', function (done) {
             AccountModel.create(
                 {email: 'multiples@valid.com', password: 'password', values: ['one', 'two']},
@@ -505,7 +576,8 @@ describe('Mockgoose Find Tests', function () {
         });
     });
 
-    describe('findByIdAndRemove', function () {
+    ddescribe('findByIdAndRemove', function () {
+
         it('Be able to remove an item by its id', function (done) {
             SimpleModel.create(
                 {name: 'one', value: 'one'}, function (err, result) {
@@ -514,7 +586,7 @@ describe('Mockgoose Find Tests', function () {
                         if (removed) {
                             expect(removed._id.toString()).toEqual(result._id.toString());
                             SimpleModel.findOne({id: result._id}, function (err, item) {
-                                expect(item).toBeUndefined();
+                                expect(item).toBeNull();
                                 done(err);
                             });
                         }
@@ -526,7 +598,7 @@ describe('Mockgoose Find Tests', function () {
         });
 
         it('Not return an item if no item found to remove', function (done) {
-            SimpleModel.findByIdAndRemove('somerandomid', function (err, removed) {
+            SimpleModel.findByIdAndRemove(new ObjectId(), function (err, removed) {
                 expect(err).toBeNull();
                 expect(removed).toBeNull();
                 done(err);
@@ -534,7 +606,8 @@ describe('Mockgoose Find Tests', function () {
         });
     });
 
-    describe('findOneAndRemove', function () {
+    ddescribe('findOneAndRemove', function () {
+
         it('Be able to remove an item by its field', function (done) {
             SimpleModel.create(
                 {name: 'unique', value: 'one'}, function (err, result) {
@@ -543,7 +616,7 @@ describe('Mockgoose Find Tests', function () {
                         if (removed) {
                             expect(removed._id.toString()).toEqual(result._id.toString());
                             SimpleModel.findOne({id: result._id}, function (err, item) {
-                                expect(item).toBeUndefined();
+                                expect(item).toBeNull();
                                 done(err);
                             });
                         }
@@ -555,7 +628,7 @@ describe('Mockgoose Find Tests', function () {
         });
 
         it('Not return an item if no item found to remove', function (done) {
-            SimpleModel.findOneAndRemove({name: 'somerandomid'}, function (err, removed) {
+            SimpleModel.findOneAndRemove({name: Math.random()}, function (err, removed) {
                 expect(err).toBeNull();
                 expect(removed).toBeNull();
                 done(err);
