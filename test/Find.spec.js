@@ -423,7 +423,7 @@ describe('Mockgoose Find Tests', function () {
         });
 
         it('should be able to findByIdAndUpdate with an upsert', function (done) {
-            SimpleModel.findByIdAndUpdate('upsert-id', {name: 'upsert'}, {upsert: true}, function (err, result) {
+            SimpleModel.findByIdAndUpdate('525ae43faa26361773000008', {name: 'upsert'}, {upsert: true}, function (err, result) {
                 expect(err).toBeFalsy();
                 expect(result).toBeTruthy();
                 if (result) {
@@ -560,19 +560,19 @@ describe('Mockgoose Find Tests', function () {
             IndexModel.create({name: 'zzz', value: 1}, {name: 'aaa', value: 2}, function (err, results) {
                 expect(err).toBeNull();
                 expect(results).toBeDefined();
-                if(results){
-                    IndexModel.findOne({}, {}, {sort: {value: 1}}, function(err, model){
+                if (results) {
+                    IndexModel.findOne({}, {}, {sort: {value: 1}}, function (err, model) {
                         expect(err).toBeNull();
                         expect(model).toBeDefined();
-                        if(model){
+                        if (model) {
                             expect(model.name).toBe('zzz');
                             expect(model.value).toBe(1);
                             done(err);
-                        }else{
+                        } else {
                             done('Error finding models');
                         }
                     });
-                }else{
+                } else {
                     done('Error creating Models!');
                 }
             });
@@ -582,43 +582,42 @@ describe('Mockgoose Find Tests', function () {
             IndexModel.create({name: 'zzz', value: 1}, {name: 'aaa', value: 2}, function (err, results) {
                 expect(err).toBeNull();
                 expect(results).toBeDefined();
-                if(results){
-                    IndexModel.findOne({}, {}, {sort: {value: -1}}, function(err, model){
+                if (results) {
+                    IndexModel.findOne({}, {}, {sort: {value: -1}}, function (err, model) {
                         expect(err).toBeNull();
                         expect(model).toBeDefined();
-                        if(model){
+                        if (model) {
                             expect(model.name).toBe('aaa');
                             expect(model.value).toBe(2);
                             done(err);
-                        }else{
+                        } else {
                             done('Error finding models');
                         }
                     });
-                }else{
+                } else {
                     done('Error creating Models!');
                 }
 
             });
         });
 
-
         it('Be able to sort items by field in ascending order Alpha', function (done) {
             IndexModel.create({name: 'zzz', value: 1}, {name: 'aaa', value: 2}, function (err, results) {
                 expect(err).toBeNull();
                 expect(results).toBeDefined();
-                if(results){
-                    IndexModel.findOne({}, {}, {sort: {name: 1}}, function(err, model){
+                if (results) {
+                    IndexModel.findOne({}, {}, {sort: {name: 1}}, function (err, model) {
                         expect(err).toBeNull();
                         expect(model).toBeDefined();
-                        if(model){
+                        if (model) {
                             expect(model.name).toBe('aaa');
                             expect(model.value).toBe(2);
                             done(err);
-                        }else{
+                        } else {
                             done('Error finding models');
                         }
                     });
-                }else{
+                } else {
                     done('Error creating Models!');
                 }
             });
@@ -628,23 +627,30 @@ describe('Mockgoose Find Tests', function () {
             IndexModel.create({name: 'zzz', value: 1}, {name: 'aaa', value: 2}, function (err, results) {
                 expect(err).toBeNull();
                 expect(results).toBeDefined();
-                if(results){
-                    IndexModel.findOne({}, {}, {sort: {name: -1}}, function(err, model){
+                if (results) {
+                    IndexModel.findOne({}, {}, {sort: {name: -1}}, function (err, model) {
                         expect(err).toBeNull();
                         expect(model).toBeDefined();
-                        if(model){
+                        if (model) {
                             expect(model.name).toBe('zzz');
                             expect(model.value).toBe(1);
                             done(err);
-                        }else{
+                        } else {
                             done('Error finding models');
                         }
                     });
-                }else{
+                } else {
                     done('Error creating Models!');
                 }
-
             });
+        });
+
+        /**
+         * http://mongoosejs.com/docs/api.html#model_Model.find
+         * Returns: <Query>
+         */
+        it('should return a mongoose Query object', function () {
+            expect(SimpleModel.find({}) instanceof mongoose.Query).toBeTruthy();
         });
 
     });

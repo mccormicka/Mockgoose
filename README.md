@@ -67,7 +67,7 @@ or call
 to delete all the associated models for a schema.
 
 
-CHANGELOG
+####CHANGELOG
 
 ###0.2.7
 Fixed connect/createConnection issue where connect was delegating to createConnection instead of returning
