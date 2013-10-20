@@ -15,18 +15,23 @@ describe('Mockgoose Find Tests', function () {
         AccountModel.create(
             {email: 'valid@valid.com', password: 'password'},
             {email: 'invalid@invalid.com', password: 'password'},
-            function (err, models) {
+            function (err, valid, invalid) {
                 expect(err).toBeFalsy();
-                expect(models).toBeTruthy();
+                expect(valid).toBeTruthy();
+                expect(invalid).toBeTruthy();
                 SimpleModel.create(
                     {name: 'one', value: 'one'},
                     {name: 'one', value: 'two'},
                     {name: 'one', value: 'two'},
                     {name: 'two', value: 'one'},
                     {name: 'two', value: 'two'},
-                    function (err, models) {
+                    function (err, one, two, three, four, five) {
                         expect(err).toBeFalsy();
-                        expect(models).toBeTruthy();
+                        expect(one).toBeTruthy();
+                        expect(two).toBeTruthy();
+                        expect(three).toBeTruthy();
+                        expect(four).toBeTruthy();
+                        expect(five).toBeTruthy();
                         done(err);
                     }
                 );
@@ -42,7 +47,7 @@ describe('Mockgoose Find Tests', function () {
 
     describe('Find', function () {
 
-        it('should be able to find an item by id', function (done) {
+        iit('should be able to find an item by id', function (done) {
             AccountModel.create({email: 'one@one.com', password: 'password'},
                 {email: 'two@two.com', password: 'password'}, function (err, one, two) {
                     expect(err).toBeFalsy();
@@ -63,7 +68,7 @@ describe('Mockgoose Find Tests', function () {
                 });
         });
 
-        it('should find all models if an empty {} object is passed to find', function (done) {
+        iit('should find all models if an empty {} object is passed to find', function (done) {
             SimpleModel.find({}, function (err, result) {
                 expect(err).toBeFalsy();
                 expect(result).toBeTruthy();
@@ -74,7 +79,7 @@ describe('Mockgoose Find Tests', function () {
             });
         });
 
-        it('should find all models if no {} object is passed to find', function (done) {
+        iit('should find all models if no {} object is passed to find', function (done) {
             SimpleModel.find(function (err, result) {
                 expect(err).toBeFalsy();
                 expect(result).toBeTruthy();
