@@ -47,7 +47,7 @@ describe('Mockgoose Find Tests', function () {
 
     describe('Find', function () {
 
-        iit('should be able to find an item by id', function (done) {
+        it('should be able to find an item by id', function (done) {
             AccountModel.create({email: 'one@one.com', password: 'password'},
                 {email: 'two@two.com', password: 'password'}, function (err, one, two) {
                     expect(err).toBeFalsy();
@@ -68,7 +68,7 @@ describe('Mockgoose Find Tests', function () {
                 });
         });
 
-        iit('should find all models if an empty {} object is passed to find', function (done) {
+        it('should find all models if an empty {} object is passed to find', function (done) {
             SimpleModel.find({}, function (err, result) {
                 expect(err).toBeFalsy();
                 expect(result).toBeTruthy();
@@ -79,7 +79,7 @@ describe('Mockgoose Find Tests', function () {
             });
         });
 
-        iit('should find all models if no {} object is passed to find', function (done) {
+        it('should find all models if no {} object is passed to find', function (done) {
             SimpleModel.find(function (err, result) {
                 expect(err).toBeFalsy();
                 expect(result).toBeTruthy();
@@ -169,6 +169,7 @@ describe('Mockgoose Find Tests', function () {
                     if (models[0]) {
                         var model = models[0];
                         expect(model.name).toBeUndefined();
+                        expect(model.bool).toBeUndefined();
                         expect(model.value).toBe('one');
                         expect(model.type).toBe('blue');
                         //Make sure our mask does not remove methods.
