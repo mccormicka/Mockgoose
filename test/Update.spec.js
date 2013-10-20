@@ -5,7 +5,7 @@ describe('Mockgoose Update Tests', function () {
     var Mongoose = require('mongoose').Mongoose;
     var mongoose = new Mongoose();
     mockgoose(mongoose);
-    mongoose.connect('mongodb://localhost:3001/TestingDB');
+    mongoose.connect('mongodb://localhost/TestingDB');
     var AccountModel = require('./models/AccountModel')(mongoose);
     var SimpleModel = require('./models/SimpleModel')(mongoose);
 
@@ -259,12 +259,12 @@ describe('Mockgoose Update Tests', function () {
         });
 
         it('should be able to use $push with a multi 0  update', function (done) {
-            AccountModel.create({email: 'pushed@pushed.com', password: 'password', values: ['one', 'two', 'three']},
+            AccountModel.create({email: 'aaa@pushed.com', password: 'password', values: ['one', 'two', 'three']},
                 function (err, result) {
                     expect(err).toBeNull();
                     expect(result).toBeDefined();
                     if (result) {
-                        AccountModel.update({}, {$push: {values: 'pushed'}}, {multi: 0}, function (err, result) {
+                        AccountModel.update({}, {$push: {values: 'pushed'}}, {multi: 0, sort:{email:1}}, function (err, result) {
                             expect(err).toBeNull();
                             expect(result).toBe(1);
                             if (result) {
@@ -346,6 +346,14 @@ describe('Mockgoose Update Tests', function () {
                 } else {
                     done(err);
                 }
+            });
+        });
+
+        it('should not be able to findOneAndUpdate without an upsert', function (done) {
+            SimpleModel.findOneAndUpdate({name: 'upsert'}, {name: 'upsert'}, {upsert: false}, function (err, result) {
+                expect(err).toBeFalsy();
+                expect(result).toBeNull();
+                done(err);
             });
         });
     });
