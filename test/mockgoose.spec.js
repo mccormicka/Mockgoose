@@ -5,7 +5,7 @@ describe('Mockgoose Tests', function () {
     var Mongoose = require('mongoose').Mongoose;
     var mongoose = new Mongoose();
     mockgoose(mongoose);
-    mongoose.connect('mongodb://localhost:3001/TestingDB');
+    mongoose.connect('mongodb://localhost:27017/TestingDB');
     var AccountModel = require('./models/AccountModel')(mongoose);
     var SimpleModel = require('./models/SimpleModel')(mongoose);
 
@@ -39,94 +39,87 @@ describe('Mockgoose Tests', function () {
         done();
     });
 
-    it('should be able to require mockgoose', function () {
-        expect(mockgoose).toBeTruthy();
-    });
+    describe('SHOULD', function () {
 
-    it('should be able to create and save test model', function (done) {
-        AccountModel.create({email: 'email@email.com', password: 'supersecret'}, function (err, model) {
-            expect(err).toBeFalsy();
-            expect(model).toBeTruthy();
-            done(err);
+        it('should be able to require mockgoose', function () {
+            expect(mockgoose).toBeTruthy();
         });
-    });
 
-    it('should be able to call custom save pre', function (done) {
-        AccountModel.create({email: 'newemail@valid.com', password: 'password'}, function (err, model) {
-            //Custom pre save should encrypt the users password.
-            expect(model.password).not.toBe('password');
-            model.validPassword('password', function (err, success) {
-                expect(success).toBeTruthy();
+        it('should be able to create and save test model', function (done) {
+            AccountModel.create({email: 'email@email.com', password: 'supersecret'}, function (err, model) {
                 expect(err).toBeFalsy();
+                expect(model).toBeTruthy();
                 done(err);
             });
-
         });
-    });
 
-    it('should be able to create multiple items in one go', function (done) {
-        AccountModel.create({email: 'one@one.com', password: 'password'},
-            {email: 'two@two.com', password: 'password'}, function (err, one, two) {
-                expect(err).toBeFalsy();
-                expect(one).toBeTruthy();
-                expect(two).toBeTruthy();
+        it('should be able to call custom save pre', function (done) {
+            AccountModel.create({email: 'newemail@valid.com', password: 'password'}, function (err, model) {
+                //Custom pre save should encrypt the users password.
+                expect(model.password).not.toBe('password');
+                model.validPassword('password', function (err, success) {
+                    expect(success).toBeTruthy();
+                    expect(err).toBeFalsy();
+                    done(err);
+                });
+
+            });
+        });
+
+        it('should be able to create multiple items in one go', function (done) {
+            AccountModel.create({email: 'one@one.com', password: 'password'},
+                {email: 'two@two.com', password: 'password'}, function (err, one, two) {
+                    expect(err).toBeFalsy();
+                    expect(one).toBeTruthy();
+                    expect(two).toBeTruthy();
+                    done(err);
+                });
+        });
+
+        it('Count the number of items in a {} query', function (done) {
+            SimpleModel.count({}, function (err, count) {
+                expect(err).toBeNull();
+                expect(count).toBe(5);
                 done(err);
             });
-    });
+        });
 
-    it('Count the number of items in a {} query', function (done) {
-        SimpleModel.count({}, function (err, count) {
-            expect(err).toBeNull();
-            expect(count).toBe(5);
-            done(err);
+        it('Count the number of items in {query:query}', function (done) {
+            SimpleModel.count({name: 'one'}, function (err, count) {
+                expect(err).toBeNull();
+                expect(count).toBe(3);
+                done(err);
+            });
+        });
+
+        it('Count the number of items if no object passed', function (done) {
+            SimpleModel.count(function (err, count) {
+                expect(err).toBeNull();
+                expect(count).toBe(5);
+                done(err);
+            });
+        });
+
+        it('Be able to retrieve a model by string', function (done) {
+            var Model = mongoose.model('simple');
+            expect(Model).toBeDefined();
+            done();
+        });
+
+        it('Be able to retrieve a model case sensitive', function (done) {
+            var Model = mongoose.model('simple');
+            expect(Model).toBeDefined();
+            expect(function(){
+                mongoose.model('Simple');
+            }).toThrow();
+            done();
+        });
+
+        it('Fail gracefully if null passed as model type', function (done) {
+            expect(function () {
+                mongoose.model(null);
+            }).toThrow();
+            done();
         });
     });
-
-    it('Count the number of items in {query:query}', function (done) {
-        SimpleModel.count({name: 'one'}, function (err, count) {
-            expect(err).toBeNull();
-            expect(count).toBe(3);
-            done(err);
-        });
-    });
-
-    it('Count the number of items if no object passed', function (done) {
-        SimpleModel.count(function (err, count) {
-            expect(err).toBeNull();
-            expect(count).toBe(5);
-            done(err);
-        });
-    });
-
-
-
-//    it('Be able to connect with just a host and database and port and options and callback', function (done) {
-//        mongoose.connect('mongodb://localhost:3001/', 'TestingDB', '8080', {db: 'something'}, function (err, result) {
-//            expect(err).toBeNull();
-//            expect(result).toBeTruthy();
-//            done();
-//        });
-//    });
-
-    it('Be able to retrieve a model by string', function (done) {
-        var Model = mongoose.model('Simple');
-        expect(Model).toBeDefined();
-        done();
-    });
-
-    it('Be able to retrieve a model case insensitive', function (done) {
-        var Model = mongoose.model('simple');
-        expect(Model).toBeDefined();
-        var Model2 = mongoose.model('Simple');
-        expect(Model2).toBeDefined();
-        done();
-    });
-
-    it('Fail gracefully if null passed as model type', function (done) {
-        expect(function () {
-            mongoose.model(null);
-        }).toThrow();
-        done();
-    });
-
 });

@@ -46,7 +46,7 @@ describe('Mockgoose Find Tests', function () {
         done();
     });
 
-    ddescribe('Find', function () {
+    describe('Find', function () {
 
         it('should be able to find an item by id', function (done) {
             AccountModel.create({email: 'one@one.com', password: 'password'},
@@ -274,7 +274,7 @@ describe('Mockgoose Find Tests', function () {
 
     });
 
-    ddescribe('findOne', function () {
+    describe('findOne', function () {
 
         it('should be able to findOne model by using a simple query', function (done) {
             AccountModel.findOne({email: 'valid@valid.com'}, function (err, model) {
@@ -366,7 +366,7 @@ describe('Mockgoose Find Tests', function () {
         });
     });
 
-    ddescribe('findOneAndUpdate', function () {
+    describe('findOneAndUpdate', function () {
 
         it('should be able to findOneAndUpdate models', function (done) {
             AccountModel.create(
@@ -442,7 +442,7 @@ describe('Mockgoose Find Tests', function () {
         });
     });
 
-    ddescribe('findByIdAndUpdate', function () {
+    describe('findByIdAndUpdate', function () {
 
         it('should be able to findByIdAndUpdate models', function (done) {
             AccountModel.create(
@@ -522,7 +522,7 @@ describe('Mockgoose Find Tests', function () {
         });
     });
 
-    ddescribe('$in', function () {
+    describe('$in', function () {
 
         it('should be able to find a model $in', function (done) {
             AccountModel.create(
@@ -576,7 +576,7 @@ describe('Mockgoose Find Tests', function () {
         });
     });
 
-    ddescribe('findByIdAndRemove', function () {
+    describe('findByIdAndRemove', function () {
 
         it('Be able to remove an item by its id', function (done) {
             SimpleModel.create(
@@ -606,7 +606,7 @@ describe('Mockgoose Find Tests', function () {
         });
     });
 
-    ddescribe('findOneAndRemove', function () {
+    describe('findOneAndRemove', function () {
 
         it('Be able to remove an item by its field', function (done) {
             SimpleModel.create(

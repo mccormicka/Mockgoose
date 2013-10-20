@@ -14,9 +14,10 @@ module.exports = function (mongoose) {
     }
 
     mongoose.model = function (name, schema, collection, skipInit) {
-        if (name) {
-            name = name.toLowerCase();
-        }
+//        Mongoose is case sensitive!
+//        if (name) {
+//            name = name.toLowerCase();
+//        }
         var model = mongoose.originalModel.call(mongoose, name, schema, collection, skipInit);
         mock(model);
         Models[name] = model;
@@ -92,7 +93,7 @@ module.exports = function (mongoose) {
         }
 
         logger.info('Creating Mockgoose database: Connect ', database, ' options: ', options);
-        var connection = mongoose.originalConnect.call(mongoose, database, options, function () {
+        var connection = mongoose.originalConnect.call(mongoose, database, options, function (err) {
             if (callback) {
                 //Always return true as we are faking it.
                 callback(null, connection);

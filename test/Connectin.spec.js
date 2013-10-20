@@ -19,7 +19,7 @@ describe('Connection Tests', function () {
         var connection;
         var SimpleModel;
         beforeEach(function(done){
-            connection = mongoose.connect('mongodb://localhost:3001/TestingDB');
+            connection = mongoose.connect('mongodb://localhost:27017/TestingDB');
             expect(mongoose.connections.length).toBe(1);
             SimpleModel = require('./models/SimpleModel')(mongoose);
             SimpleModel.create(
@@ -31,12 +31,12 @@ describe('Connection Tests', function () {
         });
 
         it('Connection should always be the same instance', function (done) {
-            expect(mongoose.connect('mongodb://localhost:3001/TestingDB')).toEqual(connection);
+            expect(mongoose.connect('mongodb://localhost:27017/TestingDB2')).toEqual(connection);
             done();
         });
 
         it('Be able to connect with just a host and database and port and options and callback', function (done) {
-            mongoose.connect('mongodb://localhost:3001/', 'TestingDB', '8080', {db: 'something'}, function (err, result) {
+            mongoose.connect('mongodb://localhost:27017/', 'TestingDB', '8080', {db: 'something'}, function (err, result) {
                 expect(err).toBeNull();
                 expect(result).toBeTruthy();
                 done();
@@ -44,7 +44,7 @@ describe('Connection Tests', function () {
         });
 
         it('Should NOT return an error when connecting to Mockgoose through connect', function (done) {
-            mongoose.connect('mongodb://localhost:3001/TestingDB', function (err, result) {
+            mongoose.connect('mongodb://localhost:27017/TestingDB', function (err, result) {
                 expect(err).toBeNull();
                 expect(result).toBeTruthy();
                 done();
@@ -53,13 +53,13 @@ describe('Connection Tests', function () {
 
         it('Be able to connect with just a host', function (done) {
             expect(function () {
-                mongoose.connect('mongodb://localhost:3001/TestingDB');
+                mongoose.connect('mongodb://localhost:27017/TestingDB');
                 done();
             }).not.toThrow();
         });
 
         it('Be able to connect with just a host and callback', function (done) {
-            mongoose.connect('mongodb://localhost:3001/TestingDB', function (err, result) {
+            mongoose.connect('mongodb://localhost:27017/TestingDB', function (err, result) {
                 expect(err).toBeNull();
                 expect(result).toBeTruthy();
                 done();
@@ -68,13 +68,13 @@ describe('Connection Tests', function () {
 
         it('Be able to connect with just a host and database', function (done) {
             expect(function () {
-                mongoose.connect('mongodb://localhost:3001/', 'TestingDB');
+                mongoose.connect('mongodb://localhost:27017/', 'TestingDB');
                 done();
             }).not.toThrow();
         });
 
         it('Be able to connect with just a host and database and callback', function (done) {
-            mongoose.connect('mongodb://localhost:3001/', 'TestingDB', function (err, result) {
+            mongoose.connect('mongodb://localhost:27017/', 'TestingDB', function (err, result) {
                 expect(err).toBeNull();
                 expect(result).toBeTruthy();
                 done();
@@ -83,13 +83,13 @@ describe('Connection Tests', function () {
 
         it('Be able to connect with just a host and database and port', function (done) {
             expect(function () {
-                mongoose.connect('mongodb://localhost:3001/', 'TestingDB', 8080);
+                mongoose.connect('mongodb://localhost:27017/', 'TestingDB', 8080);
                 done();
             }).not.toThrow();
         });
 
         it('Be able to connect with just a host and database and port and callback', function (done) {
-            mongoose.connect('mongodb://localhost:3001/', 'TestingDB', '8080', function (err, result) {
+            mongoose.connect('mongodb://localhost:27017/', 'TestingDB', '8080', function (err, result) {
                 expect(err).toBeNull();
                 expect(result).toBeTruthy();
                 done();
@@ -98,7 +98,7 @@ describe('Connection Tests', function () {
 
         it('Be able to connect with just a host and database and port and options', function (done) {
             expect(function () {
-                mongoose.connect('mongodb://localhost:3001/', 'TestingDB', 8080, {db: 'something'});
+                mongoose.connect('mongodb://localhost:27017/', 'TestingDB', 8080, {db: 'something'});
                 done();
             }).not.toThrow();
         });
@@ -121,7 +121,7 @@ describe('Connection Tests', function () {
         var connection;
         var SimpleModel;
         beforeEach(function(done){
-            connection = mongoose.createConnection('mongodb://localhost:3001/TestingDB');
+            connection = mongoose.createConnection('mongodb://localhost:27017/TestingDB');
             expect(mongoose.connections.length).toBe(2);
             SimpleModel = require('./models/SimpleModel')(connection);
             SimpleModel.create(
@@ -133,7 +133,7 @@ describe('Connection Tests', function () {
         });
 
         it('Should NOT return an error when connecting to Mockgoose through createConnection', function (done) {
-            mongoose.createConnection('mongodb://localhost:3001/TestingDB', function (err, result) {
+            mongoose.createConnection('mongodb://localhost:27017/TestingDB', function (err, result) {
                 expect(err).toBeNull();
                 expect(result).toBeTruthy();
                 done();
