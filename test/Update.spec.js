@@ -40,6 +40,7 @@ describe('Mockgoose Update Tests', function () {
     });
 
     describe('Update', function () {
+
         it('should be able to update items', function (done) {
             AccountModel.create({email: 'testing@testing.com', password: 'password', values: ['one', 'two']}, function (err, model) {
                 expect(model).toBeDefined();
@@ -85,6 +86,7 @@ describe('Mockgoose Update Tests', function () {
 
 
     describe('$pull', function () {
+
         it('should be able to pull items from nested documents array', function (done) {
             AccountModel.create(
                 {email: 'tester@valid.com', password: 'password', values: ['one', 'two']},

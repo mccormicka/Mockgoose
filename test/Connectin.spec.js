@@ -36,7 +36,7 @@ describe('Connection Tests', function () {
         });
 
         it('Be able to connect with just a host and database and port and options and callback', function (done) {
-            mongoose.connect('mongodb://localhost:27017/', 'TestingDB', '8080', {db: 'something'}, function (err, result) {
+            mongoose.connect('mongodb://localhost/', 'TestingDB', '8080', {db: 'something'}, function (err, result) {
                 expect(err).toBeNull();
                 expect(result).toBeTruthy();
                 done();
@@ -109,12 +109,6 @@ describe('Connection Tests', function () {
             done();
         });
 
-        it('Be able to return the same model instance uppercase', function (done) {
-            var model = mongoose.model('Simple');
-            expect(model).toEqual(SimpleModel);
-            done();
-        });
-
     });
 
     describe('CreateConnection', function () {
@@ -141,8 +135,8 @@ describe('Connection Tests', function () {
         });
 
         it('Return a new instance when creating a connection', function (done) {
-            var model = mongoose.model('Simple');
-            var model2 = connection.model('Simple');
+            var model = mongoose.model('simple');
+            var model2 = connection.model('simple');
             expect(model).toEqual(model2);
             done();
         });

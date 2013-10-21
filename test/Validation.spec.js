@@ -5,7 +5,7 @@ describe('Mockgoose model validation Tests', function () {
     var Mongoose = require('mongoose').Mongoose;
     var mongoose = new Mongoose();
     mockgoose(mongoose);
-    mongoose.connect('mongodb://localhost:3001/TestingDB');
+    mongoose.connect('mongodb://localhost/TestingDB');
     var AccountModel = require('./models/AccountModel')(mongoose);
     var SimpleModel = require('./models/SimpleModel')(mongoose);
 
@@ -13,22 +13,10 @@ describe('Mockgoose model validation Tests', function () {
         mockgoose.reset();
         AccountModel.create(
             {email: 'valid@valid.com', password: 'password'},
-            {email: 'invalid@invalid.com', password: 'password'},
             function (err, models) {
                 expect(err).toBeFalsy();
                 expect(models).toBeTruthy();
-                SimpleModel.create(
-                    {name: 'one', value: 'one'},
-                    {name: 'one', value: 'two'},
-                    {name: 'one', value: 'two'},
-                    {name: 'two', value: 'one'},
-                    {name: 'two', value: 'two'},
-                    function (err, models) {
-                        expect(err).toBeFalsy();
-                        expect(models).toBeTruthy();
-                        done(err);
-                    }
-                );
+                done(err);
             });
 
     });
@@ -42,8 +30,12 @@ describe('Mockgoose model validation Tests', function () {
     it('should be able to invoke validator on a test model', function (done) {
         //Email needs to be unique!
         AccountModel.create({email: 'valid@valid.com', password: 'supersecret'}, function (err, model) {
-            expect(err).toBeTruthy();
+            expect(err).toBeDefined();
             expect(model).toBeFalsy();
+            if(err){
+                expect(err.name).toBe('MongoError');
+                expect(err.message).toBe('E11000 duplicate key error index: email');
+            }
             done();
         });
     });

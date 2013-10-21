@@ -39,7 +39,7 @@ describe('Mockgoose Remove Tests', function () {
         done();
     });
 
-    ddescribe('SHOULD', function () {
+    describe('SHOULD', function () {
         it('should be able to remove a model', function (done) {
             SimpleModel.remove({name: 'one'}, function (err) {
                 expect(err).toBeFalsy();
