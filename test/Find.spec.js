@@ -11,6 +11,7 @@ describe('Mockgoose Find Tests', function () {
     var IndexModel = require('./models/IndexModel')(mongoose);
     var ObjectId = require('mongodb').BSONPure.ObjectID;
 
+    var accountId;
     beforeEach(function (done) {
         mockgoose.reset();
         AccountModel.create(
@@ -19,6 +20,7 @@ describe('Mockgoose Find Tests', function () {
             function (err, valid, invalid) {
                 expect(err).toBeFalsy();
                 expect(valid).toBeTruthy();
+                accountId = valid._id;
                 expect(invalid).toBeTruthy();
                 SimpleModel.create(
                     {name: 'one', value: 'one'},
@@ -442,6 +444,16 @@ describe('Mockgoose Find Tests', function () {
         });
     });
 
+    describe('findById', function () {
+        it('should be able to findById ', function (done) {
+            AccountModel.findById(accountId, function (err, model) {
+                expect(err).toBeFalsy();
+                expect(model.email).toBe('valid@valid.com');
+                done(err);
+            });
+        });
+    });
+
     describe('findByIdAndUpdate', function () {
 
         it('should be able to findByIdAndUpdate models', function (done) {
@@ -723,14 +735,5 @@ describe('Mockgoose Find Tests', function () {
                 }
             });
         });
-
-        /**
-         * http://mongoosejs.com/docs/api.html#model_Model.find
-         * Returns: <Query>
-         */
-        it('should return a mongoose Query object', function () {
-            expect(SimpleModel.find({}) instanceof mongoose.Query).toBeTruthy();
-        });
-
     });
 });
