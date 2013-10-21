@@ -8,8 +8,6 @@ describe('Mockgoose Query Tests', function () {
     mongoose.connect('mongodb://localhost/TestingDB');
     var AccountModel = require('./models/AccountModel')(mongoose);
     var SimpleModel = require('./models/SimpleModel')(mongoose);
-    var IndexModel = require('./models/IndexModel')(mongoose);
-    var ObjectId = require('mongodb').BSONPure.ObjectID;
 
     var accountId;
     beforeEach(function (done) {
@@ -28,13 +26,11 @@ describe('Mockgoose Query Tests', function () {
                     {name: 'one', value: 'two'},
                     {name: 'two', value: 'one'},
                     {name: 'two', value: 'two'},
-                    function (err, one, two, three, four, five) {
+                    function (err, one, two, three) {
                         expect(err).toBeFalsy();
                         expect(one).toBeTruthy();
                         expect(two).toBeTruthy();
                         expect(three).toBeTruthy();
-                        expect(four).toBeTruthy();
-                        expect(five).toBeTruthy();
                         done(err);
                     }
                 );

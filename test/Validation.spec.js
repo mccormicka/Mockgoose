@@ -7,7 +7,6 @@ describe('Mockgoose model validation Tests', function () {
     mockgoose(mongoose);
     mongoose.connect('mongodb://localhost/TestingDB');
     var AccountModel = require('./models/AccountModel')(mongoose);
-    var SimpleModel = require('./models/SimpleModel')(mongoose);
 
     beforeEach(function (done) {
         mockgoose.reset();

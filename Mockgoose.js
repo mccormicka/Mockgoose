@@ -93,7 +93,7 @@ module.exports = function (mongoose) {
         }
 
         logger.info('Creating Mockgoose database: Connect ', database, ' options: ', options);
-        var connection = mongoose.originalConnect.call(mongoose, database, options, function (err) {
+        var connection = mongoose.originalConnect.call(mongoose, database, options, function () {
             if (callback) {
                 //Always return true as we are faking it.
                 callback(null, connection);

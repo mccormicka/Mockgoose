@@ -28,13 +28,11 @@ describe('Mockgoose Find Tests', function () {
                     {name: 'one', value: 'two'},
                     {name: 'two', value: 'one'},
                     {name: 'two', value: 'two'},
-                    function (err, one, two, three, four, five) {
+                    function (err, one, two, three) {
                         expect(err).toBeFalsy();
                         expect(one).toBeTruthy();
                         expect(two).toBeTruthy();
                         expect(three).toBeTruthy();
-                        expect(four).toBeTruthy();
-                        expect(five).toBeTruthy();
                         done(err);
                     }
                 );
