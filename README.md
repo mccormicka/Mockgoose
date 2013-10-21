@@ -69,6 +69,9 @@ to delete all the associated models for a schema.
 
 ####CHANGELOG
 
+###1.0.0
+Complete rewrite to implement a mock driver for mongodb instead of returning mock models. 
+
 ###0.2.7
 Fixed connect/createConnection issue where connect was delegating to createConnection instead of returning
 the first mongoose connection.
