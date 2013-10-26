@@ -10,7 +10,8 @@ module.exports = function (connection) {
         type: {type: String, 'default': TYPE},
         name: String,
         value: String,
-        bool: Boolean
+        bool: Boolean,
+        profile:{}
     });
 
     /**

@@ -138,12 +138,10 @@ describe('Mockgoose Find Tests', function () {
         });
 
         it('Be able to find an object by int value', function (done) {
-
             var schema = new mongoose.Schema({
                 name: String,
                 value: Number
             });
-
             var Model = mongoose.connection.model('Numbers', schema);
             Model.create({name: 'one', value: 1}, {name: 'two', value: 2}, function () {
                 Model.find({value: 2}, function (err, results) {
@@ -248,7 +246,7 @@ describe('Mockgoose Find Tests', function () {
             SimpleModel.create({name: 'fields', value: 'one', type: 'blue', bool: 1}, function () {
                 SimpleModel.findOne({type: 'blue'}, {value: 1, type: 0}, function (err, model) {
                     expect(err).toBeDefined();
-                    if(err){
+                    if (err) {
                         expect(err.name).toBe('MongoError');
                         expect(err.message).toBe('You cannot currently mix including and excluding fields. Contact us if this is an issue.');
                     }
@@ -262,7 +260,7 @@ describe('Mockgoose Find Tests', function () {
             SimpleModel.create({name: 'fields', value: 'one', type: 'blue', bool: 1}, function () {
                 SimpleModel.findOne({type: 'blue'}, '-name value type -bool', function (err, model) {
                     expect(err).toBeDefined();
-                    if(err){
+                    if (err) {
                         expect(err.name).toBe('MongoError');
                         expect(err.message).toBe('You cannot currently mix including and excluding fields. Contact us if this is an issue.');
                     }
@@ -733,5 +731,36 @@ describe('Mockgoose Find Tests', function () {
                 }
             });
         });
+
+        it('Find nested model attribute', function (done) {
+            SimpleModel.create({name: 'find nested item', profile: {'id': '12345'}}, function (err, result) {
+                expect(result).toBeDefined();
+                SimpleModel.findOne({'profile.id': '12345'}, function (err, result) {
+                    expect(result).toBeDefined();
+                    expect(result).not.toBeNull();
+                    if (result) {
+                        expect(result.profile.id).toBe('12345');
+                    }
+                    done(err);
+                });
+            });
+        });
+
+        it('Find deeply nested model attribute', function (done) {
+            SimpleModel.create({name: 'find nested item', profile: {'stuff': {
+                id: '12345'
+            }}}, function (err, result) {
+                expect(result).toBeDefined();
+                SimpleModel.findOne({'profile.stuff.id': '12345'}, function (err, result) {
+                    expect(result).toBeDefined();
+                    expect(result).not.toBeNull();
+                    if (result) {
+                        expect(result.profile.stuff.id).toBe('12345');
+                    }
+                    done(err);
+                });
+            });
+        });
+
     });
 });

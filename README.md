@@ -69,6 +69,19 @@ to delete all the associated models for a schema.
 
 ####CHANGELOG
 
+###1.0.1
+Added the ability to search in chains. as in
+
+    schema({
+        user:{
+            profile:{
+                name:'john'
+            }
+        }
+    }
+
+    Model.find({'user.profile.name' : 'john'}).exec();
+
 ###1.0.0
 Complete rewrite to implement a mock driver for mongodb instead of returning mock models. 
 
