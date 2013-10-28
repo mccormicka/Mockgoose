@@ -1,13 +1,12 @@
 describe('Mockgoose Update Tests', function () {
     'use strict';
 
-    var mockgoose = require('../Mockgoose');
+    var mockgoose = require('../../../Mockgoose');
     var Mongoose = require('mongoose').Mongoose;
     var mongoose = new Mongoose();
     mockgoose(mongoose);
     mongoose.connect('mongodb://localhost/TestingDB');
-    var AccountModel = require('./models/AccountModel')(mongoose);
-    var SimpleModel = require('./models/SimpleModel')(mongoose);
+    var AccountModel = require('./../models/AccountModel')(mongoose);
 
     beforeEach(function (done) {
         mockgoose.reset();
@@ -17,141 +16,14 @@ describe('Mockgoose Update Tests', function () {
             function (err, models) {
                 expect(err).toBeFalsy();
                 expect(models).toBeTruthy();
-                SimpleModel.create(
-                    {name: 'one', value: 'one'},
-                    {name: 'one', value: 'two'},
-                    {name: 'one', value: 'two'},
-                    {name: 'two', value: 'one'},
-                    {name: 'two', value: 'two'},
-                    function (err, models) {
-                        expect(err).toBeFalsy();
-                        expect(models).toBeTruthy();
-                        done(err);
-                    }
-                );
+                done(err);
             });
-
     });
 
     afterEach(function (done) {
         //Reset the database after every test.
         mockgoose.reset();
         done();
-    });
-
-    describe('Update', function () {
-
-        it('should be able to update items', function (done) {
-            AccountModel.create({email: 'testing@testing.com', password: 'password', values: ['one', 'two']}, function (err, model) {
-                expect(model).toBeDefined();
-                if (model) {
-                    AccountModel.update({email: 'testing@testing.com'}, {email: 'updated@testing.com'}, function (err, result) {
-                        expect(result).toBe(1);
-                        AccountModel.findOne({email: 'updated@testing.com'}, function (err, result) {
-                            if (result) {
-                                expect(result.email).toBe('updated@testing.com');
-                                done(err);
-                            } else {
-                                done('Error finding models');
-                            }
-                        });
-                    });
-                } else {
-                    done(err);
-                }
-            });
-        });
-
-        it('Have the same _id after doing an update', function (done) {
-            AccountModel.create({email: 'testing@testing.com', password: 'password', values: ['one', 'two']}, function (err, model) {
-                expect(model).toBeDefined();
-                if (model) {
-                    model.update({email: 'updated@testing.com'}, function (err, result) {
-                        expect(result).toBe(1);
-                        AccountModel.findOne({_id: model._id}, function (err, result) {
-                            expect(result).toBeDefined();
-                            if (result) {
-                                expect(result.email).toBe('updated@testing.com');
-                            }
-                            done(err);
-                        });
-                    });
-                } else {
-                    done(err);
-                }
-
-            });
-        });
-    });
-
-
-    describe('$pull', function () {
-
-        it('should be able to pull items from nested documents array', function (done) {
-            AccountModel.create(
-                {email: 'tester@valid.com', password: 'password', values: ['one', 'two']},
-                function () {
-                    AccountModel.findOneAndUpdate({email: 'tester@valid.com'}, {$pull: {values: 'one'}}, function (err, result) {
-                        expect(result).toBeDefined();
-                        if (result) {
-                            expect(result.values.length).toBe(1);
-                            expect(result.values[0]).toBe('two');
-                            done(err);
-                        } else {
-                            done('Error finding item');
-                        }
-                    });
-                });
-        });
-
-        it('should be able to pull items from nested documents array by property', function (done) {
-            AccountModel.create(
-                {email: 'multiples@valid.com', password: 'password', values: [
-                    {name: 'one'},
-                    {name: 'two'}
-                ]},
-                function () {
-                    AccountModel.findOneAndUpdate({email: 'multiples@valid.com'}, {$pull: {values: {name: {$in: ['one']}}}}, function (err, result) {
-                        expect(result).toBeDefined();
-                        if (result) {
-                            expect(result.values.length).toBe(1);
-                            if (result.values.length === 1) {
-                                expect(result.values[0].name).toBe('two');
-                                done(err);
-                            } else {
-                                done('Invalid value length', result.values);
-                            }
-                        } else {
-                            done('Error finding models');
-                        }
-                    });
-                });
-        });
-
-        it('should be able to pull multiple items from nested documents array by property', function (done) {
-            AccountModel.create(
-                {email: 'multiples@valid.com', password: 'password', values: [
-                    {name: 'one'},
-                    {name: 'two'},
-                    {name: 'three'}
-                ]},
-                function () {
-                    AccountModel.findOneAndUpdate({email: 'multiples@valid.com'}, {$pull: {values: {name: {$in: ['one', 'two']}}}}, function (err, result) {
-                        expect(result).toBeDefined();
-                        if (result) {
-                            expect(result.values.length).toBe(1);
-                            if (result.values.length === 1) {
-                                expect(result.values[0].name).toBe('three');
-                                done(err);
-                            } else {
-                                done('invalid values length');
-                            }
-                        } else {
-                            done('Error finding models');
-                        }
-                    });
-                });
-        });
     });
 
     describe('$push', function () {
@@ -266,7 +138,7 @@ describe('Mockgoose Update Tests', function () {
                     expect(err).toBeNull();
                     expect(result).toBeDefined();
                     if (result) {
-                        AccountModel.update({}, {$push: {values: 'pushed'}}, {multi: 0, sort:{email:1}}, function (err, result) {
+                        AccountModel.update({}, {$push: {values: 'pushed'}}, {multi: 0, sort: {email: 1}}, function (err, result) {
                             expect(err).toBeNull();
                             expect(result).toBe(1);
                             if (result) {
@@ -326,36 +198,4 @@ describe('Mockgoose Update Tests', function () {
         });
     });
 
-    describe('upsert', function () {
-
-        it('should be able to findOneAndUpdate with an upsert', function (done) {
-            SimpleModel.findOneAndUpdate({name: 'upsert'}, {name: 'upsert'}, {upsert: true}, function (err, result) {
-                expect(err).toBeFalsy();
-                expect(result).toBeTruthy();
-                if (result) {
-                    expect(result.name).toBe('upsert');
-                    SimpleModel.findOne({name: 'upsert'}, function (err, result) {
-                        expect(err).toBeFalsy();
-                        expect(result).toBeTruthy();
-                        if (result) {
-                            expect(result.name).toBe('upsert');
-                            done(err);
-                        } else {
-                            done('Unable to find ' + err + result);
-                        }
-                    });
-                } else {
-                    done(err);
-                }
-            });
-        });
-
-        it('should not be able to findOneAndUpdate without an upsert', function (done) {
-            SimpleModel.findOneAndUpdate({name: 'upsert'}, {name: 'upsert'}, {upsert: false}, function (err, result) {
-                expect(err).toBeFalsy();
-                expect(result).toBeNull();
-                done(err);
-            });
-        });
-    });
 });

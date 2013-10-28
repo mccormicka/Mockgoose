@@ -69,6 +69,10 @@ to delete all the associated models for a schema.
 
 ####CHANGELOG
 
+###1.0.2
+Added $inc support
+http://docs.mongodb.org/manual/reference/operator/update/inc/
+
 ###1.0.1
 Added the ability to search in chains. as in
 

@@ -9,7 +9,8 @@ module.exports = function (mongoose) {
     var schema = new Schema({
         type: {type: String, 'default': TYPE},
         name:String,
-        value:Number
+        value:Number,
+        increment:{type:Number, 'default': 5}
     });
 
     /**
