@@ -8,7 +8,6 @@ describe('Mockgoose Find Tests', function () {
     mongoose.connect('mongodb://localhost/TestingDB');
     var AccountModel = require('./../models/AccountModel')(mongoose);
     var SimpleModel = require('./../models/SimpleModel')(mongoose);
-    var IndexModel = require('./../models/IndexModel')(mongoose);
 
     var accountId;
     beforeEach(function (done) {

@@ -42,8 +42,8 @@ Currently supported model operations are.
 
     $in
     $pull
-    $push
-    $each
+    $push + $each
+    $addToSet + $each
 
 ##Options
 
@@ -68,6 +68,10 @@ to delete all the associated models for a schema.
 
 
 ####CHANGELOG
+
+###1.0.3
+Added $addToSet support
+http://docs.mongodb.org/manual/reference/operator/update/addToSet/
 
 ###1.0.2
 Added $inc support
