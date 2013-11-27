@@ -71,15 +71,16 @@ describe('Mockgoose Update Tests', function () {
                     expect(err).toBeNull();
                     expect(result).toBeDefined();
                     if (result) {
-                        result.update({$pushAll: {values: {name: 'pushed'}}}, function (err, result) {
+                        result.update({$pushAll: {values: [{name: 'pushed'}, {name: 'last'}]}}, function (err, result) {
                             expect(err).toBeNull();
                             expect(result).toBe(1);
                             if (result) {
                                 AccountModel.findOne({email: 'pushed@pushed.com'}, function (err, pushed) {
                                     expect(err).toBeNull();
                                     if (pushed) {
-                                        expect(pushed.values.length).toBe(4);
+                                        expect(pushed.values.length).toBe(5);
                                         expect(pushed.values[3]).toEqual({name: 'pushed'});
+                                        expect(pushed.values[4]).toEqual({name: 'last'});
                                         expect(pushed.values[2]).toEqual({name: 'three'});
                                         done(err);
                                     } else {
