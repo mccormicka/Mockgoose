@@ -69,6 +69,10 @@ to delete all the associated models for a schema.
 
 ####CHANGELOG
 
+###1.0.4
+Added $pushAll support
+http://docs.mongodb.org/manual/reference/operator/update/pushAll/
+
 ###1.0.3
 Added $addToSet support
 http://docs.mongodb.org/manual/reference/operator/update/addToSet/
