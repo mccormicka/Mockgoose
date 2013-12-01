@@ -41,9 +41,13 @@ Currently supported model operations are.
 ##Operators
 
     $in
+    $inc
     $pull
+    $pullAll
     $push + $each
+    $pushAll
     $addToSet + $each
+    $set
 
 ##Options
 
