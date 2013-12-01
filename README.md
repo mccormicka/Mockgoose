@@ -73,6 +73,12 @@ to delete all the associated models for a schema.
 
 ####CHANGELOG
 
+###1.0.6
+Added bunyan logger.
+You can set the log level with
+
+    npm test | node_modules/bunyan/bin/bunyan
+
 ###1.0.5
 Added $pullAll support
 http://docs.mongodb.org/manual/reference/operator/update/pullAll/
@@ -201,8 +207,3 @@ Added support for findOneAndUpdate()
 ###0.0.2
 
 Added support for $in operator for finds
-
-
-
-
-
