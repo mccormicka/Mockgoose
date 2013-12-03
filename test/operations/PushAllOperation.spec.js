@@ -5,7 +5,7 @@ describe('Mockgoose Update Tests', function () {
     var Mongoose = require('mongoose').Mongoose;
     var mongoose = new Mongoose();
     mockgoose(mongoose);
-    mongoose.connect('mongodb://localhost/TestingDB');
+    mongoose.connect('mongodb://localhost:27017/TestingDB');
     var AccountModel = require('./../models/AccountModel')(mongoose);
 
     beforeEach(function (done) {
@@ -38,7 +38,7 @@ describe('Mockgoose Update Tests', function () {
                     expect(err).toBeNull();
                     expect(result).toBeDefined();
                     if (result) {
-                        AccountModel.update({email: 'pushed@pushed.com'}, {$pushAll: {values: {name: 'pushed'}}}, function (err, result) {
+                        AccountModel.update({email: 'pushed@pushed.com'}, {$pushAll: {values: [{name: 'pushed'}]}}, function (err, result) {
                             expect(err).toBeNull();
                             expect(result).toBe(1);
                             if (result) {
@@ -97,50 +97,13 @@ describe('Mockgoose Update Tests', function () {
                 });
         });
 
-        it('should be able to use $pushAll with an $each', function (done) {
-            AccountModel.create({email: 'pushed@pushed.com', password: 'password', values: [
-                    {name: 'one'},
-                    {name: 'two'},
-                    {name: 'three'}
-                ]},
-                function (err, result) {
-                    expect(err).toBeNull();
-                    expect(result).toBeDefined();
-                    if (result) {
-                        result.update({$pushAll: {values: {$each: [
-                            {name: 'pushed'},
-                            {name: 'pushed2'}
-                        ]}}}, function (err, result) {
-                            expect(err).toBeNull();
-                            expect(result).toBe(1);
-                            if (result) {
-                                AccountModel.findOne({email: 'pushed@pushed.com'}, function (err, pushed) {
-                                    expect(err).toBeNull();
-                                    if (pushed) {
-                                        expect(pushed.values.length).toBe(5);
-                                        expect(pushed.values[4]).toEqual({name: 'pushed2'});
-                                        done(err);
-                                    } else {
-                                        done('Error finding model');
-                                    }
-                                });
-                            } else {
-                                done('Error updating model with $pushAll');
-                            }
-                        });
-                    } else {
-                        done('Error creating model');
-                    }
-                });
-        });
-
         it('should be able to use $pushAll with a multi 0  update', function (done) {
             AccountModel.create({email: 'aaa@pushed.com', password: 'password', values: ['one', 'two', 'three']},
                 function (err, result) {
                     expect(err).toBeNull();
                     expect(result).toBeDefined();
                     if (result) {
-                        AccountModel.update({}, {$pushAll: {values: 'pushed'}}, {multi: 0, sort: {email: 1}}, function (err, result) {
+                        AccountModel.update({}, {$pushAll: {values: ['pushed']}}, {multi: 0, sort: {email: 1}}, function (err, result) {
                             expect(err).toBeNull();
                             expect(result).toBe(1);
                             if (result) {
@@ -170,7 +133,7 @@ describe('Mockgoose Update Tests', function () {
                     expect(err).toBeNull();
                     expect(result).toBeDefined();
                     if (result) {
-                        AccountModel.update({}, {$pushAll: {values: 'pushed'}}, {multi: 1}, function (err, result) {
+                        AccountModel.update({}, {$pushAll: {values: ['pushed']}}, {multi: 1}, function (err, result) {
                             expect(err).toBeNull();
                             expect(result).toBe(3);
                             if (result) {

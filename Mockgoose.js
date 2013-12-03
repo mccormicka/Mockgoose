@@ -1,11 +1,12 @@
 'use strict';
-var logger = require('nodelogger').Logger(__filename);
 var _ = require('lodash');
 
 var mock = require('./lib/Model');
 var db = require('./lib/db');
+var logger = require('./lib/Logger');
 
 module.exports = function (mongoose) {
+
     var Models = {};
     if (!mongoose.originalCreateConnection) {
         mongoose.originalCreateConnection = mongoose.createConnection;
@@ -116,5 +117,3 @@ module.exports = function (mongoose) {
     };
     return mongoose;
 };
-
-
