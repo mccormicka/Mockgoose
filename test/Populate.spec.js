@@ -1,34 +1,52 @@
-describe('Mockgoose Populate Tests', function () {
+describe('Mockgoose Populate test', function () {
     'use strict';
-
+	var async = require('async');
+	
     var mockgoose = require('../Mockgoose');
-    var Mongoose = require('mongoose').Mongoose;
-    var mongoose = new Mongoose();
-    mockgoose(mongoose);
-    mongoose.connect('mongodb://localhost/TestingDB');
-    var ParentModel = require('./models/ParentModel')(mongoose);
-    var SimpleModel = require('./models/SimpleModel')(mongoose);
-    var ObjectId = require('mongodb').BSONPure.ObjectID;
+    var Mongoose = require('mongoose');
+    
+    
+    mockgoose(Mongoose);
+    Mongoose.connect('mongodb://localhost/TestingDB');
+    
+    var CompanyEntry = require('./models/ParentModel');
+    var UserEntry = require('./models/ChildModel');
 
-    var accountId;
+
     beforeEach(function (done) {
         mockgoose.reset();
-        SimpleModel.create(
-        	{name: 'Child 1', value: 'one'},
-            {name: 'child 2', value: 'two'},
-            function (err, one, two) {
-        		ParentModel.create(
-            		{name: 'Parent 1'},
-            		{name: 'Parent 2', childs: [ one._id, two._id]},
-	            	function (err, p1, p2) {
-	            		console.log(p2);
-	            		
-    	            	expect(err).toBeFalsy();
-        				done();  
-                	}
-        		);
-            });
-    });
+     
+ 	    async.waterfall([
+	 	    function(callback){
+				CompanyEntry.create({
+					name:			"Test Company"
+					, contact:		{
+						email:		"hello@example.com"
+						, address:	"Hoperoad 7"
+					}
+				},function (err, company) {
+					callback(err, company);
+				});
+			}
+			, function(company, callback){
+			 	UserEntry.create({
+ 					name: 'Max Mustermann'
+ 					, username: 'max'
+ 					, email: 'max@example.com'
+ 					, company: company._id
+ 				}, function (err, user) {		
+ 					company.users.push(user._id);
+ 					company.save(function(err, company){
+ 						user.company = company._id;
+ 						user.save();
+ 						callback(err, company, user); 
+ 					});
+ 				});
+			}
+		], function(err, company, user){
+			done();
+		});
+	});
 
     afterEach(function (done) {
         //Reset the database after every test.
@@ -36,19 +54,16 @@ describe('Mockgoose Populate Tests', function () {
         done();
     });
 
-    describe('Populate', function () {
+     describe('Populate', function () {
         it('should find the childs within the parent', function (done) {
-            ParentModel.findOne({name:'Parent 2'}, function(err,doc) {
+        	CompanyEntry.findOne({name:'Test Company'}, function(err,doc) {
 				expect(err).toBeFalsy();
-			}).populate('childs').exec(function(err, result){
-				console.log("=");
-				console.log(result);
-				
-				expect(err).toBeFalsy();
-				expect(result.childs.length).toBe(2);
+			
+			}).populate('users').exec(function(err, result){
+				expect(result.users.length).toBe(1);
+				done();
 			});
-        });
-
-       
-    });
+ 		});
+ 			
+     });
 });

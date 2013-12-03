@@ -1,22 +1,32 @@
-'use strict';
-module.exports = function (connection) {
+var mongoose 		= require('mongoose')
+	, uuid			= require('node-uuid')
+	;
+	
+	var schemaOptions = {
+		toJSON: {
+			virtuals: true	
+		},
+		toObject: {
+			virtuals: true
+		}
+	};
 
-    var db = connection;
-
-    var TYPE = 'parent';
-    var schema = connection.model('____' + TYPE, {}).schema;
-
-    schema.add({
-        type: {type: String, 'default': TYPE},
-        name: String,
-        childs:[{ type: connection.Schema.Types.ObjectId, ref: '____simple' }]
-    });
-
-    /**
-     * Expose type to outside world.
-     * @type {string}
-     */
-    schema.statics.TYPE = TYPE;
-
-    return db.model(TYPE, schema);
-};
+	var CompanyDefinition = {
+		name:			{ type: String }
+		, contact:		{
+			email:		{ type: String }
+			, address:	{ type: String }
+		}
+		, users:		[{ type: mongoose.Schema.Types.ObjectId, ref: 'UserEntry' }]
+		, updated:		{ type: Date, default: Date.now }
+		, created:		{ type: Date, default: Date.now }
+		, access_key:	{ type: String, default: uuid.v4() }
+	};
+	
+	var CompanySchema = new mongoose.Schema(
+		CompanyDefinition
+		, schemaOptions 
+	);
+	CompanySchema.index({ name: 1, updated: 1 });
+	
+	module.exports = mongoose.model('CompanyEntry', CompanySchema);
