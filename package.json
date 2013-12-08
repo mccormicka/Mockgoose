@@ -1,7 +1,7 @@
 {
   "name": "mockgoose",
   "description": "Mongoose in memory database mock to allow for testing of applications that rely on Mongoose.",
-  "version": "1.0.6",
+  "version": "1.1.0",
   "author": {
     "name": "Anthony McCormick",
     "email": "anthony.mccormick AT gmail.com"
@@ -40,7 +40,9 @@
     "jasmine-node": "https://github.com/mccormicka/jasmine-node/archive/exclusive-tests.tar.gz",
     "grunt-contrib-watch": "0.3.1",
     "grunt-contrib-jshint": "0.4.3",
-    "grunt-jasmine-node": "~0.1.0"
+    "grunt-jasmine-node": "~0.1.0",
+    "node-uuid": "~1.4.1",
+    "async": "~0.2.9"
   },
   "bugs": {
     "url": "https://github.com/mccormicka/Mockgoose/issues"

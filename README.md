@@ -73,6 +73,13 @@ to delete all the associated models for a schema.
 
 ####CHANGELOG
 
+###1.1.0
+Added support for populate() option
+http://mongoosejs.com/docs/populate.html
+
+Thanks to [petershaw](https://github.com/petershaw)
+
+
 ###1.0.6
 Added bunyan logger.
 You can set the log level with

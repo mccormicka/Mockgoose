@@ -46,7 +46,7 @@ describe('Mockgoose Update Tests', function () {
                 });
         });
 
-        iit('should be able to pull multiple items from nested documents array by property', function (done) {
+        it('should be able to pull multiple items from nested documents array by property', function (done) {
             AccountModel.create(
                 {email: 'multiples@valid.com', password: 'password', values: [
                     {name: 'one'},
