@@ -21,6 +21,9 @@ module.exports = function (mongoose) {
 //        }
         var model = mongoose.originalModel.call(mongoose, name, schema, collection, skipInit);
         mock(model);
+        if(model.schema.options.autoIndex){
+            model.ensureIndexes();
+        }
         Models[name] = model;
         return model;
     };

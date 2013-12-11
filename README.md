@@ -1,5 +1,10 @@
 ##What is Mockgoose?
 
+
+<a href="https://twitter.com/intent/tweet?hashtags=mockgoose&amp;&amp;text=Check%20out%20this%20%23Mongoose%20%23MongoDB%20Mocking%20Framework&amp;tw_p=tweetbutton&amp;url=http%3A%2F%2Fbit.ly%2F19gcHwm&amp;via=omnipitence" style="float:right">
+<img src="https://github.com/mccormicka/Mockgoose/blob/master/twittershare.png">
+</a>
+
 Mockgoose is a simplified in memory database that allows you to perform actions on Mongoose Models without having a running instance of MongoDB. 
 
 The main purpose of Mockgoose as you may have guessed from the name is to allow you to mock out your mongoose database during testing so that you do not have to spin up a new database for every test and teardown that same database afterwards.
@@ -72,6 +77,10 @@ to delete all the associated models for a schema.
 
 
 ####CHANGELOG
+
+###1.2.0
+Added simple implementation of ensureIndex and getIndexes so as not to throw errors
+http://docs.mongodb.org/manual/reference/method/db.collection.ensureIndex/
 
 ###1.1.0
 Added support for populate() option
