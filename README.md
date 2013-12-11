@@ -2,7 +2,7 @@
 
 
 <a href="https://twitter.com/intent/tweet?hashtags=mockgoose&amp;&amp;text=Check%20out%20this%20%23Mongoose%20%23MongoDB%20Mocking%20Framework&amp;tw_p=tweetbutton&amp;url=http%3A%2F%2Fbit.ly%2F19gcHwm&amp;via=omnipitence" style="float:right">
-<img src="https://github.com/mccormicka/Mockgoose/blob/master/twittershare.png">
+<img src="https://raw.github.com/mccormicka/Mockgoose/master/twittershare.png">
 </a>
 
 Mockgoose is a simplified in memory database that allows you to perform actions on Mongoose Models without having a running instance of MongoDB. 
