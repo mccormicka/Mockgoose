@@ -67,8 +67,7 @@ describe('Count Tests', function () {
 
         it('Model.count(function()) should NOT throw an error', function (done) {
             expect(function(){
-                SimpleModel.count(console.error);
-                done();
+                SimpleModel.count(done);
             }).not.toThrow();
         });
     });
