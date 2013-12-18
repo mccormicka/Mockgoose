@@ -76,30 +76,6 @@ describe('Mockgoose Tests', function () {
                 });
         });
 
-        it('Count the number of items in a {} query', function (done) {
-            SimpleModel.count({}, function (err, count) {
-                expect(err).toBeNull();
-                expect(count).toBe(5);
-                done(err);
-            });
-        });
-
-        it('Count the number of items in {query:query}', function (done) {
-            SimpleModel.count({name: 'one'}, function (err, count) {
-                expect(err).toBeNull();
-                expect(count).toBe(3);
-                done(err);
-            });
-        });
-
-        it('Count the number of items if no object passed', function (done) {
-            SimpleModel.count(function (err, count) {
-                expect(err).toBeNull();
-                expect(count).toBe(5);
-                done(err);
-            });
-        });
-
         it('Be able to retrieve a model by string', function (done) {
             var Model = mongoose.model('simple');
             expect(Model).toBeDefined();
@@ -121,5 +97,7 @@ describe('Mockgoose Tests', function () {
             }).toThrow();
             done();
         });
+
+
     });
 });

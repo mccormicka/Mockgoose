@@ -1,6 +1,6 @@
 ##What is Mockgoose?
 
-
+Please Share on Twitter if you like #mockgoose
 <a href="https://twitter.com/intent/tweet?hashtags=mockgoose&amp;&amp;text=Check%20out%20this%20%23Mongoose%20%23MongoDB%20Mocking%20Framework&amp;tw_p=tweetbutton&amp;url=http%3A%2F%2Fbit.ly%2F19gcHwm&amp;via=omnipitence" style="float:right">
 <img src="https://raw.github.com/mccormicka/Mockgoose/master/twittershare.png">
 </a>
@@ -77,6 +77,9 @@ to delete all the associated models for a schema.
 
 
 ####CHANGELOG
+
+###1.2.2
+Added more tests around Model.count to prove issue #10 is not valid
 
 ###1.2.0
 Added simple implementation of ensureIndex and getIndexes so as not to throw errors
