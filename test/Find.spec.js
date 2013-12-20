@@ -361,6 +361,33 @@ describe('Mockgoose Find Tests', function () {
                 done();
             });
         });
+
+        describe('FindOne on nested document array', function () {
+
+            var schema = new mongoose.Schema({ names: [] });
+            var Model = mongoose.model('TestArrayQueries', schema);
+
+            it('Perform queries on document array strings', function (done) {
+                Model.create({ names: ['one', 'two'] }, function (er, test) {
+                    Model.findOne({ names: 'one' }, function (err, result) {
+                        expect(err).toBeNull();
+                        expect(result._id.toString()).toBe(test._id.toString());
+                        done(err);
+                    });
+                });
+            });
+
+            it('Perform queries on document array objects', function (done) {
+                Model.create({ names: [{name:'one'}, {name:'two'}] }, function (er, test) {
+                    Model.findOne({ names: {name:'one'} }, function (err, result) {
+                        expect(err).toBeNull();
+                        expect(result._id.toString()).toBe(test._id.toString());
+                        done(err);
+                    });
+                });
+            });
+        });
+
     });
 
     describe('findOneAndUpdate', function () {
@@ -617,6 +644,5 @@ describe('Mockgoose Find Tests', function () {
                 });
             });
         });
-
     });
 });

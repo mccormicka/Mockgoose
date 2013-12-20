@@ -78,6 +78,9 @@ to delete all the associated models for a schema.
 
 ####CHANGELOG
 
+###1.3.1
+Fixed issue #12 Support queries on doc arrays
+
 ###1.3.0
 Upgrade to Mongoose@3.8.2
 Merge of https://github.com/mccormicka/Mockgoose/pull/11 from wavded to fix Model.count API

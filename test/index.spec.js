@@ -1,3 +1,4 @@
+/*jshint -W106 *///Camel_Case
 describe('Index Tests', function () {
     'use strict';
 
