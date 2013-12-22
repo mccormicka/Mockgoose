@@ -29,7 +29,6 @@ describe('Index Tests', function () {
 
             beforeEach(function(done){
                 IndexModel.create({}, function(err, model){
-                    console.log('Created index model', err, model);
                     expect(err).toBeFalsy();
                     expect(model).toBeTruthy();
                     collection = model.collection;
@@ -39,7 +38,6 @@ describe('Index Tests', function () {
 
             it('Be able to retrieve indexes from a model', function (done) {
                 collection.getIndexes(function(err, indexes){
-                    console.log('Arguments', arguments);
                     expect(indexes).toEqual({ _id_ : [ [ '_id', 1 ] ], expire_1 : [ [ 'expire', 1 ] ] });
                     done();
                 });

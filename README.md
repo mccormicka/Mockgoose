@@ -78,6 +78,9 @@ to delete all the associated models for a schema.
 
 ####CHANGELOG
 
+###1.3.2
+Fixed issue #13 Support for nested $in queries
+
 ###1.3.1
 Fixed issue #12 Support queries on doc arrays
 

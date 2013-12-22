@@ -5,7 +5,7 @@ describe('Mockgoose Find Tests', function () {
     var Mongoose = require('mongoose').Mongoose;
     var mongoose = new Mongoose();
     mockgoose(mongoose);
-    mongoose.connect('mongodb://localhost/TestingDB');
+    mongoose.connect('mongodb://localhost/TestingDB-1');
     var AccountModel = require('./../models/AccountModel')(mongoose);
     var SimpleModel = require('./../models/SimpleModel')(mongoose);
 
@@ -95,6 +95,27 @@ describe('Mockgoose Find Tests', function () {
                         }
                     });
                 });
+        });
+    });
+
+    describe('Nested Values', function () {
+        var schema = new mongoose.Schema({
+            value: String,
+            nested: {
+                value: String
+            }
+        });
+
+        var Test = mongoose.model('Test', schema);
+
+        it('work with nested values', function (done) {
+            Test.create({ 'value': 'Test', 'nested.value': 'Test' }, function (er, test) {
+                Test.findOne({ 'nested.value': { $in : ['Test'] } } , function (er, result) {
+                    expect(er).toBeNull();
+                    expect(result._id.toString()).toBe(test._id.toString());
+                    done();
+                });
+            });
         });
     });
 });
