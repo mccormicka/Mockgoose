@@ -11,6 +11,7 @@ module.exports = function (connection) {
         name: String,
         value: String,
         bool: Boolean,
+        date: Date,
         profile:{}
     });
 

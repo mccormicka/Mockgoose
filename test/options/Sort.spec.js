@@ -6,37 +6,13 @@ describe('Mockgoose Find Tests', function () {
     var mongoose = new Mongoose();
     mockgoose(mongoose);
     mongoose.connect('mongodb://localhost/TestingDB');
-    var AccountModel = require('./../models/AccountModel')(mongoose);
     var SimpleModel = require('./../models/SimpleModel')(mongoose);
     var IndexModel = require('./../models/IndexModel')(mongoose);
 
     var accountId;
     beforeEach(function (done) {
         mockgoose.reset();
-        AccountModel.create(
-            {email: 'valid@valid.com', password: 'password'},
-            {email: 'invalid@invalid.com', password: 'password'},
-            function (err, valid, invalid) {
-                expect(err).toBeFalsy();
-                expect(valid).toBeTruthy();
-                accountId = valid._id;
-                expect(invalid).toBeTruthy();
-                SimpleModel.create(
-                    {name: 'one', value: 'one'},
-                    {name: 'one', value: 'two'},
-                    {name: 'one', value: 'two'},
-                    {name: 'two', value: 'one'},
-                    {name: 'two', value: 'two'},
-                    function (err, one, two, three) {
-                        expect(err).toBeFalsy();
-                        expect(one).toBeTruthy();
-                        expect(two).toBeTruthy();
-                        expect(three).toBeTruthy();
-                        done(err);
-                    }
-                );
-            });
-
+        done();
     });
 
     afterEach(function (done) {
@@ -125,6 +101,48 @@ describe('Mockgoose Find Tests', function () {
                         if (model) {
                             expect(model.name).toBe('zzz');
                             expect(model.value).toBe(1);
+                            done(err);
+                        } else {
+                            done('Error finding models');
+                        }
+                    });
+                } else {
+                    done('Error creating Models!');
+                }
+            });
+        });
+
+        it('Be able to sort items by field in ascending order Date', function(done) {
+            SimpleModel.create({name: 'one', date: new Date(1000)}, {name: 'two', date: new Date(2000)}, function (err, results) {
+                expect(err).toBeNull();
+                expect(results).toBeDefined();
+                if (results) {
+                    SimpleModel.findOne({}, {}, {sort: {date: 1}}, function (err, model) {
+                        expect(err).toBeNull();
+                        expect(model).toBeDefined();
+                        if (model) {
+                            expect(model.name).toBe('one');
+                            done(err);
+                        } else {
+                            done('Error finding models');
+                        }
+                    });
+                } else {
+                    done('Error creating Models!');
+                }
+            });
+        });
+
+        it('Be able to sort items by field in descending order Date', function(done) {
+            SimpleModel.create({name: 'one', date: new Date(1000)}, {name: 'two', date: new Date(2000)}, function (err, results) {
+                expect(err).toBeNull();
+                expect(results).toBeDefined();
+                if (results) {
+                    SimpleModel.findOne({}, {}, {sort: {date: -1}}, function (err, model) {
+                        expect(err).toBeNull();
+                        expect(model).toBeDefined();
+                        if (model) {
+                            expect(model.name).toBe('two');
                             done(err);
                         } else {
                             done('Error finding models');
