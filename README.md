@@ -78,6 +78,9 @@ to delete all the associated models for a schema.
 
 ####CHANGELOG
 
+###1.3.3
+Merged Date sorting thanks to jiggmin https://github.com/Jiggmin
+
 ###1.3.2
 Fixed issue #13 Support for nested $in queries
 

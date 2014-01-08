@@ -9,7 +9,6 @@ describe('Mockgoose Find Tests', function () {
     var SimpleModel = require('./../models/SimpleModel')(mongoose);
     var IndexModel = require('./../models/IndexModel')(mongoose);
 
-    var accountId;
     beforeEach(function (done) {
         mockgoose.reset();
         done();
