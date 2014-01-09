@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/mccormicka/Mockgoose.png?branch=master)](https://travis-ci.org/mccormicka/Mockgoose)
+
 ##What is Mockgoose?
 
 Please Share on Twitter if you like #mockgoose
