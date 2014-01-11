@@ -15,10 +15,75 @@ describe('Connection Tests', function () {
         done();
     });
 
+    describe('Events', function () {
+
+        it('Dispatch connecting event on connect', function (done) {
+            var connection = mongoose.connect('mongodb://localhost:27017/blah').connection;
+            connection.on('connecting', function () {
+                done();
+            });
+        });
+
+        it('Dispatch connected event on connect', function (done) {
+            var connection = mongoose.connect('mongodb://localhost:27017/blah').connection;
+            connection.on('connected', function () {
+                done();
+            });
+        });
+
+        it('Dispatch open event on connect', function (done) {
+            var connection = mongoose.connect('mongodb://localhost:27017/blah').connection;
+            connection.on('open', function () {
+                done();
+            });
+        });
+
+        it('Dispatch Error event on connect', function (done) {
+            mongoose = new Mongoose();
+            mockgoose(mongoose, true);
+            var connection = mongoose.connect('mongodb://localhost:27017/blah').connection;
+            connection.on('error', function (err) {
+                expect(err).toBeDefined();
+                done();
+            });
+        });
+
+        it('Dispatch connecting event on createConnection', function (done) {
+            var connection = mongoose.createConnection('mongodb://localhost:27017/blah');
+            connection.on('connecting', function () {
+                done();
+            });
+        });
+
+        it('Dispatch connected event on createConnection', function (done) {
+            var connection = mongoose.createConnection('mongodb://localhost:27017/blah');
+            connection.on('connected', function () {
+                done();
+            });
+        });
+
+        it('Dispatch open event on createConnection', function (done) {
+            var connection = mongoose.createConnection('mongodb://localhost:27017/blah');
+            connection.on('open', function () {
+                done();
+            });
+        });
+
+        it('Dispatch Error event on createConnection', function (done) {
+            mongoose = new Mongoose();
+            mockgoose(mongoose, true);
+            var connection = mongoose.createConnection('mongodb://localhost:27017/blah');
+            connection.on('error', function (err) {
+                expect(err).toBeDefined();
+                done();
+            });
+        });
+    });
+
     describe('Connect', function () {
         var connection;
         var SimpleModel;
-        beforeEach(function(done){
+        beforeEach(function (done) {
             connection = mongoose.connect('mongodb://localhost:27017/TestingDB');
             expect(mongoose.connections.length).toBe(1);
             SimpleModel = require('./models/SimpleModel')(mongoose);
@@ -114,7 +179,7 @@ describe('Connection Tests', function () {
     describe('CreateConnection', function () {
         var connection;
         var SimpleModel;
-        beforeEach(function(done){
+        beforeEach(function (done) {
             connection = mongoose.createConnection('mongodb://localhost:27017/TestingDB');
             expect(mongoose.connections.length).toBe(2);
             SimpleModel = require('./models/SimpleModel')(connection);

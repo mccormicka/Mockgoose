@@ -1,11 +1,12 @@
 [![Build Status](https://travis-ci.org/mccormicka/Mockgoose.png?branch=master)](https://travis-ci.org/mccormicka/Mockgoose)
 
-##What is Mockgoose?
-
 Please Share on Twitter if you like #mockgoose
 <a href="https://twitter.com/intent/tweet?hashtags=mockgoose&amp;&amp;text=Check%20out%20this%20%23Mongoose%20%23MongoDB%20Mocking%20Framework&amp;tw_p=tweetbutton&amp;url=http%3A%2F%2Fbit.ly%2F19gcHwm&amp;via=omnipitence" style="float:right">
 <img src="https://raw.github.com/mccormicka/Mockgoose/master/twittershare.png">
 </a>
+
+##What is Mockgoose?
+
 
 Mockgoose is a simplified in memory database that allows you to perform actions on Mongoose Models without having a running instance of MongoDB. 
 
@@ -29,6 +30,11 @@ You simply require Mongoose and Mockgoose and wrap Mongoose with Mockgoose.
     mockgoose(mongoose);
 
 Once Mongoose has been wrapped by Mockgoose all calls to connect() and createConnection() will be intercepted by Mockgoose so that no MongoDB instance is created.
+
+###Options
+___mongoose___ ___required___ Instance of mongoose.
+___throwError___ ___optional___ Boolean true/false to throw errors on connection defaults to false.
+
 
 Currently supported model operations are.
 
@@ -79,58 +85,68 @@ to delete all the associated models for a schema.
 
 
 ####CHANGELOG
+#####1.3.4
+Added Connection Events for issue #18 according to http://mongoosejs.com/docs/api.html#connection_Connection
+Supported Events
+```
+connecting
+connected
+open
+error
+```
+In order to dispatch error events please read dispatching Error Events above.
 
-###1.3.3
+#####1.3.3
 Merged Date sorting thanks to jiggmin https://github.com/Jiggmin
 
-###1.3.2
+#####1.3.2
 Fixed issue #13 Support for nested $in queries
 
-###1.3.1
+#####1.3.1
 Fixed issue #12 Support queries on doc arrays
 
-###1.3.0
+#####1.3.0
 Upgrade to Mongoose@3.8.2
 Merge of https://github.com/mccormicka/Mockgoose/pull/11 from wavded to fix Model.count API
 changes in Mongoose@3.8.2
 
-###1.2.2
+#####1.2.2
 Added more tests around Model.count to prove issue #10 is not valid
 
-###1.2.0
+#####1.2.0
 Added simple implementation of ensureIndex and getIndexes so as not to throw errors
 http://docs.mongodb.org/manual/reference/method/db.collection.ensureIndex/
 
-###1.1.0
+#####1.1.0
 Added support for populate() option
 http://mongoosejs.com/docs/populate.html
 
 Thanks to [petershaw](https://github.com/petershaw)
 
 
-###1.0.6
+#####1.0.6
 Added bunyan logger.
 You can set the log level with
 
     npm test | node_modules/bunyan/bin/bunyan
 
-###1.0.5
+#####1.0.5
 Added $pullAll support
 http://docs.mongodb.org/manual/reference/operator/update/pullAll/
 
-###1.0.4
+#####1.0.4
 Added $pushAll support
 http://docs.mongodb.org/manual/reference/operator/update/pushAll/
 
-###1.0.3
+#####1.0.3
 Added $addToSet support
 http://docs.mongodb.org/manual/reference/operator/update/addToSet/
 
-###1.0.2
+#####1.0.2
 Added $inc support
 http://docs.mongodb.org/manual/reference/operator/update/inc/
 
-###1.0.1
+#####1.0.1
 Added the ability to search in chains. as in
 
     schema({
@@ -143,24 +159,24 @@ Added the ability to search in chains. as in
 
     Model.find({'user.profile.name' : 'john'}).exec();
 
-###1.0.0
+#####1.0.0
 Complete rewrite to implement a mock driver for mongodb instead of returning mock models. 
 
-###0.2.7
+#####0.2.7
 Fixed connect/createConnection issue where connect was delegating to createConnection instead of returning
 the first mongoose connection.
 
 
-###0.2.6
+#####0.2.6
 Made model names case insensitive 'SimpleModel' and 'simplemodel' are now classed as the same model.
 
-###0.2.5
+#####0.2.5
 Added sort to find operations.
 Fixed an issue with calling mongoose.model('modelName') without a schema that
 was returning a real Mongoose Model it now correctly returns a Mocked Mongoose Model.
 Fixed count() so that you do not need to pass a query as the first param
 
-###0.2.4
+#####0.2.4
 Aligned Mockgoose.connect() and Mockgoose.createConnection() with the Mongoose API.
 You can now pass host, database, port, options, callback to the connections in the same manner as
 mongoose http://mongoosejs.com/docs/api.html#connection_Connection.
@@ -170,75 +186,74 @@ The only options value that will be used is the db value all other options will 
 Adresses issue 1
 https://github.com/mccormicka/Mockgoose/issues/1
 
-
-###0.2.3
+#####0.2.3
 Added dependency on lodash
 
-###0.2.2
+#####0.2.2
 Minor update
 
-###0.2.1
+#####0.2.1
 Fixed a bug where find on number values was not working correctly.
 
     find({value:1}, function(err,result){});
 
-###0.2.0
+#####0.2.0
 Increment version number, fixed event emitter bug.
 
-###0.0.21
+#####0.0.21
 Added tests for findOneAndUpdate / findByIdAndUpdate
 
-###0.0.20
+#####0.0.20
 Added all find methods and aligned api's so that the fields and options.fields values work.
 
-###0.0.19
+#####0.0.19
 Large code refactor to make the project more maintainable in preparation for API alignment.
 
-###0.0.18
+#####0.0.18
 Removed connection error as we always error due to the fact Mockgoose is a mock and never really connects.
 
-###0.0.17
+#####0.0.17
 Minor bug fixes
 
-###0.0.16
+#####0.0.16
 Added the Model.count() method.
 Fixed various issues with jshint
 Added grunt runner so you can just call grunt and it will run jshint and the jasmine tests
 
-###0.0.15
+#####0.0.15
 Fixed NPE when passing null options to update
 
-###0.0.14
+#####0.0.14
 Removed toJSON copy inside mock model so that 3rd party libraries can manipulate mongoose json output without it affecting
 mockgoose.
 
-###0.0.13
+#####0.0.13
 Added support for $push with $each and {multi:0/1}
 
-###0.0.12
+#####0.0.12
 Fixed Update() method so that it works correctly with static and model updates.
 
-###0.0.11
+#####0.0.11
 Added support for findAndUpdate() {upsert:true} option.
 
-###0.0.10
+#####0.0.10
 Removed findAll() and made find() and findOne() work with empty objects {} to keep inline with Mongoose API.
 
-###0.0.9
+#####0.0.9
 Fixed boolean comparisons
 
-###0.0.8
+#####0.0.8
 Fixed findOneAndUpdate() so that it saves the object after updating if no error is thrown
 
-###0.0.7
+#####0.0.7
 Added support for $pull of multiple items at once.
 {$pull:{values:{name:{$in:['one', 'two']}}}}
 
-###0.0.6
+#####0.0.6
 Added support for $pull operator
 Added support for update();
 Added support for findOneAndUpdate()
 
-###0.0.2
+#####0.0.2
 
 Added support for $in operator for finds

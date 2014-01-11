@@ -5,7 +5,7 @@ var mock = require('./lib/Model');
 var db = require('./lib/db');
 var logger = require('./lib/Logger');
 
-module.exports = function (mongoose) {
+module.exports = function (mongoose, throwErrors) {
 
     var Models = {};
     if (!mongoose.originalCreateConnection) {
@@ -57,16 +57,26 @@ module.exports = function (mongoose) {
         }
 
         logger.info('Creating Mockgoose database: CreateConnection', database, ' options: ', options);
-        var connection = mongoose.originalCreateConnection.call(mongoose, database, options, function () {
-            if (callback) {
-                //Always return true as we are faking it.
-                callback(null, connection);
-            }
+        var connection = mongoose.originalCreateConnection.call(mongoose, database, options, function (err) {
+            handleConnection(callback, connection, err);
         });
         connection.model = mongoose.model;
-//        mongoose.connection.model = mongoose.model;
         return connection;
     };
+
+    function handleConnection(callback, connection, err) {
+        connection.emit('connecting');
+        if (callback) {
+            //Always return true as we are faking it.
+            callback(null, connection);
+        }
+        if (throwErrors) {
+            connection.emit('error', err);
+        } else {
+            connection.emit('connected');
+            connection.emit('open');
+        }
+    }
 
     mongoose.connect = function (host, database, port, options, callback) {
         if (_.isFunction(database)) {
@@ -97,11 +107,8 @@ module.exports = function (mongoose) {
         }
 
         logger.info('Creating Mockgoose database: Connect ', database, ' options: ', options);
-        var connection = mongoose.originalConnect.call(mongoose, database, options, function () {
-            if (callback) {
-                //Always return true as we are faking it.
-                callback(null, connection);
-            }
+        var connection = mongoose.originalConnect.call(mongoose, database, options, function (err) {
+            handleConnection(callback, connection.connection, err);
         });
         connection.model = mongoose.model;
         mongoose.connection.model = mongoose.model;
