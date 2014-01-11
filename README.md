@@ -33,8 +33,20 @@ Once Mongoose has been wrapped by Mockgoose all calls to connect() and createCon
 
 ###Options
 ___mongoose___ ___required___ Instance of mongoose.
+
 ___throwError___ ___optional___ Boolean true/false to throw errors on connection defaults to false.
 
+###Connection Events
+Dispatches some but not all of the events supported by Mockgoose
+http://mongoosejs.com/docs/api.html#connection_Connection
+
+Supported Events
+```
+connecting
+connected
+open
+error
+```
 
 Currently supported model operations are.
 
