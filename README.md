@@ -65,13 +65,14 @@ Currently supported model operations are.
 
 ##Operators
 
+    $addToSet + $each
     $in
     $inc
+    $ne
     $pull
     $pullAll
     $push + $each
     $pushAll
-    $addToSet + $each
     $set
 
 ##Options
@@ -97,7 +98,11 @@ to delete all the associated models for a schema.
 
 
 ####CHANGELOG
-#####1.3.4
+
+#####1.5.0
+Added support for $ne issue #15
+
+#####1.4.0
 Added Connection Events for issue #18 according to http://mongoosejs.com/docs/api.html#connection_Connection
 Supported Events
 ```

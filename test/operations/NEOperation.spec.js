@@ -46,7 +46,7 @@ describe('Mockgoose $ne Tests', function () {
                     expect(results).toBeDefined();
                     expect(results.length).toBe(1);
                     if(results.length === 1){
-                        expect(results[0].value).toBe('baz');
+                        expect(results[0].value).toBe('foo');
                     }
                     done();
                 },
