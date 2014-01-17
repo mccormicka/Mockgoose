@@ -66,14 +66,18 @@ Currently supported model operations are.
 ##Operators
 
     $addToSet + $each
-    $in
+    $all
+    $elemMatch
+    $gt
     $inc
+    $in
     $ne
-    $pull
     $pullAll
-    $push + $each
+    $pull
     $pushAll
+    $push + $each
     $set
+
 
 ##Options
 
@@ -98,6 +102,11 @@ to delete all the associated models for a schema.
 
 
 ####CHANGELOG
+
+#####1.6.0
+Added support for $all operator issue #14 http://docs.mongodb.org/manual/reference/operator/query/all/
+Added support for $elemMatch http://docs.mongodb.org/manual/reference/operator/projection/elemMatch/
+Added support for $gt http://docs.mongodb.org/manual/reference/operator/query/gt/
 
 #####1.5.0
 Added support for $ne issue #15
