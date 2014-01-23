@@ -103,6 +103,10 @@ to delete all the associated models for a schema.
 
 ####CHANGELOG
 
+#####1.6.1
+Added support for nested array values #16
+
+
 #####1.6.0
 Added support for $all operator issue #14 http://docs.mongodb.org/manual/reference/operator/query/all/
 Added support for $elemMatch http://docs.mongodb.org/manual/reference/operator/projection/elemMatch/
