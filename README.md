@@ -105,6 +105,9 @@ to delete all the associated models for a schema.
 
 #####1.6.1
 Added support for nested array values #16
+Updated logging levels #19
+Set default log level to 'fatal' when running ```npm test```
+Set default log level to 'debug' when running ```grunt```
 
 
 #####1.6.0
