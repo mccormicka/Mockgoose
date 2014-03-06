@@ -103,7 +103,7 @@ to delete all the associated models for a schema.
 
 ####CHANGELOG
 
-#####1.6.1
+#####1.7.0
 Added support for postional $ operator for $set in update methods.
 http://docs.mongodb.org/manual/reference/operator/update/positional/
 Fixes issue #26
