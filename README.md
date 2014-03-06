@@ -104,6 +104,11 @@ to delete all the associated models for a schema.
 ####CHANGELOG
 
 #####1.6.1
+Added support for postional $ operator for $set in update methods.
+http://docs.mongodb.org/manual/reference/operator/update/positional/
+Fixes issue #26
+
+#####1.6.1
 Added support for nested array values #16
 Updated logging levels #19
 Set default log level to 'fatal' when running ```npm test```
