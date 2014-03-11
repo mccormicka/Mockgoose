@@ -65,25 +65,25 @@ Currently supported model operations are.
 
 ##Operators
 
-    [$](http://docs.mongodb.org/manual/reference/operator/update/positional/)
-    [$addToSet](http://docs.mongodb.org/manual/reference/operator/update/addToSet/),
-    [$all](http://docs.mongodb.org/manual/reference/operator/query/all/),
-    [$and](http://docs.mongodb.org/manual/reference/operator/query/and/),
-    [$elemMatch](http://docs.mongodb.org/manual/reference/operator/projection/elemMatch/),
-    [$exists](http://docs.mongodb.org/manual/reference/operator/projection/exists/),
-    [$gt](http://docs.mongodb.org/manual/reference/operator/query/gt/),
-    [$gte](http://docs.mongodb.org/manual/reference/operator/query/gte/),
-    [$in](http://docs.mongodb.org/manual/reference/operator/query/in/),
-    [$inc](http://docs.mongodb.org/manual/reference/operator/update/inc/),
-    [$lt](http://docs.mongodb.org/manual/reference/operator/query/lt/),
-    [$lte](http://docs.mongodb.org/manual/reference/operator/query/lte/),
-    [$ne](http://docs.mongodb.org/manual/reference/operator/query/ne/),
-    [$pull](http://docs.mongodb.org/manual/reference/operator/update/pull/),
-    [$pullAll](http://docs.mongodb.org/manual/reference/operator/update/pullAll/),
-    [$push](http://docs.mongodb.org/manual/reference/operator/update/push/),
-    [$pushAll](http://docs.mongodb.org/manual/reference/operator/update/pushAll/),
-    [$set](http://docs.mongodb.org/manual/reference/operator/update/set/),
-    [$unset](http://docs.mongodb.org/manual/reference/operator/update/unset/)
+[$](http://docs.mongodb.org/manual/reference/operator/update/positional/)
+[$addToSet](http://docs.mongodb.org/manual/reference/operator/update/addToSet/),
+[$all](http://docs.mongodb.org/manual/reference/operator/query/all/),
+[$and](http://docs.mongodb.org/manual/reference/operator/query/and/),
+[$elemMatch](http://docs.mongodb.org/manual/reference/operator/projection/elemMatch/),
+[$exists](http://docs.mongodb.org/manual/reference/operator/projection/exists/),
+[$gt](http://docs.mongodb.org/manual/reference/operator/query/gt/),
+[$gte](http://docs.mongodb.org/manual/reference/operator/query/gte/),
+[$in](http://docs.mongodb.org/manual/reference/operator/query/in/),
+[$inc](http://docs.mongodb.org/manual/reference/operator/update/inc/),
+[$lt](http://docs.mongodb.org/manual/reference/operator/query/lt/),
+[$lte](http://docs.mongodb.org/manual/reference/operator/query/lte/),
+[$ne](http://docs.mongodb.org/manual/reference/operator/query/ne/),
+[$pull](http://docs.mongodb.org/manual/reference/operator/update/pull/),
+[$pullAll](http://docs.mongodb.org/manual/reference/operator/update/pullAll/),
+[$push](http://docs.mongodb.org/manual/reference/operator/update/push/),
+[$pushAll](http://docs.mongodb.org/manual/reference/operator/update/pushAll/),
+[$set](http://docs.mongodb.org/manual/reference/operator/update/set/),
+[$unset](http://docs.mongodb.org/manual/reference/operator/update/unset/)
 
 ##Options
 
@@ -108,6 +108,11 @@ to delete all the associated models for a schema.
 
 
 ####CHANGELOG
+
+#####1.7.3
+Added support for the $exists operator thanks to https://github.com/mctep
+http://docs.mongodb.org/manual/reference/operator/query/exists/
+Fixes issue ##31
 
 #####1.7.2
 Added support for the $and operator
