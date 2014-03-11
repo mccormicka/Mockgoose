@@ -103,6 +103,13 @@ to delete all the associated models for a schema.
 
 ####CHANGELOG
 
+#####1.7.1
+Added support for $lt $lte and $gte operators thanks to Chris Manson https://github.com/mansona
+http://docs.mongodb.org/manual/reference/operator/query/gte/
+http://docs.mongodb.org/manual/reference/operator/query/lt/
+http://docs.mongodb.org/manual/reference/operator/query/lte/
+Fixes issue #27
+
 #####1.7.0
 Added support for postional $ operator for $set in update methods.
 http://docs.mongodb.org/manual/reference/operator/update/positional/
