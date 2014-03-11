@@ -1,7 +1,7 @@
-describe('Mockgoose $lt Tests', function () {
+describe('Mockgoose $lte Tests', function () {
     'use strict';
 
-    var mockgoose = require('./../../Mockgoose');
+    var mockgoose = require('./../../../Mockgoose');
     var Mongoose = require('mongoose').Mongoose;
     var mongoose = new Mongoose();
     mockgoose(mongoose);
@@ -68,20 +68,20 @@ describe('Mockgoose $lt Tests', function () {
         done();
     });
 
-    describe('$lt Tests', function () {
+    describe('$lte Tests', function () {
 
-        it('Be able to match values $lt', function (done) {
+        it('Be able to match values $lte', function (done) {
             Model.find({
-                qty: { num: { $lt: 30 } }
+                qty: { num: { $lte: 30 } }
             }).exec().then(function (results) {
                     expect(results).toBeDefined();
-                    expect(results.length).toBe(2);
+                    expect(results.length).toBe(3);
                     done();
                 }, done);
         });
 
-        it('Not match values $lt the value', function (done) {
-            Model.find({ qty: { num: { $lt: 10 } }
+        it('Not match values $lte the value', function (done) {
+            Model.find({ qty: { num: { $lte: 5 } }
             }).exec().then(function (results) {
                     expect(results).toBeDefined();
                     expect(results.length).toBe(0);
