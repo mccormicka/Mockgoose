@@ -76,10 +76,19 @@ describe('Mockgoose Skip Tests', function () {
                         expect(data.length).toBe(0);
                         done(err);
                     });
-                },
+                }
 
             ], function (err) {
                 done(err);
+            });
+        });
+
+        it('Should be able to call skip on the query object', function (done) {
+            SimpleModel.find({}).skip(5).exec().then(function(data){
+                expect(data).toBeDefined();
+                expect(Array.isArray(data)).toBe(true);
+                expect(data.length).toBe(5);
+                done();
             });
         });
     });

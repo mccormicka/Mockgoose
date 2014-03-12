@@ -76,10 +76,19 @@ describe('Mockgoose Limit Tests', function () {
                         expect(data.length).toBe(10);
                         done(err);
                     });
-                },
+                }
 
             ], function (err) {
                 done(err);
+            });
+        });
+
+        it('Should be able to call limit on the query object', function (done) {
+            SimpleModel.find({}).limit(5).exec().then(function(data){
+                expect(data).toBeDefined();
+                expect(Array.isArray(data)).toBe(true);
+                expect(data.length).toBe(5);
+                done();
             });
         });
     });
