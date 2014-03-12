@@ -88,9 +88,9 @@ Currently supported model operations are.
 
 ##Options
 
-multi   : 0/1 defaults to 0
-upsert  : true/false defaults to false
-sort    : one level of sorting for find operations {sort: {name:1}}
+* multi   : 0/1 defaults to 0
+* upsert  : true/false defaults to false
+* sort    : one level of sorting for find operations {sort: {name:1}}
 * [skip](http://docs.mongodb.org/manual/reference/method/db.collection.find/#set-the-starting-point-of-the-result-set)
 * [limit](http://docs.mongodb.org/manual/reference/method/db.collection.find/#limit-the-number-of-documents-to-return)
 
