@@ -78,6 +78,7 @@ Currently supported model operations are.
 * [$lt](http://docs.mongodb.org/manual/reference/operator/query/lt/),
 * [$lte](http://docs.mongodb.org/manual/reference/operator/query/lte/),
 * [$ne](http://docs.mongodb.org/manual/reference/operator/query/ne/),
+* [nin](http://docs.mongodb.org/manual/reference/operator/query/nin/),
 * [$pull](http://docs.mongodb.org/manual/reference/operator/update/pull/),
 * [$pullAll](http://docs.mongodb.org/manual/reference/operator/update/pullAll/),
 * [$push](http://docs.mongodb.org/manual/reference/operator/update/push/),

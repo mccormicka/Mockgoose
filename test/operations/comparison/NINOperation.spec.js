@@ -1,4 +1,4 @@
-ddescribe('Mockgoose $nin', function () {
+describe('Mockgoose $nin', function () {
     'use strict';
 
     var mockgoose = require('../../../Mockgoose');
@@ -57,6 +57,7 @@ ddescribe('Mockgoose $nin', function () {
 
         it('Does not equal 5 or 15 in field', function (done) {
             NinModel.find({ name: { $nin: [ '5', '15' ] } }).exec().then(function (results) {
+                console.log('Results', results);
                 expect(results.length).toBe(3);
                 done();
             });
