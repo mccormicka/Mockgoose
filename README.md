@@ -88,9 +88,11 @@ Currently supported model operations are.
 
 ##Options
 
-    multi   : 0/1 defaults to 0
-    upsert  : true/false defaults to false
-    sort    : one level of sorting for find operations {sort: {name:1}}
+* multi   : 0/1 defaults to 0
+* upsert  : true/false defaults to false
+* sort    : one level of sorting for find operations {sort: {name:1}}
+* [skip](http://docs.mongodb.org/manual/reference/method/db.collection.find/#set-the-starting-point-of-the-result-set)
+* [limit](http://docs.mongodb.org/manual/reference/method/db.collection.find/#limit-the-number-of-documents-to-return)
 
 ##Validators
 Mockgoose includes support for validators and the unique field key.
@@ -109,6 +111,12 @@ to delete all the associated models for a schema.
 
 
 ####CHANGELOG
+
+#####1.7.5
+Added support for the skip and limit options thanks to https://github.com/erickrdch
+http://docs.mongodb.org/manual/reference/method/db.collection.find/#set-the-starting-point-of-the-result-set
+http://docs.mongodb.org/manual/reference/method/db.collection.find/#limit-the-number-of-documents-to-return
+Fixes issue #32
 
 #####1.7.4
 Added support for the $nin operator all comparison query operators now supported.

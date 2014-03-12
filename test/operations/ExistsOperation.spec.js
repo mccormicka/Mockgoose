@@ -144,7 +144,7 @@ describe('Mockgoose $exists Tests', function () {
         //-------------------------------------------------------------------------
         function assertResults(results, expected) {
             expected = expected.sort(orderSort);
-            var resultSet = toResultSet(results)
+            var resultSet = toResultSet(results);
             for (var i = 0; i < expected.length; i++) {
                 expect(resultSet[i]).toEqual(expected[i]);
             }
@@ -177,8 +177,7 @@ describe('Mockgoose $exists Tests', function () {
                 extractValue(result, resultItem, 'c');
                 items.push(resultItem);
             });
-            return items.sort(orderSort);;
+            return items.sort(orderSort);
         }
-
     });
 });
