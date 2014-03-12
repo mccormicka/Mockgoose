@@ -1,7 +1,7 @@
-describe('Mockgoose $gte Tests', function () {
+describe('Mockgoose $lt Tests', function () {
     'use strict';
 
-    var mockgoose = require('./../../Mockgoose');
+    var mockgoose = require('./../../../Mockgoose');
     var Mongoose = require('mongoose').Mongoose;
     var mongoose = new Mongoose();
     mockgoose(mongoose);
@@ -39,7 +39,7 @@ describe('Mockgoose $gte Tests', function () {
                 qty: [
                     { size: '6', num: 100, color: 'green' },
                     { size: '6', num: 50, color: 'blue' },
-                    { size: '8', num: 120, color: 'brown' }
+                    { size: '8', num: 100, color: 'brown' }
                 ]
             },
             {
@@ -48,7 +48,7 @@ describe('Mockgoose $gte Tests', function () {
                 qty: [
                     { size: 'S', num: 10, color: 'blue' },
                     { size: 'M', num: 100, color: 'blue' },
-                    { size: 'L', num: 120, color: 'green' }
+                    { size: 'L', num: 100, color: 'green' }
                 ]
             },
             {
@@ -68,11 +68,11 @@ describe('Mockgoose $gte Tests', function () {
         done();
     });
 
-    describe('$gte Tests', function () {
+    describe('$lt Tests', function () {
 
-        it('Be able to match values $gte', function (done) {
+        it('Be able to match values $lt', function (done) {
             Model.find({
-                qty: { num: { $gte: 120 } }
+                qty: { num: { $lt: 30 } }
             }).exec().then(function (results) {
                     expect(results).toBeDefined();
                     expect(results.length).toBe(2);
@@ -80,8 +80,8 @@ describe('Mockgoose $gte Tests', function () {
                 }, done);
         });
 
-        it('Not match values $gte the value', function (done) {
-            Model.find({ qty: { num: { $gte: 500 } }
+        it('Not match values $lt the value', function (done) {
+            Model.find({ qty: { num: { $lt: 10 } }
             }).exec().then(function (results) {
                     expect(results).toBeDefined();
                     expect(results.length).toBe(0);

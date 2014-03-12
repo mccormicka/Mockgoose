@@ -1,13 +1,13 @@
 describe('Mockgoose Find Tests', function () {
     'use strict';
 
-    var mockgoose = require('./../../Mockgoose');
+    var mockgoose = require('./../../../Mockgoose');
     var Mongoose = require('mongoose').Mongoose;
     var mongoose = new Mongoose();
     mockgoose(mongoose);
     mongoose.connect('mongodb://localhost/TestingDB-1');
-    var AccountModel = require('./../models/AccountModel')(mongoose);
-    var SimpleModel = require('./../models/SimpleModel')(mongoose);
+    var AccountModel = require('./../../models/AccountModel')(mongoose);
+    var SimpleModel = require('./../../models/SimpleModel')(mongoose);
 
     var accountId;
     beforeEach(function (done) {

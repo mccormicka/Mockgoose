@@ -8,7 +8,7 @@ Please Share on Twitter if you like #mockgoose
 ##What is Mockgoose?
 
 
-Mockgoose is a simplified in memory database that allows you to perform actions on Mongoose Models without having a running instance of MongoDB.
+Mockgoose is a simplified in memory database that allows you to perform actions on Mongoose Models without having a running instance of MongoDB. 
 
 The main purpose of Mockgoose as you may have guessed from the name is to allow you to mock out your mongoose database during testing so that you do not have to spin up a new database for every test and teardown that same database afterwards.
 
@@ -78,6 +78,7 @@ Currently supported model operations are.
 * [$lt](http://docs.mongodb.org/manual/reference/operator/query/lt/),
 * [$lte](http://docs.mongodb.org/manual/reference/operator/query/lte/),
 * [$ne](http://docs.mongodb.org/manual/reference/operator/query/ne/),
+* [$nin](http://docs.mongodb.org/manual/reference/operator/query/nin/),
 * [$pull](http://docs.mongodb.org/manual/reference/operator/update/pull/),
 * [$pullAll](http://docs.mongodb.org/manual/reference/operator/update/pullAll/),
 * [$push](http://docs.mongodb.org/manual/reference/operator/update/push/),
@@ -95,19 +96,23 @@ Currently supported model operations are.
 Mockgoose includes support for validators and the unique field key.
 
 Mockgoose comes with a reset() method that allows you to reset the Mockgoose database
-simply call
+simply call 
 
-    mockgoose.reset()
+    mockgoose.reset() 
 
 to delete all the collections and models in the database
-or call
-
-    mockgoose.reset('schema name')
+or call 
+    
+    mockgoose.reset('schema name') 
 
 to delete all the associated models for a schema.
 
 
 ####CHANGELOG
+
+#####1.7.4
+Added support for the $nin operator all comparison query operators now supported.
+http://docs.mongodb.org/manual/reference/operator/query/nin/
 
 #####1.7.3
 Added support for the $exists operator thanks to https://github.com/mctep
@@ -221,7 +226,7 @@ Added the ability to search in chains. as in
     Model.find({'user.profile.name' : 'john'}).exec();
 
 #####1.0.0
-Complete rewrite to implement a mock driver for mongodb instead of returning mock models.
+Complete rewrite to implement a mock driver for mongodb instead of returning mock models. 
 
 #####0.2.7
 Fixed connect/createConnection issue where connect was delegating to createConnection instead of returning
