@@ -1,4 +1,4 @@
-ddescribe('Mockgoose $or Tests', function () {
+describe('Mockgoose $or Tests', function () {
     'use strict';
 
     var mockgoose = require('./../../../Mockgoose');
@@ -44,7 +44,7 @@ ddescribe('Mockgoose $or Tests', function () {
                 qty: 21,
                 sale: false
             }, {
-                price: 10.99,
+                price: 10,
                 qty: 21,
                 sale: false
             }, {
@@ -89,7 +89,7 @@ ddescribe('Mockgoose $or Tests', function () {
             Model.update({ $or: [
                 { price: 10.99 },
                 { 'carrier.state': 'NY'}
-            ] }, { $set: { sale: true } }).exec().then(function (results) {
+            ] }, { $set: { sale: true } }).exec().then(function () {
                     Model.findOne({'carrier.state': 'NY'}).exec().then(function(result){
                         expect(result.sale).toBe(true);
                         done();
