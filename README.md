@@ -79,6 +79,7 @@ Currently supported model operations are.
 * [$lte](http://docs.mongodb.org/manual/reference/operator/query/lte/),
 * [$ne](http://docs.mongodb.org/manual/reference/operator/query/ne/),
 * [$nin](http://docs.mongodb.org/manual/reference/operator/query/nin/),
+* [$or](http://docs.mongodb.org/manual/reference/operator/query/or/),
 * [$pull](http://docs.mongodb.org/manual/reference/operator/update/pull/),
 * [$pullAll](http://docs.mongodb.org/manual/reference/operator/update/pullAll/),
 * [$push](http://docs.mongodb.org/manual/reference/operator/update/push/),
@@ -111,6 +112,13 @@ to delete all the associated models for a schema.
 
 
 ####CHANGELOG
+
+#####1.7.7
+Added support for $or operator.
+http://docs.mongodb.org/manual/reference/operator/query/or/
+
+#####1.7.6
+Minor update
 
 #####1.7.5
 Added support for the skip and limit options thanks to https://github.com/erickrdch
