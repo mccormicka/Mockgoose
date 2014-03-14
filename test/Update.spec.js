@@ -358,4 +358,35 @@ describe('Mockgoose Update Tests', function () {
             });
         });
     });
+
+    describe('Bugs', function () {
+        describe('#34', function () {
+            var Model = mongoose.model('Bug34', new mongoose.Schema(
+                {
+                    access_token:{
+                        key:String,
+                        expiration:Date
+                    }
+                }
+            ));
+
+            beforeEach(function(done){
+                Model.create({
+                    access_token:{
+                        key:'token',
+                        expiration:new Date()
+                    }
+                }, done);
+            });
+
+            iit('Update nested value', function (done) {
+                Model.findOneAndUpdate({'access_token.key' : 'token'}, {'access_token.expiration' : null}).exec().then(function(data){
+                    expect(data._doc['access_token.expiration']).toBe(undefined);
+                    expect(data.access_token.expiration).toBe(null);
+                    done();
+                });
+            });
+
+        });
+    });
 });
