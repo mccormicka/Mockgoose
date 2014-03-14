@@ -113,6 +113,9 @@ to delete all the associated models for a schema.
 
 ####CHANGELOG
 
+#####1.7.8
+Fixed #34 support for nested value updates.
+
 #####1.7.7
 Added support for $or operator.
 http://docs.mongodb.org/manual/reference/operator/query/or/

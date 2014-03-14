@@ -360,7 +360,8 @@ describe('Mockgoose Update Tests', function () {
     });
 
     describe('Bugs', function () {
-        describe('#34', function () {
+        describe('#34 update nested values', function () {
+            /*jshint -W106*///camelCase
             var Model = mongoose.model('Bug34', new mongoose.Schema(
                 {
                     access_token:{
@@ -379,7 +380,7 @@ describe('Mockgoose Update Tests', function () {
                 }, done);
             });
 
-            iit('Update nested value', function (done) {
+            it('Update nested value', function (done) {
                 Model.findOneAndUpdate({'access_token.key' : 'token'}, {'access_token.expiration' : null}).exec().then(function(data){
                     expect(data._doc['access_token.expiration']).toBe(undefined);
                     expect(data.access_token.expiration).toBe(null);
