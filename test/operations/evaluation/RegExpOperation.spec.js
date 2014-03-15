@@ -37,7 +37,7 @@ describe('Mockgoose $regex Tests', function () {
         done();
     });
 
-    ddescribe('$regexp Tests', function () {
+    describe('$regexp Tests', function () {
 
         it('$regexp case insensitive', function (done) {
             Model.find({ field: /acme.*corp/i }).exec().then(function (results) {
