@@ -3,7 +3,7 @@ describe('Mockgoose $regex Tests', function () {
 
     var mockgoose = require('./../../../Mockgoose');
     var Mongoose = require('mongoose').Mongoose;
-    var mongoose = new Mongoose();
+    var mongoose = new Mongoose();;
     mockgoose(mongoose);
     mongoose.connect('mongodb://localhost/TestingDB');
 
@@ -69,7 +69,7 @@ describe('Mockgoose $regex Tests', function () {
 
         it('$regexp with $nin', function (done) {
             Model.find({ field: { $regex: /acme.*corp/i, $nin: [ 'acmeblahcorp' ] } }).exec().then(function (results) {
-                expect(results.length).toBe(4);
+                expect(results.length).toBe(3);
                 done();
             });
         });
