@@ -69,7 +69,7 @@ describe('Mockgoose $regex Tests', function () {
 
         it('$regexp with $nin', function (done) {
             Model.find({ field: { $regex: /acme.*corp/i, $nin: [ 'acmeblahcorp' ] } }).exec().then(function (results) {
-                expect(results.length).toBe(3);
+                expect(results.length).toBe(4);
                 done();
             });
         });
