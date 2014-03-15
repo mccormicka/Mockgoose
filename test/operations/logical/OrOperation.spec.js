@@ -85,6 +85,16 @@ describe('Mockgoose $or Tests', function () {
                 });
         });
 
+        it('Find values that are greater than 20 or on sale', function (done) {
+            Model.find({ price: 1.99, $or: [
+                { qty: { $gt: 40 } },
+                { sale: false }
+            ] }).exec().then(function (results) {
+                    expect(results.length).toBe(2);
+                    done();
+                });
+        });
+
         it('Update embed $or statement', function (done) {
             Model.update({ $or: [
                 { price: 10.99 },
