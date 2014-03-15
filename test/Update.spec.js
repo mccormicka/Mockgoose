@@ -84,7 +84,6 @@ describe('Mockgoose Update Tests', function () {
         });
     });
 
-
     describe('$pull', function () {
 
         it('should be able to pull items from nested documents array', function (done) {
@@ -388,6 +387,77 @@ describe('Mockgoose Update Tests', function () {
                 });
             });
 
+        });
+
+        describe('#35 update array item', function () {
+            var ContractModel = mongoose.model('Bug35', new mongoose.Schema(
+                {
+                    name: [String],
+                    titles: [
+                        {
+                            _id: Number,
+                            name: String,
+                            episodeType: String,
+                            runs: Number
+                        }
+                    ]
+                }
+            ));
+
+            var contract;
+            beforeEach(function (done) {
+                ContractModel.create({
+                    name: 'V series',
+                    titles: [
+                        {
+                            _id: 1,
+                            name: 'Invasion'
+                        },
+                        {
+                            _id: 2,
+                            name: 'Rebellion'
+                        },
+                        {
+                            _id: 3,
+                            name: 'Spies Among Us'
+                        }
+                    ]
+                }, function (err, result) {
+                    contract = result;
+                    done();
+                });
+            });
+
+            afterEach(function (done) {
+                //Reset the database after every test.
+                mockgoose.reset();
+                done();
+            });
+
+            it('should accept a number', function (done) {
+                contract.titles[0].runs = 11;
+                contract.save(function (err, result) {
+                    expect(err).toBeFalsy();
+                    expect(result).toBeDefined();
+                    expect(result.titles.id(1).runs).toEqual(11); //all good here.
+                    done();
+                });
+            });
+
+            it('should not be stored in weird string property outside of titles', function (done) {
+                contract.titles[0].runs = 11;
+                contract.save(function (err, result) {
+                    expect(err).toBeFalsy();
+                    expect(result).toBeDefined();
+                    expect(result.titles.id(1).runs).toEqual(11); //all good here.
+                    ContractModel.find({}, function (err, results) {
+                        var result = results[0];
+                        expect(result._doc['titles.0.runs']).toEqual(undefined);
+                        expect(result.titles.id(1).runs).toEqual(11);
+                        done();
+                    });
+                });
+            });
         });
     });
 });
