@@ -85,6 +85,7 @@ Currently supported model operations are.
 * [$pullAll](http://docs.mongodb.org/manual/reference/operator/update/pullAll/),
 * [$push](http://docs.mongodb.org/manual/reference/operator/update/push/),
 * [$pushAll](http://docs.mongodb.org/manual/reference/operator/update/pushAll/),
+* [$regex](http://docs.mongodb.org/manual/reference/operator/query/regex/),
 * [$set](http://docs.mongodb.org/manual/reference/operator/update/set/),
 * [$unset](http://docs.mongodb.org/manual/reference/operator/update/unset/)
 
@@ -113,6 +114,11 @@ to delete all the associated models for a schema.
 
 
 ####CHANGELOG
+
+#####1.7.9
+Added support for $regex and $not operations
+http://docs.mongodb.org/manual/reference/operator/query/regex/
+http://docs.mongodb.org/manual/reference/operator/query/not/
 
 #####1.7.8
 Fixed #34 support for nested value updates.
