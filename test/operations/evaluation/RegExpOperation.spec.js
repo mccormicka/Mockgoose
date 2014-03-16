@@ -3,7 +3,7 @@ describe('Mockgoose $regex Tests', function () {
 
     var mockgoose = require('./../../../Mockgoose');
     var Mongoose = require('mongoose').Mongoose;
-    var mongoose = new Mongoose();;
+    var mongoose = new Mongoose();
     mockgoose(mongoose);
     mongoose.connect('mongodb://localhost/TestingDB');
 
