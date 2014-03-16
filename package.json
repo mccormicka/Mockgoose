@@ -19,7 +19,7 @@
     "in memory"
   ],
   "scripts": {
-    "test": "./node_modules/jasmine-node/bin/jasmine-node test/ --verbose --color --captureExceptions && grunt jshint"
+    "test": "./node_modules/jasmine-node/bin/jasmine-node test/ --verbose --color --captureExceptions && ./node_modules/.bin/grunt jshint"
   },
   "main": "Mockgoose",
   "engines": {
@@ -41,8 +41,7 @@
     "grunt-contrib-jshint": "0.4.3",
     "grunt-jasmine-node": "~0.1.0",
     "node-uuid": "~1.4.1",
-    "async": "~0.2.9",
-    "grunt-cli": "~0.1.13"
+    "async": "~0.2.9"
   },
   "bugs": {
     "url": "https://github.com/mccormicka/Mockgoose/issues"
