@@ -125,7 +125,7 @@ describe('Mockgoose Tests', function () {
             it('Reset Specific Schema case sensitive', function (done) {
                 SimpleModel.find({}).exec().then(function(results){
                     expect(results.length).toBe(5);
-                    mockgoose.reset('simple');
+                    mockgoose.reset(SimpleModel.TYPE);
                     SimpleModel.find({}).exec().then(function(results){
                         expect(results.length).toBe(0);
                         done();
