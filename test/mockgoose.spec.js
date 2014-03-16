@@ -98,6 +98,42 @@ describe('Mockgoose Tests', function () {
             done();
         });
 
+        describe('Reset', function () {
+            beforeEach(function(done){
+                mockgoose.reset();
+                SimpleModel.create(
+                    {name: 'one', value: 'one'},
+                    {name: 'one', value: 'two'},
+                    {name: 'one', value: 'two'},
+                    {name: 'two', value: 'one'},
+                    {name: 'two', value: 'two'},
+                    done
+                );
+            });
+
+            it('Reset all models', function (done) {
+                SimpleModel.find({}).exec().then(function(results){
+                    expect(results.length).toBe(5);
+                    mockgoose.reset();
+                    SimpleModel.find({}).exec().then(function(results){
+                        expect(results.length).toBe(0);
+                        done();
+                    });
+                });
+            });
+
+            it('Reset Specific Schema case sensitive', function (done) {
+                SimpleModel.find({}).exec().then(function(results){
+                    expect(results.length).toBe(5);
+                    mockgoose.reset('Simple');
+                    SimpleModel.find({}).exec().then(function(results){
+                        expect(results.length).toBe(0);
+                        done();
+                    });
+                });
+            });
+
+        });
 
     });
 });

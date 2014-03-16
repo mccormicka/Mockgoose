@@ -108,9 +108,10 @@ simply call
 to delete all the collections and models in the database
 or call 
     
-    mockgoose.reset('schema name') 
+    mockgoose.reset('schema name')*
 
 to delete all the associated models for a schema.
+*schema names are case sensitive
 
 
 ####CHANGELOG
