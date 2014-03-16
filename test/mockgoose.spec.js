@@ -85,7 +85,7 @@ describe('Mockgoose Tests', function () {
         it('Be able to retrieve a model case sensitive', function (done) {
             var Model = mongoose.model('simple');
             expect(Model).toBeDefined();
-            expect(function(){
+            expect(function () {
                 mongoose.model('Simple');
             }).toThrow();
             done();
@@ -99,41 +99,61 @@ describe('Mockgoose Tests', function () {
         });
 
         describe('Reset', function () {
-            beforeEach(function(done){
+            var LowerCaseModel = mongoose.model('model', new mongoose.Schema());
+            var UpperCaseModel = mongoose.model('Model', new mongoose.Schema());
+            beforeEach(function (done) {
                 mockgoose.reset();
-                SimpleModel.create(
+                LowerCaseModel.create(
                     {name: 'one', value: 'one'},
                     {name: 'one', value: 'two'},
                     {name: 'one', value: 'two'},
                     {name: 'two', value: 'one'},
                     {name: 'two', value: 'two'},
-                    done
+                    function () {
+                        UpperCaseModel.create(
+                            {name: 'one', value: 'one'},
+                            {name: 'one', value: 'two'},
+                            {name: 'one', value: 'two'},
+                            {name: 'two', value: 'one'},
+                            {name: 'two', value: 'two'},
+                            done
+                        );
+                    }
                 );
             });
 
             it('Reset all models', function (done) {
-                SimpleModel.find({}).exec().then(function(results){
-                    expect(results.length).toBe(5);
+                UpperCaseModel.find({}).exec().then(function (results) {
+                    expect(results.length).toBe(10);
                     mockgoose.reset();
-                    SimpleModel.find({}).exec().then(function(results){
+                    UpperCaseModel.find({}).exec().then(function (results) {
                         expect(results.length).toBe(0);
                         done();
                     });
                 });
             });
 
-            it('Reset Specific Schema case sensitive', function (done) {
-                SimpleModel.find({}).exec().then(function(results){
-                    expect(results.length).toBe(5);
-                    mockgoose.reset(SimpleModel.TYPE);
-                    SimpleModel.find({}).exec().then(function(results){
+            it('Reset Specific Schema uppercase insensitive', function (done) {
+                UpperCaseModel.find({}).exec().then(function (results) {
+                    expect(results.length).toBe(10);
+                    mockgoose.reset('Model');
+                    UpperCaseModel.find({}).exec().then(function (results) {
                         expect(results.length).toBe(0);
                         done();
                     });
                 });
             });
 
+            it('Reset Specific Schema lowercase insensitive', function (done) {
+                LowerCaseModel.find({}).exec().then(function (results) {
+                    expect(results.length).toBe(10);
+                    mockgoose.reset('model');
+                    LowerCaseModel.find({}).exec().then(function (results) {
+                        expect(results.length).toBe(0);
+                        done();
+                    });
+                });
+            });
         });
-
     });
 });
