@@ -398,7 +398,8 @@ describe('Mockgoose Update Tests', function () {
                             _id: Number,
                             name: String,
                             episodeType: String,
-                            runs: Number
+                            runs: Number,
+                            flights:[{start:Date, ends:Date, _id:Number}]
                         }
                     ]
                 }
@@ -454,6 +455,22 @@ describe('Mockgoose Update Tests', function () {
                         var result = results[0];
                         expect(result._doc['titles.0.runs']).toEqual(undefined);
                         expect(result.titles.id(1).runs).toEqual(11);
+                        done();
+                    });
+                });
+            });
+
+            it('should update nested array', function (done) {
+                var flight = {start:new Date(), ends: new Date(), _id:5};
+                contract.titles[0].flights.push(flight);
+                contract.save(function (err, result) {
+                    expect(err).toBeFalsy();
+                    expect(result).toBeDefined();
+                    expect(result.titles.id(1).flights[0]._id).toEqual(flight._id); //all good here.
+                    ContractModel.find({}, function (err, results) {
+                        var result = results[0];
+                        expect(result._doc['titles.0.flights']).toEqual(undefined);
+                        expect(result.titles.id(1).flights[0]._id).toEqual(flight._id);
                         done();
                     });
                 });
