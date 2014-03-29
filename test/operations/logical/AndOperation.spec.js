@@ -5,7 +5,7 @@ describe('Mockgoose $and Tests', function () {
     var Mongoose = require('mongoose').Mongoose;
     var mongoose = new Mongoose();
     mockgoose(mongoose);
-    mongoose.connect('mongodb://localhost/TestingDB');
+    mongoose.connect('mongodb://localhost/TestingDB77');
 
     var Schema = new mongoose.Schema({
         price: Number,
@@ -100,6 +100,43 @@ describe('Mockgoose $and Tests', function () {
                         expect(results.length).toBe(2);
                         done();
                     });
+            });
+        });
+    });
+
+    describe('$and Tests Bugs', function () {
+
+        describe('#41 Unexpected behavior such as null err and result with findOneAndUpdate `$and` queries', function () {
+            var AccountModel = require('../../models/AccountModel')(mongoose);
+            beforeEach(function(done){
+                AccountModel.create(
+                    {email: 'valid@valid.com', password: 'password', href:'href'},
+                    {email: 'invalid@invalid.com', password: 'password', href:'href'},
+                    done);
+            });
+
+            it('Should find by both email and password', function (done) {
+                AccountModel.find({$and:[{email: 'valid@valid.com'}, {href: 'href'}]}).exec().then(function(results){
+                    expect(results.length).toBe(1);
+                    var result = results[0];
+                    if(result){
+                        expect(results[0].email).toBe('valid@valid.com');
+                        expect(results[0].href).toBe('href');
+                    }
+                    done();
+                });
+            });
+
+            it('Should find by both email and password implicit', function (done) {
+                AccountModel.find({email: 'valid@valid.com', href: 'href'}).exec().then(function(results){
+                    expect(results.length).toBe(1);
+                    var result = results[0];
+                    if(result){
+                        expect(results[0].email).toBe('valid@valid.com');
+                        expect(results[0].href).toBe('href');
+                    }
+                    done();
+                });
             });
         });
     });

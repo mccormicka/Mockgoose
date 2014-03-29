@@ -269,6 +269,12 @@ describe('Mockgoose Find Tests', function () {
             });
         });
 
+        it('Not be able to find an object by password', function (done) {
+            AccountModel.find({password:'password'}).exec().then(function(results){
+                expect(results.length).toBe(0);
+                done();
+            });
+        });
     });
 
     describe('findOne', function () {
