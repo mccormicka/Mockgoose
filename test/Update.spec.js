@@ -361,14 +361,15 @@ describe('Mockgoose Update Tests', function () {
     describe('Bugs', function () {
         describe('#34 update nested values', function () {
             /*jshint -W106*///camelCase
-            var Model = mongoose.model('Bug34', new mongoose.Schema(
+            var Bug34Schema = new mongoose.Schema(
                 {
-                    access_token:{
-                        key:String,
-                        expiration:Date
+                    access_token: {
+                        key: String,
+                        expiration: Date
                     }
                 }
-            ));
+            );
+            var Model = mongoose.model('Bug34', Bug34Schema);
 
             beforeEach(function(done){
                 Model.create({
@@ -390,7 +391,7 @@ describe('Mockgoose Update Tests', function () {
         });
 
         describe('#35 update array item', function () {
-            var ContractModel = mongoose.model('Bug35', new mongoose.Schema(
+            var bugSchema = new mongoose.Schema(
                 {
                     name: [String],
                     titles: [
@@ -399,11 +400,14 @@ describe('Mockgoose Update Tests', function () {
                             name: String,
                             episodeType: String,
                             runs: Number,
-                            flights:[{start:Date, ends:Date, _id:Number}]
+                            flights: [
+                                {start: Date, ends: Date, _id: Number}
+                            ]
                         }
                     ]
                 }
-            ));
+            );
+            var ContractModel = mongoose.model('Bug35', bugSchema);
 
             var contract;
             beforeEach(function (done) {

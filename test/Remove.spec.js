@@ -39,7 +39,7 @@ describe('Mockgoose Remove Tests', function () {
         done();
     });
 
-    describe('SHOULD', function () {
+    describe('Remove', function () {
         it('should be able to remove a model', function (done) {
             SimpleModel.remove({name: 'one'}, function (err) {
                 expect(err).toBeFalsy();
@@ -73,6 +73,57 @@ describe('Mockgoose Remove Tests', function () {
                     expect(err).toBeFalsy();
                     expect(model).toBeFalsy();
                     done(err);
+                });
+            });
+        });
+    });
+
+    describe('Bugs', function () {
+        describe(' #43 Save doesn\'t work when removing or updating an item in nested array', function () {
+            var Schema = new mongoose.Schema({
+                name: String,
+                friends:[{
+                    name:String,
+                    books: [
+                        {
+                            name: String,
+                            pages: Number
+                        }
+                    ]
+                }]
+            });
+
+            var BugModel = mongoose.model('Bug43', Schema);
+
+            beforeEach(function(done){
+                mockgoose.reset();
+                BugModel.create({
+                    name: 'MyName',
+                    friends: [{
+                        name: 'MyFriend',
+                        books: [{
+                            name: 'Book1',
+                            pages: 145
+                        },{
+                            name: 'Book2',
+                            pages: 300
+                        }]
+                    }]
+                }, done);
+            });
+
+            it('Be able to remove nested item', function (done) {
+                BugModel.find({name:'MyName'}).exec().then(function(results){
+                    results[0].friends[0].books.pop();
+                    results[0].friends[0].books[0].name = 'Book 2 - updated';
+                    results[0].save(function(err){
+                        expect(err).toBe(null);
+                        BugModel.findOne({name:'MyName'}).exec().then(function(result){
+                            expect(result.friends[0].books.length).toBe(1);
+                            expect(result.friends[0].books[0].name).toBe('Book 2 - updated');
+                            done();
+                        });
+                    });
                 });
             });
         });
