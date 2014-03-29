@@ -64,7 +64,7 @@ describe('Mockgoose $nor Tests', function () {
         done();
     });
 
-    ddescribe('$nor', function () {
+    describe('$nor', function () {
         it('Find values that are not 1.99 and are not on sale', function (done) {
             Model.find({ $nor: [
                 { price: 1.99 },
