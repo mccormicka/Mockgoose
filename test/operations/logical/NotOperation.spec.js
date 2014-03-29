@@ -1,4 +1,4 @@
-describe('Mockgoose $or Tests', function () {
+describe('Mockgoose $not Tests', function () {
     'use strict';
 
     var mockgoose = require('./../../../Mockgoose');

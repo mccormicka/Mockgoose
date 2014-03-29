@@ -79,6 +79,7 @@ Currently supported model operations are.
 * [$lte](http://docs.mongodb.org/manual/reference/operator/query/lte/),
 * [$ne](http://docs.mongodb.org/manual/reference/operator/query/ne/),
 * [$nin](http://docs.mongodb.org/manual/reference/operator/query/nin/),
+* [$nor](http://docs.mongodb.org/manual/reference/operator/query/nor/),
 * [$not](http://docs.mongodb.org/manual/reference/operator/query/not/),
 * [$or](http://docs.mongodb.org/manual/reference/operator/query/or/),
 * [$pull](http://docs.mongodb.org/manual/reference/operator/update/pull/),
