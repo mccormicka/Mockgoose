@@ -156,4 +156,34 @@ describe('Mockgoose Tests', function () {
             });
         });
     });
+
+    describe('Bugs', function () {
+        describe('Save not implemented in lib/collection.js, but readme says it is supported. #42', function () {
+
+            var user;
+            beforeEach(function(done){
+                mockgoose.reset();
+                user = new AccountModel({
+                    password : 'thePassword1',
+                    email: 'myemail@email.com'
+                });
+                done();
+            });
+
+            it('Not be able to save a duplicate model', function (done) {
+                user.save(function(){
+                    var duplicate = new AccountModel(user);
+                    duplicate.save(function (err, model) {
+                        expect(err).toBeDefined();
+                        expect(model).toBeFalsy();
+                        if(err){
+                            expect(err.name).toBe('MongoError');
+                            expect(err.message).toBe('E11000 duplicate key error index: email');
+                        }
+                        done();
+                    });
+                });
+            });
+        });
+    });
 });
