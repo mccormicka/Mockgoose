@@ -7,6 +7,9 @@ describe('Mockgoose Update Tests', function () {
     mockgoose(mongoose);
     mongoose.connect('mongodb://localhost/TestingDB');
     var AccountModel = require('./../models/AccountModel')(mongoose);
+    var CompanyEntry = require('./../models/ParentModel');
+    var UserEntry = require('./../models/ChildModel');
+    var async = require('async');
 
     beforeEach(function (done) {
         mockgoose.reset();
@@ -44,6 +47,43 @@ describe('Mockgoose Update Tests', function () {
                         }
                     });
                 });
+        });
+
+        it('should be able to pull items that are ObjectIds from nested documents array', function (done) {
+            async.waterfall([
+                function (callback) {
+                    CompanyEntry.create({
+                        name: 'Test Company',
+                        contact: {
+                            email: 'hello@example.com',
+                            address: 'Hoperoad 7'
+                        }
+                    }, function (err, company) {
+                        callback(err, company);
+                    });
+                } , function (company, callback) {
+                    UserEntry.create({
+                        name: 'Max Mustermann',
+                        username: 'max',
+                        email: 'max@example.com',
+                        company: company._id
+                    }, function (err, user) {
+                        company.users.push(user._id);
+                        company.save(function (err, company) {
+                            user.company = company._id;
+                            user.save();
+                            callback(err, company, user);
+                        });
+                    });
+                }
+            ], function (err, result) {
+                CompanyEntry.findOneAndUpdate({name: 'Test Company'}, {$pull: {users: result.users[0]}}, function (err, result) {
+                    expect(err).toBeFalsy();
+                    expect(result.users.length).toBe(0);
+
+                    done();
+                });
+            });
         });
 
         it('should be able to pull items from nested documents array by property', function (done) {
