@@ -7,7 +7,6 @@ Please Share on Twitter if you like #mockgoose
 
 ##What is Mockgoose?
 
-
 Mockgoose is a simplified in memory database that allows you to perform actions on Mongoose Models without having a running instance of MongoDB. 
 
 The main purpose of Mockgoose as you may have guessed from the name is to allow you to mock out your mongoose database during testing so that you do not have to spin up a new database for every test and teardown that same database afterwards.
