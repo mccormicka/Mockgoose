@@ -72,7 +72,7 @@ describe('Count Tests', function () {
     });
 
     describe('Bugs', function () {
-        iit('#48 Count operation is throwing an except https://github.com/mccormicka/Mockgoose/issues/48', function (done) {
+        it('#48 Count operation is throwing an except https://github.com/mccormicka/Mockgoose/issues/48', function (done) {
             expect(function(){
                 SimpleModel.count({name:'one'}, function(){
                     done();
