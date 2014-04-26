@@ -39,8 +39,6 @@ describe('Count Tests', function () {
     });
 
     describe('SHOULD', function () {
-
-
         it('Count the number of items in a {} query', function (done) {
             SimpleModel.count({}, function (err, count) {
                 expect(err).toBeNull();
@@ -68,6 +66,17 @@ describe('Count Tests', function () {
         it('Model.count(function()) should NOT throw an error', function (done) {
             expect(function(){
                 SimpleModel.count(done);
+            }).not.toThrow();
+        });
+
+    });
+
+    describe('Bugs', function () {
+        iit('#48 Count operation is throwing an except https://github.com/mccormicka/Mockgoose/issues/48', function (done) {
+            expect(function(){
+                SimpleModel.count({name:'one'}, function(){
+                    done();
+                });
             }).not.toThrow();
         });
     });
