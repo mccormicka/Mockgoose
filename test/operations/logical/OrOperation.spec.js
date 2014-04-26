@@ -11,6 +11,7 @@ describe('Mockgoose $or Tests', function () {
         price: Number,
         qty: Number,
         sale: Boolean,
+        historyprice: [Number],
         carrier: {
             state: String
         }
@@ -23,12 +24,14 @@ describe('Mockgoose $or Tests', function () {
             {
                 price: 1.99,
                 qty: 20,
-                sale: true
+                sale: true,
+                historyprice: [1.90, 1.77, 1.50]
             },
             {
                 price: 1.99,
                 qty: 50,
-                sale: true
+                sale: true,
+                historyprice: [1.85, 1.60, 1.40]
             },
             {
                 price: 1.99,
@@ -42,11 +45,13 @@ describe('Mockgoose $or Tests', function () {
             }, {
                 price: 1,
                 qty: 21,
-                sale: false
+                sale: false,
+                historyprice: [0.99]
             }, {
                 price: 10,
                 qty: 21,
-                sale: false
+                sale: false,
+                historyprice: [8.99, 7.99]
             }, {
                 carrier: {
                     state: 'NY'
@@ -112,6 +117,16 @@ describe('Mockgoose $or Tests', function () {
                 { sale: true }
             ], qty: { $in: [20, 50] } }).exec().then(function (results) {
                 expect(results.length).toBe(2);
+                done();
+            });
+        });
+
+        it('$or in an array of values', function (done) {
+            Model.find({ $or: [ 
+                { historyprice: 8.99 },
+                { price: 1.99 }
+            ]}).exec().then(function(results) {
+                expect(results.length).toBe(5);
                 done();
             });
         });
