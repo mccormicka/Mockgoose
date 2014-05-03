@@ -5,7 +5,7 @@ describe('Mockgoose Find Tests', function () {
     var Mongoose = require('mongoose').Mongoose;
     var mongoose = new Mongoose();
     mockgoose(mongoose);
-    mongoose.connect('mongodb://localhost/TestingDB');
+    mongoose.connect('mongodb://localhost/TestingDB-58');
     var AccountModel = require('./models/AccountModel')(mongoose);
     var SimpleModel = require('./models/SimpleModel')(mongoose);
     var ObjectId = require('mongodb').BSONPure.ObjectID;
@@ -270,7 +270,7 @@ describe('Mockgoose Find Tests', function () {
         });
 
         it('Not be able to find an object by password', function (done) {
-            AccountModel.find({password:'password'}).exec().then(function(results){
+            AccountModel.find({password: 'password'}).exec().then(function (results) {
                 expect(results.length).toBe(0);
                 done();
             });
@@ -384,8 +384,11 @@ describe('Mockgoose Find Tests', function () {
             });
 
             it('Perform queries on document array objects', function (done) {
-                Model.create({ names: [{name:'one'}, {name:'two'}] }, function (er, test) {
-                    Model.findOne({ names: {name:'one'} }, function (err, result) {
+                Model.create({ names: [
+                    {name: 'one'},
+                    {name: 'two'}
+                ] }, function (er, test) {
+                    Model.findOne({ names: {name: 'one'} }, function (err, result) {
                         expect(err).toBeNull();
                         expect(result._id.toString()).toBe(test._id.toString());
                         done(err);
@@ -647,6 +650,74 @@ describe('Mockgoose Find Tests', function () {
                         expect(result.profile.stuff.id).toBe('12345');
                     }
                     done(err);
+                });
+            });
+        });
+    });
+
+    describe('Bugs', function () {
+
+        describe('#59 https://github.com/mccormicka/Mockgoose/issues/59', function () {
+
+            var Schema = new mongoose.Schema({
+                _id: Number,
+                name: String,
+                orders: [
+                    {
+                        date: Date,
+                        amount: Number
+                    }
+                ]
+            });
+
+            var Model = mongoose.model('bug_59', Schema);
+
+            beforeEach(function (done) {
+                mockgoose.reset();
+                Model.create({
+                        '_id': 1,
+                        'name': 'Joe Customer',
+                        'orders': [
+                            {
+                                'date': '2014-04-01T00:00:00.000Z',
+                                'amount': 100
+                            },
+                            {
+                                'date': '2014-04-02T00:00:00.000Z',
+                                'amount': 50
+                            }
+                        ]
+                    },
+                    {
+                        '_id': 2,
+                        'name': 'Bob Customer',
+                        'orders': [
+                            {
+                                'date': '2014-04-10T00:00:00.000Z',
+                                'amount': 75
+                            },
+                            {
+                                'date': '2014-04-11T00:00:00.000Z',
+                                'amount': 25
+                            }
+                        ]
+                    },
+                    {
+                        '_id': 3,
+                        'name': 'Bob Customer',
+                        'orders': [
+                            {
+                                'date': '2014-04-06T00:00:00.000Z',
+                                'amount': 100
+                            }
+                        ]
+                    }, done);
+            });
+
+            it('Support matching of subdocuments and arrays using dot notation', function (done) {
+                Model.find({ 'orders.amount': 100 }, {}).exec().then(function (models) {
+                    expect(models.length).toBe(2);
+                    done();
                 });
             });
         });
