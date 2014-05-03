@@ -480,5 +480,30 @@ describe('Mockgoose Update Tests', function () {
                 });
             });
         });
+
+        describe('#54 https://github.com/mccormicka/Mockgoose/issues/54', function () {
+
+            var bugSchema = new mongoose.Schema(
+                {
+                    name: String,
+                    age:Number
+                }
+            );
+            var Model = mongoose.model('Bug54', bugSchema);
+
+            afterEach(function (done) {
+                //Reset the database after every test.
+                mockgoose.reset();
+                done();
+            });
+
+            it('pass conditions to upsert', function (done) {
+                Model.findOneAndUpdate({name:'updateName'}, {age:35}, {upsert:true}).exec().then(function(model){
+                    expect(model.name).toBe('updateName');
+                    expect(model.age).toBe(35);
+                    done();
+                });
+            });
+        });
     });
 });
