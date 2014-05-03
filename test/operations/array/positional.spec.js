@@ -1,4 +1,4 @@
-ddescribe('$(update)', function () {
+describe('$(update) http://docs.mongodb.org/manual/reference/operator/update/positional/', function () {
     'use strict';
 
     var mockgoose = require('./../../../Mockgoose');
@@ -26,11 +26,7 @@ ddescribe('$(update)', function () {
             mockgoose.reset();
             Model.update({'_id': 1},
                 { 'grades': [ 80, 85, 90 ],
-                    'gradeDetails': [
-                        { grade: 80, mean: 75, std: 8 },
-                        { grade: 85, mean: 90, std: 5 },
-                        { grade: 90, mean: 85, std: 3 }
-                    ]
+                    'gradeDetails': [ { grade: 80, mean: 75, std: 8 }, { grade: 85, mean: 90, std: 5 }, { grade: 90, mean: 85, std: 3 }]
                 }, {upsert: true}, done);
         });
 
