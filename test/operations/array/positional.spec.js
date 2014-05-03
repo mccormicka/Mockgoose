@@ -141,7 +141,7 @@ describe('$(update) http://docs.mongodb.org/manual/reference/operator/update/pos
                     }, {upsert: true}, done);
             });
 
-            it('Not throw an error when using the update positional operator.', function (done) {
+            it('$Pull does not work with nested arrays and positional operator', function (done) {
                 expect(function () {
                     Model.findOneAndUpdate({ p: 'SomeId', 'grps.grpId': 'SomeGrpId' }, {
                         '$pull': {
