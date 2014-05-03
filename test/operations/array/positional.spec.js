@@ -104,7 +104,7 @@ describe('$(update) http://docs.mongodb.org/manual/reference/operator/update/pos
             });
         });
 
-        ddescribe('#47 https://github.com/mccormicka/Mockgoose/issues/47', function () {
+        describe('#47 https://github.com/mccormicka/Mockgoose/issues/47', function () {
 
             var Schema = new mongoose.Schema({
                 _id:Number,
