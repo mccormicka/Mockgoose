@@ -103,5 +103,58 @@ describe('$(update) http://docs.mongodb.org/manual/reference/operator/update/pos
                 }).not.toThrow();
             });
         });
+
+        ddescribe('#47 https://github.com/mccormicka/Mockgoose/issues/47', function () {
+
+            var Schema = new mongoose.Schema({
+                _id:Number,
+                p: String,
+                grps: [
+                    {
+                        grpId: String,
+                        attrs: [
+                            {
+                                attrId: String
+                            }
+                        ]
+                    }
+                ]
+            });
+
+            var Model = mongoose.model('Bug_47', Schema);
+
+            beforeEach(function (done) {
+                mockgoose.reset();
+                Model.update({'_id': 1},
+                    {
+                        p: 'SomeId',
+                        grps: [
+                            {
+                                grpId: 'SomeGrpId',
+                                attrs: [
+                                    {
+                                        attrId: 'SomeAttrId'
+                                    }
+                                ]
+                            }
+                        ]
+                    }, {upsert: true}, done);
+            });
+
+            it('Not throw an error when using the update positional operator.', function (done) {
+                expect(function () {
+                    Model.findOneAndUpdate({ p: 'SomeId', 'grps.grpId': 'SomeGrpId' }, {
+                        '$pull': {
+                            'grps.$.attrs': {
+                                attrId: 'SomeAttrId'
+                            }
+                        }
+                    }).exec().then(function (model) {
+                            expect(model.grps[0].attrs.length).toBe(0);
+                            done();
+                        });
+                }).not.toThrow();
+            });
+        });
     });
 });
