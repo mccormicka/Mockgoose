@@ -48,14 +48,28 @@ describe('Index Tests', function () {
 
     describe('Bugs', function () {
 
+        // create a model to work on
+        mongoose.model('indexUniqueModel', new mongoose.Schema({
+            name: { type: String, index: { unique: true } }
+        }));
+        var IndexUniqueModel = mongoose.model('indexUniqueModel'),
+            NAME = 'Vlad Impaler';
+
         ddescribe('#58 https://github.com/mccormicka/Mockgoose/issues/58', function () {
             it('Support duplicate validation on `index: { unique: true} }`', function (done) {
                 expect(function () {
-                    new mongoose.Schema({
-                        index: {unique: true}
-                    });
+                    IndexUniqueModel.create({ name: NAME });
                 }).not.toThrow();
-                done();
+                expect(function () {
+                    IndexUniqueModel.create({ name: NAME });
+                }).toThrow();
+                IndexUniqueModel.create({ name: NAME }, function (err) {
+                    expect(err).not.toBe(null);
+                    if ( err ) {
+                        expect(err.code).toBe(11000);
+                    }
+                    done();
+                });
             });
 
         });
