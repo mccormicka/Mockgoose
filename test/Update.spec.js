@@ -506,7 +506,7 @@ describe('Mockgoose Update Tests', function () {
             });
         });
 
-        describe('TO RAISE', function () {
+        describe('#67 https://github.com/mccormicka/Mockgoose/pull/67', function () {
 
             var uniqueIndexSchema = new mongoose.Schema(
                 {
@@ -514,7 +514,7 @@ describe('Mockgoose Update Tests', function () {
                     title: { type: String, unique: true }
                 }
             );
-            var Model = mongoose.model('BugXX', uniqueIndexSchema);
+            var Model = mongoose.model('Bug67', uniqueIndexSchema);
 
             afterEach(function (done) {
                 //Reset the database after every test.
