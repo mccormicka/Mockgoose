@@ -505,5 +505,36 @@ describe('Mockgoose Update Tests', function () {
                 });
             });
         });
+
+        describe('TO RAISE', function () {
+
+            var uniqueIndexSchema = new mongoose.Schema(
+                {
+                    name: String,
+                    title: { type: String, unique: true }
+                }
+            );
+            var Model = mongoose.model('BugXX', uniqueIndexSchema);
+
+            afterEach(function (done) {
+                //Reset the database after every test.
+                mockgoose.reset();
+                done();
+            });
+
+            it('should generate duplicate key error on upsert', function (done) {
+                Model.findOneAndUpdate({name:'name1'}, {title:'unique'}, {upsert:true}, function (err, model) {
+                    expect(model.name).toBe('name1');
+                    expect(model.title).toBe('unique');
+
+                    Model.findOneAndUpdate({name:'name2'}, {title:'unique'}, {upsert:true}, function (err, model) {
+                        expect(err).toBeDefined();
+                        expect(model).toBeUndefined();
+                        done();
+                    });
+                });
+            });
+        });
+
     });
 });
