@@ -62,6 +62,13 @@ describe('Connection Tests', function () {
             });
         });
 
+        it('#68 https://github.com/mccormicka/Mockgoose/issues/68 Dispatch connected event once createConnection', function (done) {
+            var connection = mongoose.createConnection('mongodb://localhost:27017/blah');
+            connection.once('connected', function () {
+                done();
+            });
+        });
+
         it('Dispatch open event on createConnection', function (done) {
             var connection = mongoose.createConnection('mongodb://localhost:27017/blah');
             connection.on('open', function () {
