@@ -173,7 +173,7 @@ describe('Mockgoose Find Tests', function () {
                         //Make sure our mask does not remove methods.
                         expect(typeof model.save === 'function').toBe(true);
                         //Make sure it also does not convert object types.
-                        expect(model._id).toEqual(result._id);
+                        expect(model._id.equals(result._id)).toBe(true);
                         done(err);
                     } else {
                         done('Error finding model' + err + models);
@@ -196,7 +196,7 @@ describe('Mockgoose Find Tests', function () {
                         //Make sure our mask does not remove methods.
                         expect(typeof model.save === 'function').toBe(true);
                         //Make sure it also does not convert object types.
-                        expect(model._id).toEqual(result._id);
+                        expect(model._id.equals(result._id)).toBe(true);
                         done(err);
                     } else {
                         done('Error finding model' + err + models);
