@@ -23,7 +23,7 @@
   },
   "main": "Mockgoose",
   "engines": {
-    "node": ">=0.6.19"
+    "node": ">=0.8.0"
   },
   "dependencies": {
     "mongoosemask": "https://github.com/mccormicka/mongoosemask/archive/master.tar.gz",
@@ -38,8 +38,8 @@
     "grunt": "~0.4.4",
     "jasmine-node": "https://github.com/mccormicka/jasmine-node/archive/exclusive-tests.tar.gz",
     "grunt-contrib-watch": "0.3.1",
-    "grunt-contrib-jshint": "0.4.3",
-    "grunt-jasmine-node": "~0.1.0",
+    "grunt-contrib-jshint": "0.10.0",
+    "grunt-jasmine-node": "0.1.0",
     "node-uuid": "~1.4.1",
     "async": "~0.2.9",
     "grunt-cli": "~0.1.13"
