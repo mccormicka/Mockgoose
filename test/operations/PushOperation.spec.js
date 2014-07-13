@@ -5,7 +5,7 @@ describe('Mockgoose Update Tests', function () {
     var Mongoose = require('mongoose').Mongoose;
     var mongoose = new Mongoose();
     mockgoose(mongoose);
-    mongoose.connect('mongodb://localhost/TestingDB');
+    mongoose.connect('mongodb://localhost/TestingDB4');
     var AccountModel = require('./../models/AccountModel')(mongoose);
 
     beforeEach(function (done) {
@@ -196,6 +196,25 @@ describe('Mockgoose Update Tests', function () {
                     }
                 });
         });
+
     });
 
+    ddescribe('Bugs', function () {
+        var Schema = new mongoose.Schema({
+            name:String
+        });
+        var Model = mongoose.model('Bugs', Schema);
+
+        it('#52 https://github.com/mccormicka/Mockgoose/issues/52', function (done) {
+            Model.create({name:'bug_52'}).then(function(model){
+                console.log('Model ', model);
+                Model.findOneAndUpdate({name:'bug_52'}, {$push: {push: 'pushed'}}).exec().then(function(result){
+                    expect(result.push.length).toBe(1);
+                    expect(result.push[0]).toBe('pushed');
+                    done();
+                });
+            });
+        });
+
+    });
 });

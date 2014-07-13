@@ -49,6 +49,22 @@ describe('Mockgoose $INC Operation Tests', function () {
                 done(err);
             });
         });
+    });
+
+    ddescribe('Bugs', function () {
+        var Schema = new mongoose.Schema({
+            name:String
+        });
+        var Model = mongoose.model('Bugs', Schema);
+
+        it('#52 https://github.com/mccormicka/Mockgoose/issues/52', function (done) {
+            Model.create({name:'bug_52'}).then(function(){
+                Model.findOneAndUpdate({name:'bug_52'}, {$inc: {counter: 1}}).exec().then(function(result){
+                    expect(result.counter).toBe(1);
+                    done();
+                });
+            });
+        });
 
     });
 });
