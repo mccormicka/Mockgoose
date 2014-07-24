@@ -1,7 +1,7 @@
 describe('Mockgoose Update Tests', function () {
     'use strict';
 
-    var mockgoose = require('../../../Mockgoose');
+    var mockgoose = require('./../../Mockgoose');
     var Mongoose = require('mongoose').Mongoose;
     var mongoose = new Mongoose();
     mockgoose(mongoose);

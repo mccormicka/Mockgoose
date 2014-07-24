@@ -84,6 +84,53 @@ describe('Mockgoose Update Tests', function () {
         });
     });
 
+    describe('options.overwrite', function () {
+
+        it('should be able to overwrite items', function (done) {
+            AccountModel.create({email: 'testing@testing.com', password: 'password', values: ['one', 'two']}, function (err, model) {
+                expect(model).toBeDefined();
+                if (model) {
+                    AccountModel.update({email: 'testing@testing.com'}, {email: 'updated@testing.com'}, {overwrite: true}, function (err, result) {
+                        expect(result).toBe(1);
+                        AccountModel.findOne({email: 'updated@testing.com'}, function (err, result) {
+                            if (result) {
+                                expect(result.email).toBe('updated@testing.com');
+                                expect(result.password).toBeUndefined();
+                                expect(result.values.length).toBe(0);
+                                done(err);
+                            } else {
+                                done('Error finding models');
+                            }
+                        });
+                    });
+                } else {
+                    done(err);
+                }
+            });
+        });
+
+        it('should have the same _id after overwriting an item', function (done) {
+            AccountModel.create({email: 'testing@testing.com', password: 'password', values: ['one', 'two']}, function (err, model) {
+                expect(model).toBeDefined();
+                if (model) {
+                    model.update({email: 'updated@testing.com'}, {overwrite: true}, function (err, result) {
+                        expect(result).toBe(1);
+                        AccountModel.findOne({_id: model._id}, function (err, result) {
+                            expect(result).toBeDefined();
+                            if (result) {
+                                expect(result.email).toBe('updated@testing.com');
+                            }
+                            done(err);
+                        });
+                    });
+                } else {
+                    done(err);
+                }
+
+            });
+        });
+    });
+
     describe('$pull', function () {
 
         it('should be able to pull items from nested documents array', function (done) {
