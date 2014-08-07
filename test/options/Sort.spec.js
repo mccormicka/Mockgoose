@@ -22,6 +22,49 @@ describe('Mockgoose Find Tests', function () {
 
     describe('Sort', function () {
 
+        it('Be able to sort items by field in ascending order ObjectId', function (done) {
+            IndexModel.create({name: 'aaa'}, {name: 'bbb'}, function (err, results) {
+                expect(err).toBeNull();
+                expect(results).toBeDefined();
+                if (results) {
+                    IndexModel.findOne({}, {}, {sort: {_id: 1}}, function (err, model) {
+                        expect(err).toBeNull();
+                        expect(model).toBeDefined();
+                        if (model) {
+                            expect(model.name).toBe('aaa');
+                            done(err);
+                        } else {
+                            done('Error finding models');
+                        }
+                    });
+                } else {
+                    done('Error creating Models!');
+                }
+            });
+        });
+
+        it('Be able to sort items by field in descending order ObjectId', function (done) {
+            IndexModel.create({name: 'aaa'}, {name: 'bbb'}, function (err, results) {
+                expect(err).toBeNull();
+                expect(results).toBeDefined();
+                if (results) {
+                    IndexModel.findOne({}, {}, {sort: {_id: -1}}, function (err, model) {
+                        expect(err).toBeNull();
+                        expect(model).toBeDefined();
+                        if (model) {
+                            expect(model.name).toBe('bbb');
+                            done(err);
+                        } else {
+                            done('Error finding models');
+                        }
+                    });
+                } else {
+                    done('Error creating Models!');
+                }
+
+            });
+        });
+
         it('Be able to sort items by field in ascending order Numeric', function (done) {
             IndexModel.create({name: 'zzz', value: 1}, {name: 'aaa', value: 2}, function (err, results) {
                 expect(err).toBeNull();
