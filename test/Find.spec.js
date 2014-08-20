@@ -368,6 +368,30 @@ describe('Mockgoose Find Tests', function () {
             });
         });
 
+        it('Should find models if matching date passed', function (done) {
+            SimpleModel.create({date: new Date(2014,8,20,0,0,0)}, function (err, created) {
+                expect(err).toBeFalsy();
+                expect(created).toBeDefined();
+                SimpleModel.findOne({date: new Date(2014,8,20,0,0,0)}, function (err, found) {
+                    expect(err).toBeFalsy();
+                    expect(found).toBeDefined();
+                    done();
+                });
+            });
+        });
+
+        it('Should find no models if non-matching date passed', function (done) {
+            SimpleModel.create({date: new Date(2014,8,20,0,0,0)}, function (err, created) {
+                expect(err).toBeFalsy();
+                expect(created).toBeDefined();
+                SimpleModel.findOne({date: new Date(2015,8,20,0,0,0)}, function (err, found) {
+                    expect(err).toBeFalsy();
+                    expect(found).toBeFalsy();
+                    done();
+                });
+            });
+        });
+
         describe('FindOne on nested document array', function () {
 
             var schema = new mongoose.Schema({ names: [] });
