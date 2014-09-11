@@ -18,9 +18,13 @@ describe('Mockgoose $all Tests', function () {
                 num: Number,
                 color: String
             }
+        ],
+        myRefs: [
+            {type: mongoose.Schema.Types.ObjectId}
         ]
     });
     var Model = mongoose.model('AllTests', Schema);
+    var myIds = [mongoose.Types.ObjectId(), mongoose.Types.ObjectId()];
 
     beforeEach(function (done) {
         mockgoose.reset();
@@ -57,9 +61,11 @@ describe('Mockgoose $all Tests', function () {
                 qty: [
                     { size: 'M', num: 100, color: 'green' }
                 ]
-            }, function (err) {
-                done(err);
-            });
+            },
+            {
+                code: 'lmn',
+                myRefs: myIds
+            }, done);
     });
 
     afterEach(function (done) {
@@ -101,6 +107,22 @@ describe('Mockgoose $all Tests', function () {
                         done('Error retreiving all data');
                     }
                 }, done);
+        });
+
+        it('Be able to match ObjectIds', function(done) {
+            var query = myIds.map(function(obj) {
+                return obj._id;
+            });
+            Model.find({myRefs: {$all: myIds}}).exec().then(function(results) {
+                expect(results).toBeDefined();
+                expect(results.length).toBe(1);
+                if (results.length === 1) {
+                    expect(results[0].code).toBe('lmn');
+                    done();
+                } else {
+                    done('Error retreiving all data');
+                }
+            }, done);
         });
     });
 });
