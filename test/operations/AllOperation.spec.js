@@ -110,9 +110,6 @@ describe('Mockgoose $all Tests', function () {
         });
 
         it('Be able to match ObjectIds', function(done) {
-            var query = myIds.map(function(obj) {
-                return obj._id;
-            });
             Model.find({myRefs: {$all: myIds}}).exec().then(function(results) {
                 expect(results).toBeDefined();
                 expect(results.length).toBe(1);
