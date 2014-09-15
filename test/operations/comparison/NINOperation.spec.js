@@ -62,4 +62,25 @@ describe('Mockgoose $nin', function () {
             });
         });
     });
+
+    describe('ObjectIds', function() {
+        var schema = new mongoose.Schema({
+            myRefs: [
+                {type: mongoose.Schema.Types.ObjectId}
+            ]
+        });
+        var Test = mongoose.model('NINObjectIdTest', schema);
+        var myIds = [mongoose.Types.ObjectId(), mongoose.Types.ObjectId()];
+
+        it('works with ObjectIds', function(done) {
+            Test.create({myRefs: myIds}, function(er, test) {
+                Test.findOne({ myRefs: { $nin: [mongoose.Types.ObjectId()] } }, function(er, result) {
+                    expect(er).toBeNull();
+                    expect(result._id.toString()).toBe(test._id.toString());
+                    done();
+                });
+            });
+        });
+
+    });
 });
