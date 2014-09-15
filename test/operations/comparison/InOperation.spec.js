@@ -96,6 +96,24 @@ describe('Mockgoose Find Tests', function () {
                     });
                 });
         });
+
+        it('should not perform partial match', function(done) {
+            AccountModel.create(
+                {email: 'multiples@valid.com', password: 'password', values: ['one', 'two']},
+                {email: 'multiples@invalid.com', password: 'password', values: ['two', 'three']},
+                function () {
+                    AccountModel.find({email: {$in: ['valid']}}, function (err, result) {
+                        expect(err).toBeFalsy();
+                        expect(result).toBeDefined();
+                        if (result) {
+                            expect(result.length).toBe(0);
+                            done(err);
+                        } else {
+                            done('Incorrectly matched models');
+                        }
+                    });
+                });
+        });
     });
 
     describe('Nested Values', function () {
