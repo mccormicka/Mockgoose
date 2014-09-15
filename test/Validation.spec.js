@@ -48,7 +48,7 @@ describe('Mockgoose model validation Tests', function () {
     });
 
     it('should be able to invoke validator on a compound unique index model', function (done) {
-        //Email needs to be unique!
+        //Both values need to be unique!
         CompoundUniqueIndexModel.create({owner: 'foo', name: 'bar'}, function (err, model) {
             expect(err).toBeDefined();
             expect(model).toBeFalsy();
