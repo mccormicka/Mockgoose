@@ -87,6 +87,7 @@ Currently supported model operations are.
 * [$pushAll](http://docs.mongodb.org/manual/reference/operator/update/pushAll/),
 * [$regex](http://docs.mongodb.org/manual/reference/operator/query/regex/),
 * [$set](http://docs.mongodb.org/manual/reference/operator/update/set/),
+* [$setOnInsert](http://docs.mongodb.org/manual/reference/operator/update/setOnInsert/),
 * [$unset](http://docs.mongodb.org/manual/reference/operator/update/unset/)
 
 ##Options
