@@ -7,11 +7,19 @@ describe('Mockgoose model validation Tests', function () {
     mockgoose(mongoose);
     mongoose.connect('mongodb://localhost/TestingDB');
     var AccountModel = require('./models/AccountModel')(mongoose);
+    var CompoundUniqueIndexModel = require('./models/CompoundUniqueIndexModel')(mongoose);
 
     beforeEach(function (done) {
         mockgoose.reset();
         AccountModel.create(
             {email: 'valid@valid.com', password: 'password'},
+            function (err, models) {
+                expect(err).toBeFalsy();
+                expect(models).toBeTruthy();
+                done(err);
+            });
+        CompoundUniqueIndexModel.create(
+            {owner: 'foo', name: 'bar'},
             function (err, models) {
                 expect(err).toBeFalsy();
                 expect(models).toBeTruthy();
@@ -38,4 +46,18 @@ describe('Mockgoose model validation Tests', function () {
             done();
         });
     });
+
+    it('should be able to invoke validator on a compound unique index model', function (done) {
+        //Both values need to be unique!
+        CompoundUniqueIndexModel.create({owner: 'foo', name: 'bar'}, function (err, model) {
+            expect(err).toBeDefined();
+            expect(model).toBeFalsy();
+            if(err){
+                expect(err.name).toBe('MongoError');
+                expect(err.message).toBe('E11000 duplicate key error index: owner, name');
+            }
+            done();
+        });
+    });
+
 });
