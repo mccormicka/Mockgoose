@@ -24,7 +24,7 @@ To run the tests and see what is supported by Mockgoose navigate to the Mockgoos
 You simply require Mongoose and Mockgoose and wrap Mongoose with Mockgoose.
 
     var mongoose = require('mongoose');
-    var mockgoose = require('Mockgoose');
+    var mockgoose = require('mockgoose');
 
     mockgoose(mongoose);
 
