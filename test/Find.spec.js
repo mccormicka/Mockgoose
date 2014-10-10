@@ -255,6 +255,16 @@ describe('Mockgoose Find Tests', function () {
             });
         });
 
+        it('Should not throw an error if you pass include with only _id exclude object', function (done) {
+            SimpleModel.create({name: 'fields', value: 'one', type: 'blue', bool: 1}, function () {
+                SimpleModel.findOne({type: 'blue'}, {value: 1, _id: 0}, function (err, model) {
+                    expect(err).toBeFalsy();
+                    expect(model).toBeDefined();
+                    done();
+                });
+            });
+        });
+
         it('Should throw an error if you pass a mixed include/exclude string', function (done) {
             SimpleModel.create({name: 'fields', value: 'one', type: 'blue', bool: 1}, function () {
                 SimpleModel.findOne({type: 'blue'}, '-name value type -bool', function (err, model) {
@@ -264,6 +274,16 @@ describe('Mockgoose Find Tests', function () {
                         expect(err.message).toBe('You cannot currently mix including and excluding fields. Contact us if this is an issue.');
                     }
                     expect(model).toBeUndefined();
+                    done();
+                });
+            });
+        });
+
+        it('Should not throw an error if you pass include with only _id exclude string', function (done) {
+            SimpleModel.create({name: 'fields', value: 'one', type: 'blue', bool: 1}, function () {
+                SimpleModel.findOne({type: 'blue'}, 'value -_id', function (err, model) {
+                    expect(err).toBeFalsy();
+                    expect(model).toBeDefined();
                     done();
                 });
             });
