@@ -72,6 +72,16 @@ describe('Mockgoose $and Tests', function () {
             });
         });
 
+        it('Find values that match $and operation containing implicit and operations', function (done) {
+            Model.find({ $and: [
+                { price: 1.99, sale: true },
+                { qty: { $gt: 20 }, sale: true }
+            ] }).exec().then(function (results) {
+                    expect(results.length).toBe(2);
+                    done();
+                });
+        });
+
         it('Perform the $and operation on a single field', function (done) {
             Model.update({ $and: [
                 { price: { $ne: 1.99 } },
