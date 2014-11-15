@@ -121,8 +121,18 @@ describe('Mockgoose $or Tests', function () {
             });
         });
 
+        it('$or with array of implicit and-values', function (done) {
+          Model.find({ $or: [
+            { historyprice: 8.99, qty: 21 },
+            { price: 1.99, qty: 20 }
+          ]}).exec().then(function(results) {
+            expect(results.length).toBe(2);
+            done();
+          });
+        });
+
         it('$or in an array of values', function (done) {
-            Model.find({ $or: [ 
+            Model.find({ $or: [
                 { historyprice: 8.99 },
                 { price: 1.99 }
             ]}).exec().then(function(results) {
