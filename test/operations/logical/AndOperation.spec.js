@@ -99,6 +99,16 @@ describe('Mockgoose $and Tests', function () {
             });
         });
 
+        it('Find values that match $or inside $and operation', function (done) {
+            Model.find({ $and: [
+                { price: 1.99 },
+                { $or: [{qty: 19}, {sale: false}] }
+            ] }).exec().then(function (results) {
+                    expect(results.length).toBe(2);
+                    done();
+                });
+        });
+
         describe('Mongoose', function () {
 
             it('Find values with Mongoose and operation', function (done) {

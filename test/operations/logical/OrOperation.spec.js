@@ -140,5 +140,15 @@ describe('Mockgoose $or Tests', function () {
                 done();
             });
         });
+
+        it('Find values that match $and inside $or operation', function (done) {
+            Model.find({ $or: [
+                { $and: [{price: 1.99}, {qty: 20}] },
+                { $and: [{price: 10}, {qty: 21}] }
+            ] }).exec().then(function (results) {
+                    expect(results.length).toBe(2);
+                    done();
+                });
+        });
     });
 });
