@@ -10,7 +10,8 @@ describe('Mockgoose $and Tests', function () {
     var Schema = new mongoose.Schema({
         price: Number,
         qty: Number,
-        sale: Boolean
+        sale: Boolean,
+        historyprice: [Number]
     });
     var Model = mongoose.model('AllTests', Schema);
 
@@ -20,12 +21,14 @@ describe('Mockgoose $and Tests', function () {
             {
                 price: 1.99,
                 qty: 21,
-                sale: true
+                sale: true,
+                historyprice: [1.90, 1.77, 1.50]
             },
             {
                 price: 1.99,
                 qty: 21,
-                sale: true
+                sale: true,
+                historyprice: [20, 42]
             },
             {
                 price: 1.99,
@@ -107,6 +110,16 @@ describe('Mockgoose $and Tests', function () {
                     expect(results.length).toBe(2);
                     done();
                 });
+        });
+
+        it('$and in an array of values', function (done) {
+            Model.find({ $and: [
+                { historyprice: 1.90 },
+                { price: 1.99 }
+            ]}).exec().then(function(results) {
+                expect(results.length).toBe(1);
+                done();
+            });
         });
 
         describe('Mongoose', function () {
