@@ -61,6 +61,7 @@ module.exports = function (mongoose, throwErrors) {
             handleConnection(callback, connection, err);
         });
         connection.model = mongoose.model;
+        connection.models = mongoose.models;
         return connection;
     };
 
