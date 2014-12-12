@@ -1,4 +1,5 @@
 before_install:
+  - npm update -g npm
   - npm install -g npm
 language: node_js
 node_js:
