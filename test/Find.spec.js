@@ -241,6 +241,24 @@ describe('Mockgoose Find Tests', function () {
             });
         });
 
+        it('Be able to pass a fields include string and exclude _id', function (done) {
+            SimpleModel.create({name: 'fields', value: 'one', type: 'blue', bool: 1}, function () {
+                SimpleModel.find({type: 'blue'}, 'value type -_id', function (err, models) {
+                    expect(err).toBeFalsy();
+                    expect(models.length).toBe(1);
+                    if (models) {
+                        var model = models[0];
+                        expect(model.name).toBeUndefined();
+                        expect(model.value).toBe('one');
+                        expect(model.type).toBe('blue');
+                        done(err);
+                    } else {
+                        done('Error finding model' + err + models);
+                    }
+                });
+            });
+        });
+
         it('Should throw an error if you pass a mixed include/exclude object', function (done) {
             SimpleModel.create({name: 'fields', value: 'one', type: 'blue', bool: 1}, function () {
                 SimpleModel.findOne({type: 'blue'}, {value: 1, type: 0}, function (err, model) {
