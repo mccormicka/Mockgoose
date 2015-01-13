@@ -33,7 +33,6 @@
     "mongoose": "^3.8.9"
   },
   "devDependencies": {
-    "mongoose": "~3.8.2",
     "mongoose-validator": "~0.2.1",
     "bcrypt": "~0.7.5",
     "grunt": "~0.4.4",
