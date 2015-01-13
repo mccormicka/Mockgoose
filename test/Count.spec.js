@@ -63,6 +63,17 @@ describe('Count Tests', function () {
             });
         });
 
+        it('Have an error when mongoose is disconnected', function (done) {
+            mockgoose.setMockReadyState(mongoose.connection, 0);
+
+            SimpleModel.count({}, function (err, count) {
+                expect(err).toBeDefined();
+                expect(count).toBeUndefined();
+                mockgoose.setMockReadyState(mongoose.connection, 1);
+                done();
+            });
+        });
+
         it('Model.count(function()) should NOT throw an error', function (done) {
             expect(function(){
                 SimpleModel.count(done);

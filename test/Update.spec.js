@@ -82,6 +82,25 @@ describe('Mockgoose Update Tests', function () {
 
             });
         });
+
+        it('Should have an error when mongoose is disconnected', function (done) {
+            AccountModel.create({email: 'testing@testing.com', password: 'password', values: ['one', 'two']}, function (err, model) {
+                expect(model).toBeDefined();
+                if (model) {
+                    mockgoose.setMockReadyState(mongoose.connection, 0);
+
+                    model.update({email: 'updated@testing.com'}, function (err, result) {
+                        expect(err).toBeDefined();
+                        expect(result).toBeUndefined();
+                        mockgoose.setMockReadyState(mongoose.connection, 1);
+                        done();
+                    });
+                } else {
+                    done(err);
+                }
+
+            });
+        });
     });
 
     describe('$pull', function () {

@@ -20,6 +20,7 @@ describe('Connection Tests', function () {
         it('Dispatch connecting event on connect', function (done) {
             var connection = mongoose.connect('mongodb://localhost:27017/blah').connection;
             connection.on('connecting', function () {
+                expect(connection._mockReadyState).toBe(2);
                 done();
             });
         });
@@ -27,6 +28,7 @@ describe('Connection Tests', function () {
         it('Dispatch connected event on connect', function (done) {
             var connection = mongoose.connect('mongodb://localhost:27017/blah').connection;
             connection.on('connected', function () {
+                expect(connection._mockReadyState).toBe(1);
                 done();
             });
         });
@@ -34,6 +36,7 @@ describe('Connection Tests', function () {
         it('Dispatch open event on connect', function (done) {
             var connection = mongoose.connect('mongodb://localhost:27017/blah').connection;
             connection.on('open', function () {
+                expect(connection._mockReadyState).toBe(1);
                 done();
             });
         });
@@ -44,6 +47,7 @@ describe('Connection Tests', function () {
             var connection = mongoose.connect('mongodb://localhost:27017/blah').connection;
             connection.on('error', function (err) {
                 expect(err).toBeDefined();
+                expect(connection._mockReadyState).toBe(0);
                 done();
             });
         });
@@ -51,6 +55,7 @@ describe('Connection Tests', function () {
         it('Dispatch connecting event on createConnection', function (done) {
             var connection = mongoose.createConnection('mongodb://localhost:27017/blah');
             connection.on('connecting', function () {
+                expect(connection._mockReadyState).toBe(2);
                 done();
             });
         });
@@ -58,6 +63,7 @@ describe('Connection Tests', function () {
         it('Dispatch connected event on createConnection', function (done) {
             var connection = mongoose.createConnection('mongodb://localhost:27017/blah');
             connection.on('connected', function () {
+                expect(connection._mockReadyState).toBe(1);
                 done();
             });
         });
@@ -65,6 +71,7 @@ describe('Connection Tests', function () {
         it('#68 https://github.com/mccormicka/Mockgoose/issues/68 Dispatch connected event once createConnection', function (done) {
             var connection = mongoose.createConnection('mongodb://localhost:27017/blah');
             connection.once('connected', function () {
+                expect(connection._mockReadyState).toBe(1);
                 done();
             });
         });
@@ -72,6 +79,7 @@ describe('Connection Tests', function () {
         it('Dispatch open event on createConnection', function (done) {
             var connection = mongoose.createConnection('mongodb://localhost:27017/blah');
             connection.on('open', function () {
+                expect(connection._mockReadyState).toBe(1);
                 done();
             });
         });
@@ -82,6 +90,7 @@ describe('Connection Tests', function () {
             var connection = mongoose.createConnection('mongodb://localhost:27017/blah');
             connection.on('error', function (err) {
                 expect(err).toBeDefined();
+                expect(connection._mockReadyState).toBe(0);
                 done();
             });
         });
