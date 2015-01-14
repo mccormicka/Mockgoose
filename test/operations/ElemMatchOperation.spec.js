@@ -15,8 +15,9 @@ describe('Mockgoose $elemMatch Tests', function () {
                 name: String,
                 school: Number,
                 age: Number
-            }
-        ]
+            },
+        ],
+        values: [Number]
     });
     var Model = mongoose.model('AllTests', Schema);
 
@@ -29,7 +30,8 @@ describe('Mockgoose $elemMatch Tests', function () {
                     { name: 'john', school: 102, age: 10 },
                     { name: 'jess', school: 102, age: 11 },
                     { name: 'jeff', school: 108, age: 15 }
-                ]
+                ],
+            values: [1, 2, 3]
             },
             {
                 _id: 2,
@@ -37,7 +39,8 @@ describe('Mockgoose $elemMatch Tests', function () {
                 students: [
                     { name: 'ajax', school: 100, age: 7 },
                     { name: 'achilles', school: 100, age: 8 }
-                ]
+                ],
+                values: [2, 3]
             },
             {
                 _id: 3,
@@ -45,14 +48,16 @@ describe('Mockgoose $elemMatch Tests', function () {
                 students: [
                     { name: 'ajax', school: 100, age: 7 },
                     { name: 'achilles', school: 100, age: 8 }
-                ]
+                ],
+                values: [3, 4, 5]
             },
             {
                 _id: 4,
                 zipcode: 63109,
                 students: [
                     { name: 'barney', school: 102, age: 7 }
-                ]
+                ],
+                values: [9]
             }, function (err) {
                 done(err);
             });
@@ -88,6 +93,47 @@ describe('Mockgoose $elemMatch Tests', function () {
                     expect(results[0].students[0].name).toBe('jess');
                     done();
                 }, done);
+        });
+
+        it('should be able to query for a field match in an array', function(done) {
+            Model.find({ students: { $elemMatch: { name: 'ajax' } } }).exec().then(function(results) {
+                expect(results).toBeDefined();
+                expect(results.length).toBe(2);
+                expect(results[0]._id).toBe(2);
+                expect(results[1]._id).toBe(3);
+                done();
+            });
+        });
+
+        it('should be able to query for a value match in an array', function(done) {
+            Model.find({ values: { $elemMatch: { $gt: 3 } } }).exec().then(function(results) {
+                expect(results).toBeDefined();
+                expect(results.length).toBe(2);
+                expect(results[0]._id).toBe(3);
+                expect(results[1]._id).toBe(4);
+                done();
+            });
+        });
+
+        it('should be able to query for an $in match in an array', function(done) {
+            Model.find({ values: { $elemMatch: { $in: [1, 2] } } }).exec().then(function(results) {
+                expect(results).toBeDefined();
+                expect(results.length).toBe(2);
+                expect(results[0]._id).toBe(1);
+                expect(results[1]._id).toBe(2);
+                done();
+            });
+        });
+
+        it('should be able to query for a $nin match in an array', function(done) {
+            Model.find({ values: { $elemMatch: { $nin: [2, 3] } } }).exec().then(function(results) {
+                expect(results).toBeDefined();
+                expect(results.length).toBe(3);
+                expect(results[0]._id).toBe(1);
+                expect(results[1]._id).toBe(3);
+                expect(results[2]._id).toBe(4);
+                done();
+            });
         });
     });
 });
