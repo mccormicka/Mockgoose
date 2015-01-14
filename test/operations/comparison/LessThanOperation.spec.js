@@ -18,7 +18,10 @@ describe('Mockgoose $lt Tests', function () {
                 num: Number,
                 color: String
             }
-        ]
+        ],
+        summary: {
+            total: Number
+        }
     });
     var Model = mongoose.model('AllTests', Schema);
 
@@ -31,7 +34,10 @@ describe('Mockgoose $lt Tests', function () {
                     { size: 'S', num: 10, color: 'blue' },
                     { size: 'M', num: 45, color: 'blue' },
                     { size: 'L', num: 100, color: 'green' }
-                ]
+                ],
+                summary: {
+                    total: 155
+                }
             },
             {
                 code: 'abc',
@@ -40,7 +46,10 @@ describe('Mockgoose $lt Tests', function () {
                     { size: '6', num: 100, color: 'green' },
                     { size: '6', num: 50, color: 'blue' },
                     { size: '8', num: 100, color: 'brown' }
-                ]
+                ],
+                summary: {
+                    total: 250
+                }
             },
             {
                 code: 'efg',
@@ -49,14 +58,20 @@ describe('Mockgoose $lt Tests', function () {
                     { size: 'S', num: 10, color: 'blue' },
                     { size: 'M', num: 100, color: 'blue' },
                     { size: 'L', num: 100, color: 'green' }
-                ]
+                ],
+                summary: {
+                    total: 210
+                }
             },
             {
                 code: 'ijk',
                 tags: [ 'electronics', 'school' ],
                 qty: [
                     { size: 'M', num: 30, color: 'green' }
-                ]
+                ],
+                summary: {
+                    total: 30
+                }
             }, function (err) {
                 done(err);
             });
@@ -82,6 +97,86 @@ describe('Mockgoose $lt Tests', function () {
 
         it('Not match values $lt the value', function (done) {
             Model.find({ qty: { num: { $lt: 10 } }
+            }).exec().then(function (results) {
+                    expect(results).toBeDefined();
+                    expect(results.length).toBe(0);
+                    done();
+                }, done);
+        });
+
+        it('Be able to match dot notation values contained within list $lt', function (done) {
+            Model.find({
+                'qty.num': { $lt: 30 }
+            }).exec().then(function (results) {
+                    expect(results).toBeDefined();
+                    expect(results.length).toBe(2);
+                    done();
+                }, done);
+        });
+
+        it('Not match dot notation values contained within list $lt the value', function (done) {
+            Model.find({
+                'qty.num': { $lt: 10 }
+            }).exec().then(function (results) {
+                    expect(results).toBeDefined();
+                    expect(results.length).toBe(0);
+                    done();
+                }, done);
+        });
+
+        it('Be able to match dot notation values contained within list $lt', function (done) {
+            Model.find({
+                'summary.total': { $lt: 210 }
+            }).exec().then(function (results) {
+                    expect(results).toBeDefined();
+                    expect(results.length).toBe(2);
+                    done();
+                }, done);
+        });
+
+        it('Not match dot notation values contained within list $lt the value', function (done) {
+            Model.find({
+                'summary.total': { $lt: 30 }
+            }).exec().then(function (results) {
+                    expect(results).toBeDefined();
+                    expect(results.length).toBe(0);
+                    done();
+                }, done);
+        });
+
+        it('Be able to match nested values not in list $lt', function (done) {
+            Model.find({
+                summary: {total: { $lt: 210 } }
+            }).exec().then(function (results) {
+                    expect(results).toBeDefined();
+                    expect(results.length).toBe(2);
+                    done();
+                }, done);
+        });
+
+        it('Not match nested values not in list $lt the value', function (done) {
+            Model.find({
+                summary: {total: { $lt: 30 } }
+            }).exec().then(function (results) {
+                    expect(results).toBeDefined();
+                    expect(results.length).toBe(0);
+                    done();
+                }, done);
+        });
+
+        it('Be able to match dot notation nested values not in list $lt', function (done) {
+            Model.find({
+                'summary.total': { $lt: 210 }
+            }).exec().then(function (results) {
+                    expect(results).toBeDefined();
+                    expect(results.length).toBe(2);
+                    done();
+                }, done);
+        });
+
+        it('Not match dot notation nested values not in list $lt the value', function (done) {
+            Model.find({
+                'summary.total': { $lt: 30 }
             }).exec().then(function (results) {
                     expect(results).toBeDefined();
                     expect(results.length).toBe(0);
