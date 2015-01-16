@@ -173,6 +173,17 @@ describe('Mockgoose $gte Tests', function () {
                 }, done);
         });
 
+        it('Be able to match dot notation nested values not in list $gte with other criteria', function (done) {
+            Model.find({
+                'summary.total': { $gte: 155 },
+                code: 'abc'
+            }).exec().then(function (results) {
+                    expect(results).toBeDefined();
+                    expect(results.length).toBe(1);
+                    done();
+                }, done);
+        });
+
         it('Not match dot notation nested values not in list $gte the value', function (done) {
             Model.find({
                 'summary.total': { $gte: 500 }
