@@ -46,6 +46,111 @@ describe('Mockgoose Find Tests', function () {
 
     describe('$in', function () {
 
+        describe('with RegExp', function () {
+
+            beforeEach(function (done) {
+                mockgoose.reset();
+                done();
+            });
+
+                it('should be empty before All Tests', function (done) {
+                    AccountModel.find(null,function(err,result){
+                        expect(result).toBeDefined();
+                        expect(result.length).toBe(0);
+                        return done();
+                    })
+                }
+            );
+
+            it('should be able to find a model $in using Array', function (done) {
+                AccountModel.create(
+                    {email: 'multiples@valid.com', password: 'password', values: ['one', 'two']},
+                    {email: 'multiples@invalid.com', password: 'password', values: ['two', 'three']},
+                    function () {
+                        AccountModel.findOne({email: {$in: [/invalid/i]}}, function (err, result) {
+                            expect(result).toBeDefined();
+                            expect(result).not.toBeNull();
+                            if (result) {
+                                expect(result.values[1]).toBe('three');
+                                done(err);
+                            } else {
+                                done('Error finding model');
+                            }
+                        });
+                    });
+            });
+
+            it('should be able to find a model $in  ', function (done) {
+                AccountModel.create(
+                    {email: 'multiples@valid.com', password: 'password', values: ['one', 'two']},
+                    {email: 'multiples@invalid.com', password: 'password', values: ['two', 'three']},
+                    function () {
+                        AccountModel.findOne({email: {$in: /invalid/}}, function (err, result) {
+                            expect(result).toBeDefined();
+                            if (result) {
+                                expect(result.values[1]).toBe('three');
+                                done(err);
+                            } else {
+                                done('Error finding model');
+                            }
+                        });
+                    });
+            });
+
+            it('should be able to find multiple models $in ', function (done) {
+                AccountModel.create(
+                    {email: 'multiples@valid.com', password: 'password', values: ['one', 'two']},
+                    {email: 'multiples@invalid.com', password: 'password', values: ['two', 'three']},
+                    function () {
+                        AccountModel.find({email: {$in: /valid/}}, function (err, result) {
+                            expect(result).toBeDefined();
+                            if (result) {
+                                expect(result.length).toBe(2);
+                                done(err);
+                            } else {
+                                done('Error finding models');
+                            }
+                        });
+                    });
+            });
+            it('should be able to find multiple models $in using multiple RegExp in Array', function (done) {
+                AccountModel.create(
+                    {email: 'multiples@valid.com', password: 'password', values: ['one', 'two']},
+                    {email: 'multiples@invalid.com', password: 'password', values: ['two', 'three']},
+                    function () {
+                        AccountModel.find({email: {$in: [/invalid/, /es\@va/]}}, function (err, result) {
+                            expect(result).toBeDefined();
+                            if (result) {
+                                expect(result.length).toBe(2);
+                                done(err);
+                            } else {
+                                done('Error finding models');
+                            }
+                        });
+                    });
+            });
+
+            it('should be able to find multiple models $in with Array', function (done) {
+                AccountModel.create(
+                    {email: 'multiples@valid.com', password: 'password', values: ['one', 'two']},
+                    {email: 'multiples@invalid.com', password: 'password', values: ['two', 'three']},
+                    function () {
+                        AccountModel.find({email: {$in: [/valid/]}}, function (err, result) {
+                            expect(result).toBeDefined();
+                            if (result) {
+                                expect(result.length).toBe(2);
+                                done(err);
+                            } else {
+                                done('Error finding models');
+                            }
+                        });
+                    });
+            });
+
+
+        });
+
+
         it('should be able to find a model $in', function (done) {
             AccountModel.create(
                 {email: 'multiples@valid.com', password: 'password', values: ['one', 'two']},
@@ -97,7 +202,7 @@ describe('Mockgoose Find Tests', function () {
                 });
         });
 
-        it('should not perform partial match', function(done) {
+        it('should not perform partial match', function (done) {
             AccountModel.create(
                 {email: 'multiples@valid.com', password: 'password', values: ['one', 'two']},
                 {email: 'multiples@invalid.com', password: 'password', values: ['two', 'three']},
@@ -128,7 +233,7 @@ describe('Mockgoose Find Tests', function () {
 
         it('work with nested values', function (done) {
             Test.create({ 'value': 'Test', 'nested.value': 'Test' }, function (er, test) {
-                Test.findOne({ 'nested.value': { $in : ['Test'] } } , function (er, result) {
+                Test.findOne({ 'nested.value': { $in: ['Test'] } }, function (er, result) {
                     expect(er).toBeNull();
                     expect(result._id.toString()).toBe(test._id.toString());
                     done();
@@ -137,7 +242,7 @@ describe('Mockgoose Find Tests', function () {
         });
     });
 
-    describe('ObjectIds', function() {
+    describe('ObjectIds', function () {
         var schema = new mongoose.Schema({
             myRefs: [
                 {type: mongoose.Schema.Types.ObjectId}
@@ -146,14 +251,14 @@ describe('Mockgoose Find Tests', function () {
         var Test = mongoose.model('InObjectIdTest', schema);
         var myIds = [mongoose.Types.ObjectId(), mongoose.Types.ObjectId()];
 
-        it('works with ObjectIds', function(done) {
-           Test.create({myRefs: myIds}, function(er, test) {
-               Test.findOne({ myRefs: { $in: [myIds[0]] } }, function(er, result) {
-                   expect(er).toBeNull();
-                   expect(result._id.toString()).toBe(test._id.toString());
-                   done();
-               });
-           });
+        it('works with ObjectIds', function (done) {
+            Test.create({myRefs: myIds}, function (er, test) {
+                Test.findOne({ myRefs: { $in: [myIds[0]] } }, function (er, result) {
+                    expect(er).toBeNull();
+                    expect(result._id.toString()).toBe(test._id.toString());
+                    done();
+                });
+            });
         });
 
     });
