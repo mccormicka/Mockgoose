@@ -58,7 +58,9 @@ module.exports = function (mongoose, throwErrors) {
 
         logger.info('Creating Mockgoose database: CreateConnection', database, ' options: ', options);
         var connection = mongoose.originalCreateConnection.call(mongoose, database, options, function (err) {
-            handleConnection(callback, connection, err);
+            process.nextTick(function() {
+                handleConnection(callback, connection, err);
+            });
         });
         connection.model = mongoose.model;
         return connection;
@@ -107,12 +109,11 @@ module.exports = function (mongoose, throwErrors) {
         }
 
         logger.info('Creating Mockgoose database: Connect ', database, ' options: ', options);
-        var connection = mongoose.originalConnect.call(mongoose, database, options, function (err) {
-            handleConnection(callback, connection.connection, err);
+        mongoose.originalConnect(database, options, function (err) {
+            handleConnection(callback, mongoose.connection, err);
         });
-        connection.model = mongoose.model;
         mongoose.connection.model = mongoose.model;
-        return connection;
+        return mongoose;
     };
 
     module.exports.reset = function (type) {
