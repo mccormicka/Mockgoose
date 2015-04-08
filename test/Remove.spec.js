@@ -51,6 +51,16 @@ describe('Mockgoose Remove Tests', function () {
             });
         });
 
+        it('Should have an error when mongoose is disconnected', function (done) {
+            mockgoose.setMockReadyState(mongoose.connection, 0);
+
+            SimpleModel.remove({name: 'one'}, function (err) {
+                expect(err).toBeDefined();
+                mockgoose.setMockReadyState(mongoose.connection, 1);
+                done();
+            });
+        });
+
         it('should be able to remove a model from a model object', function (done) {
             SimpleModel.find({name: 'one'}, function (err, result) {
                 expect(err).toBeFalsy();

@@ -67,14 +67,17 @@ module.exports = function (mongoose, throwErrors) {
     };
 
     function handleConnection(callback, connection, err) {
+        setMockReadyState(connection, 2);
         connection.emit('connecting');
         if (callback) {
             //Always return true as we are faking it.
             callback(null, connection);
         }
         if (throwErrors) {
+            setMockReadyState(connection, 0);
             connection.emit('error', err);
         } else {
+            setMockReadyState(connection, 1);
             connection.emit('connected');
             connection.emit('open');
         }
@@ -114,6 +117,20 @@ module.exports = function (mongoose, throwErrors) {
         });
         mongoose.connection.model = mongoose.model;
         return mongoose;
+    };
+
+    var setMockReadyState = module.exports.setMockReadyState = function(connection, state) {
+        /**
+         * mock version of Connection#readyState
+         * http://mongoosejs.com/docs/api.html#connection_Connection-readyState
+         *
+         * 0 = disconnected
+         * 1 = connected
+         * 2 = connecting
+         * 3 = disconnecting
+         *
+         */
+        connection._mockReadyState = mongoose.connection._mockReadyState = state;
     };
 
     module.exports.reset = function (type) {

@@ -287,6 +287,17 @@ describe('Mockgoose Find Tests', function () {
             });
         });
 
+        it('Should have an error when mongoose is disconnected', function(done) {
+            mockgoose.setMockReadyState(mongoose.connection, 0);
+
+            SimpleModel.find({}, function (err, result) {
+                expect(err).toBeDefined();
+                expect(result).toBeUndefined();
+                mockgoose.setMockReadyState(mongoose.connection, 1);
+                done();
+            });
+        });
+
         it('Not be able to find an object by password', function (done) {
             AccountModel.find({password: 'password'}).exec().then(function (results) {
                 expect(results.length).toBe(0);
@@ -382,6 +393,18 @@ describe('Mockgoose Find Tests', function () {
                 if (result) {
                     expect(result.type).toBe('simple');
                 }
+                done();
+            });
+        });
+
+
+        it('Should have an error when mongoose is disconnected', function(done) {
+            mockgoose.setMockReadyState(mongoose.connection, 0);
+
+            SimpleModel.findOne({name: 'one', value: 'two'}, function (err, result) {
+                expect(err).toBeDefined();
+                expect(result).toBeUndefined();
+                mockgoose.setMockReadyState(mongoose.connection, 1);
                 done();
             });
         });

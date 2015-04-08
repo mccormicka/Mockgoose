@@ -48,6 +48,17 @@ describe('Mockgoose $distinct Tests', function () {
             });
         });
 
+        it('Should have error when mongoose is disconnected', function (done) {
+            mockgoose.setMockReadyState(mongoose.connection, 0);
+
+            Model.distinct('dist', function (err, values) {
+                expect(err).toBeDefined();
+                expect(values).toBeUndefined();
+                mockgoose.setMockReadyState(mongoose.connection, 1);
+                done();
+            });
+        });
+
         it('Return distinct nested items', function (done) {
             Model.distinct('item.sku').exec().then(function (values) {
                 values.sort();
