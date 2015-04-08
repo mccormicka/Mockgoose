@@ -12,17 +12,18 @@ describe('Mockgoose $distinct Tests', function () {
         item: {
             sku: String
         },
-        price: Number
+        price: Number,
+        sizes: [String]
     });
     var Model = mongoose.model('distinct', Schema);
 
     beforeEach(function (done) {
         mockgoose.reset();
         Model.create(
-            {dist: 'a', item: {sku: 'sku_a'}, price: 0},
-            {dist: 'b', item: {sku: 'sku_b'}, price: 11},
-            {dist: 'c', item: {sku: 'sku_c'}, price: 12},
-            {dist: 'c', item: {sku: 'sku_c'}, price: 12},
+            {dist: 'a', item: {sku: 'sku_a'}, price: 0,  sizes:[]},
+            {dist: 'b', item: {sku: 'sku_b'}, price: 11, sizes:['s','m']},
+            {dist: 'c', item: {sku: 'sku_c'}, price: 12, sizes:['m']},
+            {dist: 'c', item: {sku: 'sku_c'}, price: 12, sizes:['s','m','l']},
             function (err) {
                 done(err);
             }
@@ -67,5 +68,17 @@ describe('Mockgoose $distinct Tests', function () {
                 done();
             });
         });
+
+        it('Return distinct items with arrays', function (done) {
+            Model.distinct('sizes').exec().then(function (values) {
+                values.sort();
+                expect(values.length).toBe(3);
+                expect(values[0]).toBe('l');
+                expect(values[1]).toBe('m');
+                expect(values[2]).toBe('s');
+                done();
+            });
+        });
+
     });
 });
