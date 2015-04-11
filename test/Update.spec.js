@@ -289,7 +289,7 @@ describe('Mockgoose Update Tests', function () {
                             expect(result).toBe(1);
                             if (result) {
                                 AccountModel.find({values: {$in: ['pushed']}}, function (err, pushed) {
-                                    expect(err).toBeNull();
+                                    expect(err).not.toBeDefined();
                                     if (pushed) {
                                         expect(pushed.length).toBe(1);
                                         expect(pushed[0].values).toContain('pushed');
@@ -319,7 +319,7 @@ describe('Mockgoose Update Tests', function () {
                             expect(result).toBe(3);
                             if (result) {
                                 AccountModel.find({values: {$in: ['pushed']}}, function (err, pushed) {
-                                    expect(err).toBeNull();
+                                    expect(err).not.toBeDefined();
                                     if (pushed) {
                                         expect(pushed.length).toBe(3);
                                         if (pushed.length === 3) {
