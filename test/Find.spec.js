@@ -144,7 +144,7 @@ describe('Mockgoose Find Tests', function () {
             var Model = mongoose.connection.model('Numbers', schema);
             Model.create({name: 'one', value: 1}, {name: 'two', value: 2}, function () {
                 Model.find({value: 2}, function (err, results) {
-                    expect(err).toBeNull();
+                    expect(err).not.toBeDefined();
                     expect(results).toBeDefined();
                     if (results) {
                         expect(results.length).toBe(1);
