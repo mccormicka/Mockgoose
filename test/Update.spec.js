@@ -486,7 +486,7 @@ describe('Mockgoose Update Tests', function () {
                     ContractModel.find({}, function (err, results) {
                         var result = results[0];
                         expect(result._doc['titles.0.runs']).to.equal(undefined);
-                        expect(result.titles.id(1).runs).to.equal(undefined);
+                        expect(result.titles.id(1).runs).to.equal(11);
                         done();
                     });
                 });
