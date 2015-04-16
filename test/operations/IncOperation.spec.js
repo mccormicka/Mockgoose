@@ -1,3 +1,7 @@
+/*jshint expr: true*/
+/*jshint -W079 */ //redefined expect
+var expect = require('chai').expect;
+
 describe('Mockgoose $INC Operation Tests', function () {
     'use strict';
 
@@ -13,8 +17,8 @@ describe('Mockgoose $INC Operation Tests', function () {
         IndexModel.create(
             {name: 'one', value: 3},
             function (err, models) {
-                expect(err).toBeFalsy();
-                expect(models).toBeTruthy();
+                expect(err).not.to.be.ok;
+                expect(models).to.be.ok;
                 done(err);
             }
         );
@@ -30,22 +34,22 @@ describe('Mockgoose $INC Operation Tests', function () {
 
         it('Be able to increment a value', function (done) {
             IndexModel.findOneAndUpdate({name: 'one'}, {$inc: {value: 5}}, function (err, res) {
-                expect(res.value).toBe(8);
+                expect(res.value).to.equal(8);
                 done(err);
             });
         });
 
         it('Be able to decrement a value', function (done) {
             IndexModel.findOneAndUpdate({name: 'one'}, {$inc: {value: -5}}, function (err, res) {
-                expect(res.value).toBe(-2);
+                expect(res.value).to.equal(-2);
                 done(err);
             });
         });
 
         it('Be able to update multiple values', function (done) {
             IndexModel.findOneAndUpdate({name: 'one'}, {$inc: {value: -5, increment: 5}}, function (err, res) {
-                expect(res.value).toBe(-2);
-                expect(res.increment).toBe(10);
+                expect(res.value).to.equal(-2);
+                expect(res.increment).to.equal(10);
                 done(err);
             });
         });

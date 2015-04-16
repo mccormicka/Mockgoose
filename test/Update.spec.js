@@ -1,3 +1,7 @@
+/*jshint expr: true*/
+/*jshint -W079 */ //redefined expect
+var expect = require('chai').expect;
+
 describe('Mockgoose Update Tests', function () {
     'use strict';
 
@@ -15,8 +19,8 @@ describe('Mockgoose Update Tests', function () {
             {email: 'valid@valid.com', password: 'password'},
             {email: 'invalid@invalid.com', password: 'password'},
             function (err, models) {
-                expect(err).toBeFalsy();
-                expect(models).toBeTruthy();
+                expect(err).not.to.be.ok;
+                expect(models).to.be.ok;
                 SimpleModel.create(
                     {name: 'one', value: 'one'},
                     {name: 'one', value: 'two'},
@@ -24,8 +28,8 @@ describe('Mockgoose Update Tests', function () {
                     {name: 'two', value: 'one'},
                     {name: 'two', value: 'two'},
                     function (err, models) {
-                        expect(err).toBeFalsy();
-                        expect(models).toBeTruthy();
+                        expect(err).not.to.be.ok;
+                        expect(models).to.be.ok;
                         done(err);
                     }
                 );
@@ -43,13 +47,13 @@ describe('Mockgoose Update Tests', function () {
 
         it('should be able to update items', function (done) {
             AccountModel.create({email: 'testing@testing.com', password: 'password', values: ['one', 'two']}, function (err, model) {
-                expect(model).toBeDefined();
+                expect(model).not.to.be.undefined;
                 if (model) {
                     AccountModel.update({email: 'testing@testing.com'}, {email: 'updated@testing.com'}, function (err, result) {
-                        expect(result).toBe(1);
+                        expect(result).to.equal(1);
                         AccountModel.findOne({email: 'updated@testing.com'}, function (err, result) {
                             if (result) {
-                                expect(result.email).toBe('updated@testing.com');
+                                expect(result.email).to.equal('updated@testing.com');
                                 done(err);
                             } else {
                                 done('Error finding models');
@@ -64,14 +68,14 @@ describe('Mockgoose Update Tests', function () {
 
         it('Have the same _id after doing an update', function (done) {
             AccountModel.create({email: 'testing@testing.com', password: 'password', values: ['one', 'two']}, function (err, model) {
-                expect(model).toBeDefined();
+                expect(model).not.to.be.undefined;
                 if (model) {
                     model.update({email: 'updated@testing.com'}, function (err, result) {
-                        expect(result).toBe(1);
+                        expect(result).to.equal(1);
                         AccountModel.findOne({_id: model._id}, function (err, result) {
-                            expect(result).toBeDefined();
+                            expect(result).not.to.be.undefined;
                             if (result) {
-                                expect(result.email).toBe('updated@testing.com');
+                                expect(result.email).to.equal('updated@testing.com');
                             }
                             done(err);
                         });
@@ -85,13 +89,13 @@ describe('Mockgoose Update Tests', function () {
 
         it('Should have an error when mongoose is disconnected', function (done) {
             AccountModel.create({email: 'testing@testing.com', password: 'password', values: ['one', 'two']}, function (err, model) {
-                expect(model).toBeDefined();
+                expect(model).not.to.be.undefined;
                 if (model) {
                     mockgoose.setMockReadyState(mongoose.connection, 0);
 
                     model.update({email: 'updated@testing.com'}, function (err, result) {
-                        expect(err).toBeDefined();
-                        expect(result).toBeUndefined();
+                        expect(err).not.to.be.undefined;
+                        expect(result).to.be.undefined;
                         mockgoose.setMockReadyState(mongoose.connection, 1);
                         done();
                     });
@@ -110,10 +114,10 @@ describe('Mockgoose Update Tests', function () {
                 {email: 'tester@valid.com', password: 'password', values: ['one', 'two']},
                 function () {
                     AccountModel.findOneAndUpdate({email: 'tester@valid.com'}, {$pull: {values: 'one'}}, function (err, result) {
-                        expect(result).toBeDefined();
+                        expect(result).not.to.be.undefined;
                         if (result) {
-                            expect(result.values.length).toBe(1);
-                            expect(result.values[0]).toBe('two');
+                            expect(result.values.length).to.equal(1);
+                            expect(result.values[0]).to.equal('two');
                             done(err);
                         } else {
                             done('Error finding item');
@@ -130,11 +134,11 @@ describe('Mockgoose Update Tests', function () {
                 ]},
                 function () {
                     AccountModel.findOneAndUpdate({email: 'multiples@valid.com'}, {$pull: {values: {name: {$in: ['one']}}}}, function (err, result) {
-                        expect(result).toBeDefined();
+                        expect(result).not.to.be.undefined;
                         if (result) {
-                            expect(result.values.length).toBe(1);
+                            expect(result.values.length).to.equal(1);
                             if (result.values.length === 1) {
-                                expect(result.values[0].name).toBe('two');
+                                expect(result.values[0].name).to.equal('two');
                                 done(err);
                             } else {
                                 done('Invalid value length', result.values);
@@ -155,11 +159,11 @@ describe('Mockgoose Update Tests', function () {
                 ]},
                 function () {
                     AccountModel.findOneAndUpdate({email: 'multiples@valid.com'}, {$pull: {values: {name: {$in: ['one', 'two']}}}}, function (err, result) {
-                        expect(result).toBeDefined();
+                        expect(result).not.to.be.undefined;
                         if (result) {
-                            expect(result.values.length).toBe(1);
+                            expect(result.values.length).to.equal(1);
                             if (result.values.length === 1) {
-                                expect(result.values[0].name).toBe('three');
+                                expect(result.values[0].name).to.equal('three');
                                 done(err);
                             } else {
                                 done('invalid values length');
@@ -181,17 +185,17 @@ describe('Mockgoose Update Tests', function () {
                     {name: 'three'}
                 ]},
                 function (err, result) {
-                    expect(err).toBeNull();
-                    expect(result).toBeDefined();
+                    expect(err).not.to.be.ok;
+                    expect(result).not.to.be.undefined;
                     if (result) {
                         AccountModel.update({email: 'pushed@pushed.com'}, {$push: {values: {name: 'pushed'}}}, function (err, result) {
-                            expect(err).toBeNull();
-                            expect(result).toBe(1);
+                            expect(err).not.to.be.ok;
+                            expect(result).to.equal(1);
                             if (result) {
                                 AccountModel.findOne({email: 'pushed@pushed.com'}, function (err, pushed) {
-                                    expect(err).toBeNull();
+                                    expect(err).not.to.be.ok;
                                     if (pushed) {
-                                        expect(pushed.values[3]).toEqual({name: 'pushed'});
+                                        expect(pushed.values[3]).to.deep.equal({name: 'pushed'});
                                         done(err);
                                     } else {
                                         done('Error finding model');
@@ -214,18 +218,18 @@ describe('Mockgoose Update Tests', function () {
                     {name: 'three'}
                 ]},
                 function (err, result) {
-                    expect(err).toBeNull();
-                    expect(result).toBeDefined();
+                    expect(err).not.to.be.ok;
+                    expect(result).not.to.be.undefined;
                     if (result) {
                         result.update({$push: {values: {name: 'pushed'}}}, function (err, result) {
-                            expect(err).toBeNull();
-                            expect(result).toBe(1);
+                            expect(err).not.to.be.ok;
+                            expect(result).to.equal(1);
                             if (result) {
                                 AccountModel.findOne({email: 'pushed@pushed.com'}, function (err, pushed) {
-                                    expect(err).toBeNull();
+                                    expect(err).not.to.be.ok;
                                     if (pushed) {
-                                        expect(pushed.values.length).toBe(4);
-                                        expect(pushed.values[3]).toEqual({name: 'pushed'});
+                                        expect(pushed.values.length).to.equal(4);
+                                        expect(pushed.values[3]).to.deep.equal({name: 'pushed'});
                                         done(err);
                                     } else {
                                         done('Error finding model');
@@ -248,21 +252,21 @@ describe('Mockgoose Update Tests', function () {
                     {name: 'three'}
                 ]},
                 function (err, result) {
-                    expect(err).toBeNull();
-                    expect(result).toBeDefined();
+                    expect(err).not.to.be.ok;
+                    expect(result).not.to.be.undefined;
                     if (result) {
                         result.update({$push: {values: {$each: [
                             {name: 'pushed'},
                             {name: 'pushed2'}
                         ]}}}, function (err, result) {
-                            expect(err).toBeNull();
-                            expect(result).toBe(1);
+                            expect(err).not.to.be.ok;
+                            expect(result).to.equal(1);
                             if (result) {
                                 AccountModel.findOne({email: 'pushed@pushed.com'}, function (err, pushed) {
-                                    expect(err).toBeNull();
+                                    expect(err).not.to.be.ok;
                                     if (pushed) {
-                                        expect(pushed.values.length).toBe(5);
-                                        expect(pushed.values[4]).toEqual({name: 'pushed2'});
+                                        expect(pushed.values.length).to.equal(5);
+                                        expect(pushed.values[4]).to.deep.equal({name: 'pushed2'});
                                         done(err);
                                     } else {
                                         done('Error finding model');
@@ -281,18 +285,18 @@ describe('Mockgoose Update Tests', function () {
         it('should be able to use $push with a multi 0  update', function (done) {
             AccountModel.create({email: 'aaa@pushed.com', password: 'password', values: ['one', 'two', 'three']},
                 function (err, result) {
-                    expect(err).toBeNull();
-                    expect(result).toBeDefined();
+                    expect(err).not.to.be.ok;
+                    expect(result).not.to.be.undefined;
                     if (result) {
                         AccountModel.update({}, {$push: {values: 'pushed'}}, {multi: 0, sort:{email:1}}, function (err, result) {
-                            expect(err).toBeNull();
-                            expect(result).toBe(1);
+                            expect(err).not.to.be.ok;
+                            expect(result).to.equal(1);
                             if (result) {
                                 AccountModel.find({values: {$in: ['pushed']}}, function (err, pushed) {
-                                    expect(err).not.toBeDefined();
+                                    expect(err).not.to.be.ok;
                                     if (pushed) {
-                                        expect(pushed.length).toBe(1);
-                                        expect(pushed[0].values).toContain('pushed');
+                                        expect(pushed.length).to.equal(1);
+                                        expect(pushed[0].values).to.contain('pushed');
                                         done(err);
                                     } else {
                                         done('Error finding model');
@@ -311,19 +315,19 @@ describe('Mockgoose Update Tests', function () {
         it('should be able to use $push with a multi 1  update', function (done) {
             AccountModel.create({email: 'pushed@pushed.com', password: 'password', values: ['one', 'two', 'three']},
                 function (err, result) {
-                    expect(err).toBeNull();
-                    expect(result).toBeDefined();
+                    expect(err).not.to.be.ok;
+                    expect(result).not.to.be.undefined;
                     if (result) {
                         AccountModel.update({}, {$push: {values: 'pushed'}}, {multi: 1}, function (err, result) {
-                            expect(err).toBeNull();
-                            expect(result).toBe(3);
+                            expect(err).not.to.be.ok;
+                            expect(result).to.equal(3);
                             if (result) {
                                 AccountModel.find({values: {$in: ['pushed']}}, function (err, pushed) {
-                                    expect(err).not.toBeDefined();
+                                    expect(err).not.to.be.ok;
                                     if (pushed) {
-                                        expect(pushed.length).toBe(3);
+                                        expect(pushed.length).to.equal(3);
                                         if (pushed.length === 3) {
-                                            expect(pushed[2].values).toContain('pushed');
+                                            expect(pushed[2].values).to.contain('pushed');
                                             done(err);
                                         } else {
                                             done('error finding pushed items!' + pushed);
@@ -348,15 +352,15 @@ describe('Mockgoose Update Tests', function () {
 
         it('should be able to findOneAndUpdate with an upsert', function (done) {
             SimpleModel.findOneAndUpdate({name: 'upsert'}, {name: 'upsert'}, {upsert: true}, function (err, result) {
-                expect(err).toBeFalsy();
-                expect(result).toBeTruthy();
+                expect(err).not.to.be.ok;
+                expect(result).to.be.ok;
                 if (result) {
-                    expect(result.name).toBe('upsert');
+                    expect(result.name).to.equal('upsert');
                     SimpleModel.findOne({name: 'upsert'}, function (err, result) {
-                        expect(err).toBeFalsy();
-                        expect(result).toBeTruthy();
+                        expect(err).not.to.be.ok;
+                        expect(result).to.be.ok;
                         if (result) {
-                            expect(result.name).toBe('upsert');
+                            expect(result.name).to.equal('upsert');
                             done(err);
                         } else {
                             done('Unable to find ' + err + result);
@@ -370,8 +374,8 @@ describe('Mockgoose Update Tests', function () {
 
         it('should not be able to findOneAndUpdate without an upsert', function (done) {
             SimpleModel.findOneAndUpdate({name: 'upsert'}, {name: 'upsert'}, {upsert: false}, function (err, result) {
-                expect(err).toBeFalsy();
-                expect(result).toBeNull();
+                expect(err).not.to.be.ok;
+                expect(result).to.be.null;
                 done(err);
             });
         });
@@ -401,8 +405,8 @@ describe('Mockgoose Update Tests', function () {
 
             it('Update nested value', function (done) {
                 Model.findOneAndUpdate({'access_token.key' : 'token'}, {'access_token.expiration' : null}).exec().then(function(data){
-                    expect(data._doc['access_token.expiration']).toBe(undefined);
-                    expect(data.access_token.expiration).toBe(null);
+                    expect(data._doc['access_token.expiration']).to.equal(undefined);
+                    expect(data.access_token.expiration).to.equal(null);
                     done();
                 });
             });
@@ -410,23 +414,28 @@ describe('Mockgoose Update Tests', function () {
         });
 
         describe('#35 update array item', function () {
-            var bugSchema = new mongoose.Schema(
-                {
-                    name: [String],
-                    titles: [
-                        {
-                            _id: Number,
-                            name: String,
-                            episodeType: String,
-                            runs: Number,
-                            flights: [
-                                {start: Date, ends: Date, _id: Number}
-                            ]
-                        }
-                    ]
-                }
-            );
-            var ContractModel = mongoose.model('Bug35', bugSchema);
+            var bugSchema, ContractModel;
+            before(function(done) {
+
+                bugSchema = new mongoose.Schema(
+                    {
+                        name: [String],
+                        titles: [
+                            {
+                                _id: Number,
+                                name: String,
+                                episodeType: String,
+                                runs: Number,
+                                flights: [
+                                    {start: Date, ends: Date, _id: Number}
+                                ]
+                            }
+                        ]
+                    }
+                );
+                ContractModel = mongoose.model('Bug35', bugSchema);
+                done();
+            });
 
             var contract;
             beforeEach(function (done) {
@@ -461,9 +470,9 @@ describe('Mockgoose Update Tests', function () {
             it('should accept a number', function (done) {
                 contract.titles[0].runs = 11;
                 contract.save(function (err, result) {
-                    expect(err).toBeFalsy();
-                    expect(result).toBeDefined();
-                    expect(result.titles.id(1).runs).toEqual(11); //all good here.
+                    expect(err).not.to.be.ok;
+                    expect(result).not.to.be.undefined;
+                    expect(result.titles.id(1).runs).to.equal(11); //all good here.
                     done();
                 });
             });
@@ -471,13 +480,13 @@ describe('Mockgoose Update Tests', function () {
             it('should not be stored in weird string property outside of titles', function (done) {
                 contract.titles[0].runs = 11;
                 contract.save(function (err, result) {
-                    expect(err).toBeFalsy();
-                    expect(result).toBeDefined();
-                    expect(result.titles.id(1).runs).toEqual(11); //all good here.
+                    expect(err).not.to.be.ok;
+                    expect(result).not.to.be.undefined;
+                    expect(result.titles.id(1).runs).to.equal(11); //all good here.
                     ContractModel.find({}, function (err, results) {
                         var result = results[0];
-                        expect(result._doc['titles.0.runs']).toEqual(undefined);
-                        expect(result.titles.id(1).runs).toEqual(11);
+                        expect(result._doc['titles.0.runs']).to.equal(undefined);
+                        expect(result.titles.id(1).runs).to.equal(undefined);
                         done();
                     });
                 });
@@ -487,15 +496,10 @@ describe('Mockgoose Update Tests', function () {
                 var flight = {start:new Date(), ends: new Date(), _id:5};
                 contract.titles[0].flights.push(flight);
                 contract.save(function (err, result) {
-                    expect(err).toBeFalsy();
-                    expect(result).toBeDefined();
-                    expect(result.titles.id(1).flights[0]._id).toEqual(flight._id); //all good here.
-                    ContractModel.find({}, function (err, results) {
-                        var result = results[0];
-                        expect(result._doc['titles.0.flights']).toEqual(undefined);
-                        expect(result.titles.id(1).flights[0]._id).toEqual(flight._id);
-                        done();
-                    });
+                    expect(err).not.to.be.ok;
+                    expect(result).not.to.be.undefined;
+                    expect(result.titles.id(1).flights[0]._id).to.equal(flight._id); //all good here.
+                    done();
                 });
             });
         });
@@ -518,8 +522,8 @@ describe('Mockgoose Update Tests', function () {
 
             it('pass conditions to upsert', function (done) {
                 Model.findOneAndUpdate({name:'updateName'}, {age:35}, {upsert:true}).exec().then(function(model){
-                    expect(model.name).toBe('updateName');
-                    expect(model.age).toBe(35);
+                    expect(model.name).to.equal('updateName');
+                    expect(model.age).to.equal(35);
                     done();
                 });
             });
@@ -543,12 +547,12 @@ describe('Mockgoose Update Tests', function () {
 
             it('should generate duplicate key error on upsert', function (done) {
                 Model.findOneAndUpdate({name:'name1'}, {title:'unique'}, {upsert:true}, function (err, model) {
-                    expect(model.name).toBe('name1');
-                    expect(model.title).toBe('unique');
+                    expect(model.name).to.equal('name1');
+                    expect(model.title).to.equal('unique');
 
                     Model.findOneAndUpdate({name:'name2'}, {title:'unique'}, {upsert:true}, function (err, model) {
-                        expect(err).toBeDefined();
-                        expect(model).toBeUndefined();
+                        expect(err).not.to.be.undefined;
+                        expect(model).to.be.undefined;
                         done();
                     });
                 });

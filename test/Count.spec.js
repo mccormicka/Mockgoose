@@ -1,5 +1,9 @@
+/*jshint expr: true*/
+/*jshint -W079 */ //redefined expect
+'use strict';
+var expect = require('chai').expect;
+
 describe('Count Tests', function () {
-    'use strict';
 
     var mockgoose = require('../Mockgoose');
     var Mongoose = require('mongoose').Mongoose;
@@ -15,8 +19,8 @@ describe('Count Tests', function () {
             {email: 'valid@valid.com', password: 'password'},
             {email: 'invalid@invalid.com', password: 'password'},
             function (err, models) {
-                expect(err).toBeFalsy();
-                expect(models).toBeTruthy();
+                expect(err).not.to.be.ok;
+                expect(models).to.be.ok;
                 SimpleModel.create(
                     {name: 'one', value: 'one'},
                     {name: 'one', value: 'two'},
@@ -24,8 +28,8 @@ describe('Count Tests', function () {
                     {name: 'two', value: 'one'},
                     {name: 'two', value: 'two'},
                     function (err, models) {
-                        expect(err).toBeFalsy();
-                        expect(models).toBeTruthy();
+                        expect(err).not.to.be.ok;
+                        expect(models).to.be.ok;
                         done(err);
                     }
                 );
@@ -41,24 +45,24 @@ describe('Count Tests', function () {
     describe('SHOULD', function () {
         it('Count the number of items in a {} query', function (done) {
             SimpleModel.count({}, function (err, count) {
-                expect(err).toBeNull();
-                expect(count).toBe(5);
+                expect(err).not.to.be.ok;
+                expect(count).to.equal(5);
                 done(err);
             });
         });
 
         it('Count the number of items in {query:query}', function (done) {
             SimpleModel.count({name: 'one'}, function (err, count) {
-                expect(err).toBeNull();
-                expect(count).toBe(3);
+                expect(err).not.to.be.ok;
+                expect(count).to.equal(3);
                 done(err);
             });
         });
 
         it('Count the number of items if no object passed', function (done) {
             SimpleModel.count(function (err, count) {
-                expect(err).toBeNull();
-                expect(count).toBe(5);
+                expect(err).not.to.be.ok;
+                expect(count).to.equal(5);
                 done(err);
             });
         });
@@ -67,8 +71,8 @@ describe('Count Tests', function () {
             mockgoose.setMockReadyState(mongoose.connection, 0);
 
             SimpleModel.count({}, function (err, count) {
-                expect(err).toBeDefined();
-                expect(count).toBeUndefined();
+                expect(err).not.to.be.undefined;
+                expect(count).to.be.undefined;
                 mockgoose.setMockReadyState(mongoose.connection, 1);
                 done();
             });
@@ -77,7 +81,7 @@ describe('Count Tests', function () {
         it('Model.count(function()) should NOT throw an error', function (done) {
             expect(function(){
                 SimpleModel.count(done);
-            }).not.toThrow();
+            }).not.to.throw();
         });
 
     });
@@ -88,7 +92,7 @@ describe('Count Tests', function () {
                 SimpleModel.count({name:'one'}, function(){
                     done();
                 });
-            }).not.toThrow();
+            }).not.to.throw();
         });
     });
 });

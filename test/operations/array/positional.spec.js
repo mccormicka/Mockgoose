@@ -1,3 +1,7 @@
+/*jshint expr: true*/
+/*jshint -W079 */ //redefined expect
+var expect = require('chai').expect;
+
 describe('$(update) http://docs.mongodb.org/manual/reference/operator/update/positional/', function () {
     'use strict';
 
@@ -33,7 +37,7 @@ describe('$(update) http://docs.mongodb.org/manual/reference/operator/update/pos
         it('Update first item', function (done) {
             Model.update({ _id: 1, grades: 80 }, { $set: { 'grades.$': 82 } }).exec().then(function () {
                 Model.findById(1).exec().then(function (model) {
-                    expect(model.grades[0]).toBe(82);
+                    expect(model.grades[0]).to.equal(82);
                     done();
                 });
             });
@@ -42,7 +46,7 @@ describe('$(update) http://docs.mongodb.org/manual/reference/operator/update/pos
         it('Update nested fields', function (done) {
             Model.update({ _id: 1, 'gradeDetails.grade': 85 }, { $set: { 'gradeDetails.$.std': 6 } }).exec().then(function () {
                 Model.findById(1).exec().then(function (model) {
-                    expect(model.gradeDetails[1].std).toBe(6);
+                    expect(model.gradeDetails[1].std).to.equal(6);
                     done();
                 });
             });
@@ -97,10 +101,10 @@ describe('$(update) http://docs.mongodb.org/manual/reference/operator/update/pos
                             }
                         }
                     }).exec().then(function (model) {
-                            expect(model.grps[0].attrs[1].attrId).toBe('SomeNewAttrId');
+                            expect(model.grps[0].attrs[1].attrId).to.equal('SomeNewAttrId');
                             done();
                         });
-                }).not.toThrow();
+                }).not.to.throw();
             });
         });
 
@@ -150,10 +154,10 @@ describe('$(update) http://docs.mongodb.org/manual/reference/operator/update/pos
                             }
                         }
                     }).exec().then(function (model) {
-                            expect(model.grps[0].attrs.length).toBe(0);
+                            expect(model.grps[0].attrs.length).to.equal(0);
                             done();
                         });
-                }).not.toThrow();
+                }).not.to.throw();
             });
         });
     });

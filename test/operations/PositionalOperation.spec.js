@@ -1,3 +1,7 @@
+/*jshint expr: true*/
+/*jshint -W079 */ //redefined expect
+var expect = require('chai').expect;
+
 describe('Mockgoose $ positional Tests', function () {
     'use strict';
 
@@ -46,9 +50,9 @@ describe('Mockgoose $ positional Tests', function () {
         it('Be able to update value with the positional $ operator', function (done) {
             Student.update({ _id: 1, grades: 80 }, { $set: { 'grades.$': 82 } }).exec().then(function () {
                 Student.findById(1).exec().then(function (result) {
-                    expect(result.grades).toContain(82);
-                    expect(result.grades).toContain(85);
-                    expect(result.grades).toContain(90);
+                    expect(result.grades).to.contain(82);
+                    expect(result.grades).to.contain(85);
+                    expect(result.grades).to.contain(90);
                     done();
                 });
             });
@@ -66,7 +70,7 @@ describe('Mockgoose $ positional Tests', function () {
                             AdvancedStudent.findById(4).exec().then(function(result){
                                 _.each(result.grades, function(results){
                                     if(results.grade === 90){
-                                        expect(result.grades[1].std).toBe(6);
+                                        expect(result.grades[1].std).to.equal(6);
                                         done();
                                     }
                                 });

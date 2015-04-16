@@ -1,3 +1,7 @@
+/*jshint expr: true*/
+/*jshint -W079 */ //redefined expect
+var expect = require('chai').expect;
+
 describe('Mockgoose $nin', function () {
     'use strict';
 
@@ -50,14 +54,14 @@ describe('Mockgoose $nin', function () {
 
         it('Does not equal 5 or 15 in array', function (done) {
             NinModel.find({ qty: { $nin: [ 5, 15 ] } }).exec().then(function (results) {
-                expect(results.length).toBe(2);
+                expect(results.length).to.equal(2);
                 done();
             });
         });
 
         it('Does not equal 5 or 15 in field', function (done) {
             NinModel.find({ name: { $nin: [ '5', '15' ] } }).exec().then(function (results) {
-                expect(results.length).toBe(3);
+                expect(results.length).to.equal(3);
                 done();
             });
         });
@@ -75,8 +79,8 @@ describe('Mockgoose $nin', function () {
         it('works with ObjectIds', function(done) {
             Test.create({myRefs: myIds}, function(er, test) {
                 Test.findOne({ myRefs: { $nin: [mongoose.Types.ObjectId()] } }, function(er, result) {
-                    expect(er).toBeNull();
-                    expect(result._id.toString()).toBe(test._id.toString());
+                    expect(er).to.be.null;
+                    expect(result._id.toString()).to.equal(test._id.toString());
                     done();
                 });
             });

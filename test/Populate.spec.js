@@ -1,3 +1,7 @@
+/*jshint expr: true*/
+/*jshint -W079 */ //redefined expect
+var expect = require('chai').expect;
+
 describe('Mockgoose Populate test', function () {
     'use strict';
     var async = require('async');
@@ -34,6 +38,9 @@ describe('Mockgoose Populate test', function () {
                 }, function (err, user) {
                     company.users.push(user._id);
                     company.save(function (err, company) {
+                        if (err) {
+                            callback(err);
+                        }
                         user.company = company._id;
                         user.save();
                         callback(err, company, user);
@@ -54,10 +61,10 @@ describe('Mockgoose Populate test', function () {
     describe('Populate', function () {
         it('should find the childs within the parent', function (done) {
             CompanyEntry.findOne({name: 'Test Company'},function (err) {
-                expect(err).toBeFalsy();
+                expect(err).not.to.be.ok;
 
             }).populate('users').exec(function (err, result) {
-                    expect(result.users.length).toBe(1);
+                    expect(result.users.length).to.equal(1);
                     done();
                 });
         });

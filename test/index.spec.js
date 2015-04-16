@@ -1,4 +1,8 @@
+/*jshint expr: true*/
 /*jshint -W106 *///Camel_Case
+/*jshint -W079 */ //redefined expect
+var expect = require('chai').expect;
+
 describe('Index Tests', function () {
     'use strict';
 
@@ -29,8 +33,8 @@ describe('Index Tests', function () {
 
             beforeEach(function(done){
                 IndexModel.create({}, function(err, model){
-                    expect(err).toBeFalsy();
-                    expect(model).toBeTruthy();
+                    expect(err).not.to.be.ok;
+                    expect(model).to.be.ok;
                     collection = model.collection;
                     done();
                 });
@@ -38,7 +42,7 @@ describe('Index Tests', function () {
 
             it('Be able to retrieve indexes from a model', function (done) {
                 collection.getIndexes(function(err, indexes){
-                    expect(indexes).toEqual({ _id_ : [ [ '_id', 1 ] ], expire_1 : [ [ 'expire', 1 ] ] });
+                    expect(indexes).to.deep.equal({ _id_ : [ [ '_id', 1 ] ], expire_1 : [ [ 'expire', 1 ] ] });
                     done();
                 });
             });

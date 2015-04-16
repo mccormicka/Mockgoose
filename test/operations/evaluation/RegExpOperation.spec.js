@@ -1,3 +1,7 @@
+/*jshint expr: true*/
+/*jshint -W079 */ //redefined expect
+var expect = require('chai').expect;
+
 describe('Mockgoose $regex Tests', function () {
     'use strict';
 
@@ -41,35 +45,35 @@ describe('Mockgoose $regex Tests', function () {
 
         it('$regexp case insensitive', function (done) {
             Model.find({ field: /acme.*corp/i }).exec().then(function (results) {
-                expect(results.length).toBe(4);
+                expect(results.length).to.equal(4);
                 done();
             });
         });
 
         it('$regexp with RegeExp Object', function (done) {
             Model.find({ field: new RegExp(/acme.*corp/i) }).exec().then(function (results) {
-                expect(results.length).toBe(4);
+                expect(results.length).to.equal(4);
                 done();
             });
         });
 
         it('$regexp case insensitive options', function (done) {
             Model.find({ field: { $regex: 'acme.*corp', $options: 'i' } }).exec().then(function (results) {
-                expect(results.length).toBe(4);
+                expect(results.length).to.equal(4);
                 done();
             });
         });
 
         it('$regexp case sensitive options', function (done) {
             Model.find({ field: { $regex: 'acme.*corp'} }).exec().then(function (results) {
-                expect(results.length).toBe(3);
+                expect(results.length).to.equal(3);
                 done();
             });
         });
 
         it('$regexp with $nin', function (done) {
             Model.find({ field: { $regex: /acme.*corp/i, $nin: [ 'acmeblahcorp' ] } }).exec().then(function (results) {
-                expect(results.length).toBe(3);
+                expect(results.length).to.equal(3);
                 done();
             });
         });

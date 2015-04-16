@@ -1,3 +1,7 @@
+/*jshint expr: true*/
+/*jshint -W079 */ //redefined expect
+var expect = require('chai').expect;
+
 describe('Nested Ref Tests', function () {
     'use strict';
 
@@ -56,21 +60,22 @@ describe('Nested Ref Tests', function () {
     describe('SHOULD', function () {
         it('Find Value By Ref', function (done) {
             Test.count({ refs: refA }, function (err, count) {
-                expect(count).toBe(1);
+                expect(err).not.to.be.ok;
+                expect(count).to.equal(1);
                 done(err);
             });
         });
 
         it('Find by nested value', function (done) {
             Test.count({ 'nestedValues.value': 'Bob' }, function (err, count) {
-                expect(count).toBe(1);
+                expect(count).to.equal(1);
                 done(err);
             });
         });
 
         it('Find by nested value by Ref', function (done) {
             Test.count({ 'nestedRefs._ref': refA  }, function (err, count) {
-                expect(count).toBe(1);
+                expect(count).to.equal(1);
                 done(err);
             });
         });

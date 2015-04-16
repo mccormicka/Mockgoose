@@ -1,3 +1,7 @@
+/*jshint expr: true*/
+/*jshint -W079 */ //redefined expect
+var expect = require('chai').expect;
+
 describe('Mockgoose Tests', function () {
     'use strict';
 
@@ -15,8 +19,8 @@ describe('Mockgoose Tests', function () {
             {email: 'valid@valid.com', password: 'password'},
             {email: 'invalid@invalid.com', password: 'password'},
             function (err, models) {
-                expect(err).toBeFalsy();
-                expect(models).toBeTruthy();
+                expect(err).not.to.be.ok;
+                expect(models).to.be.ok;
                 SimpleModel.create(
                     {name: 'one', value: 'one'},
                     {name: 'one', value: 'two'},
@@ -24,8 +28,8 @@ describe('Mockgoose Tests', function () {
                     {name: 'two', value: 'one'},
                     {name: 'two', value: 'two'},
                     function (err, models) {
-                        expect(err).toBeFalsy();
-                        expect(models).toBeTruthy();
+                        expect(err).not.to.be.ok;
+                        expect(models).to.be.ok;
                         done(err);
                     }
                 );
@@ -42,13 +46,13 @@ describe('Mockgoose Tests', function () {
     describe('SHOULD', function () {
 
         it('should be able to require mockgoose', function () {
-            expect(mockgoose).toBeTruthy();
+            expect(mockgoose).to.be.ok;
         });
 
         it('should be able to create and save test model', function (done) {
             AccountModel.create({email: 'email@email.com', password: 'supersecret'}, function (err, model) {
-                expect(err).toBeFalsy();
-                expect(model).toBeTruthy();
+                expect(err).not.to.be.ok;
+                expect(model).to.be.ok;
                 done(err);
             });
         });
@@ -56,10 +60,10 @@ describe('Mockgoose Tests', function () {
         it('should be able to call custom save pre', function (done) {
             AccountModel.create({email: 'newemail@valid.com', password: 'password'}, function (err, model) {
                 //Custom pre save should encrypt the users password.
-                expect(model.password).not.toBe('password');
+                expect(model.password).not.to.equal('password');
                 model.validPassword('password', function (err, success) {
-                    expect(success).toBeTruthy();
-                    expect(err).toBeFalsy();
+                    expect(success).to.be.ok;
+                    expect(err).not.to.be.ok;
                     done(err);
                 });
 
@@ -69,32 +73,32 @@ describe('Mockgoose Tests', function () {
         it('should be able to create multiple items in one go', function (done) {
             AccountModel.create({email: 'one@one.com', password: 'password'},
                 {email: 'two@two.com', password: 'password'}, function (err, one, two) {
-                    expect(err).toBeFalsy();
-                    expect(one).toBeTruthy();
-                    expect(two).toBeTruthy();
+                    expect(err).not.to.be.ok;
+                    expect(one).to.be.ok;
+                    expect(two).to.be.ok;
                     done(err);
                 });
         });
 
         it('Be able to retrieve a model by string', function (done) {
             var Model = mongoose.model('simple');
-            expect(Model).toBeDefined();
+            expect(Model).not.to.be.undefined;
             done();
         });
 
         it('Be able to retrieve a model case sensitive', function (done) {
             var Model = mongoose.model('simple');
-            expect(Model).toBeDefined();
+            expect(Model).not.to.be.undefined;
             expect(function () {
                 mongoose.model('Simple');
-            }).toThrow();
+            }).to.throw();
             done();
         });
 
         it('Fail gracefully if null passed as model type', function (done) {
             expect(function () {
                 mongoose.model(null);
-            }).toThrow();
+            }).to.throw();
             done();
         });
 
@@ -124,10 +128,10 @@ describe('Mockgoose Tests', function () {
 
             it('Reset all models', function (done) {
                 UpperCaseModel.find({}).exec().then(function (results) {
-                    expect(results.length).toBe(10);
+                    expect(results.length).to.equal(10);
                     mockgoose.reset();
                     UpperCaseModel.find({}).exec().then(function (results) {
-                        expect(results.length).toBe(0);
+                        expect(results.length).to.equal(0);
                         done();
                     });
                 });
@@ -135,10 +139,10 @@ describe('Mockgoose Tests', function () {
 
             it('Reset Specific Schema uppercase insensitive', function (done) {
                 UpperCaseModel.find({}).exec().then(function (results) {
-                    expect(results.length).toBe(10);
+                    expect(results.length).to.equal(10);
                     mockgoose.reset('Model');
                     UpperCaseModel.find({}).exec().then(function (results) {
-                        expect(results.length).toBe(0);
+                        expect(results.length).to.equal(0);
                         done();
                     });
                 });
@@ -146,10 +150,10 @@ describe('Mockgoose Tests', function () {
 
             it('Reset Specific Schema lowercase insensitive', function (done) {
                 LowerCaseModel.find({}).exec().then(function (results) {
-                    expect(results.length).toBe(10);
+                    expect(results.length).to.equal(10);
                     mockgoose.reset('model');
                     LowerCaseModel.find({}).exec().then(function (results) {
-                        expect(results.length).toBe(0);
+                        expect(results.length).to.equal(0);
                         done();
                     });
                 });
@@ -174,11 +178,11 @@ describe('Mockgoose Tests', function () {
                 user.save(function(){
                     var duplicate = new AccountModel(user);
                     duplicate.save(function (err, model) {
-                        expect(err).toBeDefined();
-                        expect(model).toBeFalsy();
+                        expect(err).not.to.be.undefined;
+                        expect(model).not.to.be.ok;
                         if(err){
-                            expect(err.name).toBe('MongoError');
-                            expect(err.message).toBe('E11000 duplicate key error index: email');
+                            expect(err.name).to.equal('MongoError');
+                            expect(err.message).to.equal('E11000 duplicate key error index: email');
                         }
                         done();
                     });

@@ -1,3 +1,7 @@
+/*jshint expr: true*/
+/*jshint -W079 */ //redefined expect
+var expect = require('chai').expect;
+
 describe('Mockgoose $setOnInsert Operation Tests', function () {
     'use strict';
 
@@ -13,8 +17,8 @@ describe('Mockgoose $setOnInsert Operation Tests', function () {
         IndexModel.create(
             {name: 'foo', value: 3},
             function (err, models) {
-                expect(err).toBeFalsy();
-                expect(models).toBeTruthy();
+                expect(err).not.to.be.ok;
+                expect(models).to.be.ok;
                 done(err);
             }
         );
@@ -30,14 +34,14 @@ describe('Mockgoose $setOnInsert Operation Tests', function () {
 
         it('sets values when inserting', function (done) {
             IndexModel.findOneAndUpdate({name: 'bar'}, { $setOnInsert: {value: 8} }, { 'upsert': true, 'new': true }, function (err, res) {
-                expect(res.value).toBe(8);
+                expect(res.value).to.equal(8);
                 done(err);
             });
         });
 
         it('does not set values when updating', function (done) {
             IndexModel.findOneAndUpdate({name: 'foo'}, { $setOnInsert: {value: 8} }, { 'upsert': true, 'new': true }, function (err, res) {
-                expect(res.value).toBe(3);
+                expect(res.value).to.equal(3);
                 done(err);
             });
         });

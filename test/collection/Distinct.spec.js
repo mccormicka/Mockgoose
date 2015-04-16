@@ -1,3 +1,7 @@
+/*jshint expr: true*/
+/*jshint -W079 */ //redefined expect
+var expect = require('chai').expect;
+
 describe('Mockgoose $distinct Tests', function () {
     'use strict';
 
@@ -40,10 +44,10 @@ describe('Mockgoose $distinct Tests', function () {
         it('Return distinct items', function (done) {
             Model.distinct('dist').exec().then(function (values) {
                 values.sort();
-                expect(values.length).toBe(3);
-                expect(values[0]).toBe('a');
-                expect(values[1]).toBe('b');
-                expect(values[2]).toBe('c');
+                expect(values.length).to.equal(3);
+                expect(values[0]).to.equal('a');
+                expect(values[1]).to.equal('b');
+                expect(values[2]).to.equal('c');
                 done();
             });
         });
@@ -52,8 +56,8 @@ describe('Mockgoose $distinct Tests', function () {
             mockgoose.setMockReadyState(mongoose.connection, 0);
 
             Model.distinct('dist', function (err, values) {
-                expect(err).toBeDefined();
-                expect(values).toBeUndefined();
+                expect(err).not.to.be.undefined;
+                expect(values).to.be.undefined;
                 mockgoose.setMockReadyState(mongoose.connection, 1);
                 done();
             });
@@ -62,10 +66,10 @@ describe('Mockgoose $distinct Tests', function () {
         it('Return distinct nested items', function (done) {
             Model.distinct('item.sku').exec().then(function (values) {
                 values.sort();
-                expect(values.length).toBe(3);
-                expect(values[0]).toBe('sku_a');
-                expect(values[1]).toBe('sku_b');
-                expect(values[2]).toBe('sku_c');
+                expect(values.length).to.equal(3);
+                expect(values[0]).to.equal('sku_a');
+                expect(values[1]).to.equal('sku_b');
+                expect(values[2]).to.equal('sku_c');
                 done();
             });
         });
@@ -73,9 +77,9 @@ describe('Mockgoose $distinct Tests', function () {
         it('Return distinct items with subclause', function (done) {
             Model.distinct('price', { price: { $gt: 10 }}).exec().then(function (values) {
                 values.sort();
-                expect(values.length).toBe(2);
-                expect(values[0]).toBe(11);
-                expect(values[1]).toBe(12);
+                expect(values.length).to.equal(2);
+                expect(values[0]).to.equal(11);
+                expect(values[1]).to.equal(12);
                 done();
             });
         });
@@ -83,10 +87,10 @@ describe('Mockgoose $distinct Tests', function () {
         it('Return distinct items with arrays', function (done) {
             Model.distinct('sizes').exec().then(function (values) {
                 values.sort();
-                expect(values.length).toBe(3);
-                expect(values[0]).toBe('l');
-                expect(values[1]).toBe('m');
-                expect(values[2]).toBe('s');
+                expect(values.length).to.equal(3);
+                expect(values[0]).to.equal('l');
+                expect(values[1]).to.equal('m');
+                expect(values[2]).to.equal('s');
                 done();
             });
         });

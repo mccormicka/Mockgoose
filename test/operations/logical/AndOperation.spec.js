@@ -1,3 +1,7 @@
+/*jshint expr: true*/
+/*jshint -W079 */ //redefined expect
+var expect = require('chai').expect;
+
 describe('Mockgoose $and Tests', function () {
     'use strict';
 
@@ -60,14 +64,14 @@ describe('Mockgoose $and Tests', function () {
                 { qty: { $gt: 20 } },
                 { sale: true }
             ] }).exec().then(function (results) {
-                    expect(results.length).toBe(2);
+                    expect(results.length).to.equal(2);
                     done();
                 });
         });
 
         it('Find values that match implicit $and operation', function (done) {
             Model.find({ price: 1.99, qty: { $gt: 20 }, sale: true }).exec().then(function (results) {
-                expect(results.length).toBe(2);
+                expect(results.length).to.equal(2);
                 done();
             });
         });
@@ -77,14 +81,14 @@ describe('Mockgoose $and Tests', function () {
                 { price: { $ne: 1.99 } },
                 { price: { $gt: 0 } }
             ] }, { $set: { qty: 15 } }).exec().then(function (result) {
-                    expect(result).toBe(1);
+                    expect(result).to.equal(1);
                     done();
                 });
         });
 
         it('Perform the $and operation on a single field combined', function (done) {
             Model.update({ price: { $ne: 1.99, $gt: 0 } }, { $set: { qty: 15 } }).exec().then(function (result) {
-                expect(result).toBe(1);
+                expect(result).to.equal(1);
                 done();
             });
         });
@@ -97,7 +101,7 @@ describe('Mockgoose $and Tests', function () {
                         { qty: { $gt: 20 } },
                         { sale: true }
                     ]).exec().then(function (results) {
-                        expect(results.length).toBe(2);
+                        expect(results.length).to.equal(2);
                         done();
                     });
             });
@@ -117,11 +121,11 @@ describe('Mockgoose $and Tests', function () {
 
             it('Should find by both email and password', function (done) {
                 AccountModel.find({$and:[{email: 'valid@valid.com'}, {href: 'href'}]}).exec().then(function(results){
-                    expect(results.length).toBe(1);
+                    expect(results.length).to.equal(1);
                     var result = results[0];
                     if(result){
-                        expect(results[0].email).toBe('valid@valid.com');
-                        expect(results[0].href).toBe('href');
+                        expect(results[0].email).to.equal('valid@valid.com');
+                        expect(results[0].href).to.equal('href');
                     }
                     done();
                 });
@@ -129,11 +133,11 @@ describe('Mockgoose $and Tests', function () {
 
             it('Should find by both email and password implicit', function (done) {
                 AccountModel.find({email: 'valid@valid.com', href: 'href'}).exec().then(function(results){
-                    expect(results.length).toBe(1);
+                    expect(results.length).to.equal(1);
                     var result = results[0];
                     if(result){
-                        expect(results[0].email).toBe('valid@valid.com');
-                        expect(results[0].href).toBe('href');
+                        expect(results[0].email).to.equal('valid@valid.com');
+                        expect(results[0].href).to.equal('href');
                     }
                     done();
                 });

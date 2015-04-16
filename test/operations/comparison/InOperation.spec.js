@@ -1,3 +1,7 @@
+/*jshint expr: true*/
+/*jshint -W079 */ //redefined expect
+var expect = require('chai').expect;
+
 describe('Mockgoose Find Tests', function () {
     'use strict';
 
@@ -16,10 +20,10 @@ describe('Mockgoose Find Tests', function () {
             {email: 'valid@valid.com', password: 'password'},
             {email: 'invalid@invalid.com', password: 'password'},
             function (err, valid, invalid) {
-                expect(err).toBeFalsy();
-                expect(valid).toBeTruthy();
+                expect(err).not.to.be.ok;
+                expect(valid).to.be.ok;
                 accountId = valid._id;
-                expect(invalid).toBeTruthy();
+                expect(invalid).to.be.ok;
                 SimpleModel.create(
                     {name: 'one', value: 'one'},
                     {name: 'one', value: 'two'},
@@ -27,10 +31,10 @@ describe('Mockgoose Find Tests', function () {
                     {name: 'two', value: 'one'},
                     {name: 'two', value: 'two'},
                     function (err, one, two, three) {
-                        expect(err).toBeFalsy();
-                        expect(one).toBeTruthy();
-                        expect(two).toBeTruthy();
-                        expect(three).toBeTruthy();
+                        expect(err).not.to.be.ok;
+                        expect(one).to.be.ok;
+                        expect(two).to.be.ok;
+                        expect(three).to.be.ok;
                         done(err);
                     }
                 );
@@ -55,10 +59,10 @@ describe('Mockgoose Find Tests', function () {
 
                 it('should be empty before All Tests', function (done) {
                     AccountModel.find(null,function(err,result){
-                        expect(result).toBeDefined();
-                        expect(result.length).toBe(0);
+                        expect(result).not.to.be.undefined;
+                        expect(result.length).to.equal(0);
                         return done();
-                    })
+                    });
                 }
             );
 
@@ -68,10 +72,10 @@ describe('Mockgoose Find Tests', function () {
                     {email: 'multiples@invalid.com', password: 'password', values: ['two', 'three']},
                     function () {
                         AccountModel.findOne({email: {$in: [/invalid/i]}}, function (err, result) {
-                            expect(result).toBeDefined();
-                            expect(result).not.toBeNull();
+                            expect(result).not.to.be.undefined;
+                            expect(result).not.to.be.null;
                             if (result) {
-                                expect(result.values[1]).toBe('three');
+                                expect(result.values[1]).to.equal('three');
                                 done(err);
                             } else {
                                 done('Error finding model');
@@ -80,15 +84,17 @@ describe('Mockgoose Find Tests', function () {
                     });
             });
 
-            it('should be able to find a model $in  ', function (done) {
+            it('should be able to find a model $regex  ', function (done) {
                 AccountModel.create(
                     {email: 'multiples@valid.com', password: 'password', values: ['one', 'two']},
                     {email: 'multiples@invalid.com', password: 'password', values: ['two', 'three']},
-                    function () {
-                        AccountModel.findOne({email: {$in: /invalid/}}, function (err, result) {
-                            expect(result).toBeDefined();
+                    function (err) {
+                        expect(err).not.to.be.ok;
+                        AccountModel.findOne({email: {$regex: /invalid/}}, function (err, result) {
+                            expect(err).not.to.be.ok;
+                            expect(result).not.to.be.undefined;
                             if (result) {
-                                expect(result.values[1]).toBe('three');
+                                expect(result.values[1]).to.equal('three');
                                 done(err);
                             } else {
                                 done('Error finding model');
@@ -97,15 +103,15 @@ describe('Mockgoose Find Tests', function () {
                     });
             });
 
-            it('should be able to find multiple models $in ', function (done) {
+            it('should be able to find multiple models $regex ', function (done) {
                 AccountModel.create(
                     {email: 'multiples@valid.com', password: 'password', values: ['one', 'two']},
                     {email: 'multiples@invalid.com', password: 'password', values: ['two', 'three']},
                     function () {
-                        AccountModel.find({email: {$in: /valid/}}, function (err, result) {
-                            expect(result).toBeDefined();
+                        AccountModel.find({email: {$regex: /valid/}}, function (err, result) {
+                            expect(result).not.to.be.undefined;
                             if (result) {
-                                expect(result.length).toBe(2);
+                                expect(result.length).to.equal(2);
                                 done(err);
                             } else {
                                 done('Error finding models');
@@ -119,9 +125,9 @@ describe('Mockgoose Find Tests', function () {
                     {email: 'multiples@invalid.com', password: 'password', values: ['two', 'three']},
                     function () {
                         AccountModel.find({email: {$in: [/invalid/, /es\@va/]}}, function (err, result) {
-                            expect(result).toBeDefined();
+                            expect(result).not.to.be.undefined;
                             if (result) {
-                                expect(result.length).toBe(2);
+                                expect(result.length).to.equal(2);
                                 done(err);
                             } else {
                                 done('Error finding models');
@@ -136,9 +142,9 @@ describe('Mockgoose Find Tests', function () {
                     {email: 'multiples@invalid.com', password: 'password', values: ['two', 'three']},
                     function () {
                         AccountModel.find({email: {$in: [/valid/]}}, function (err, result) {
-                            expect(result).toBeDefined();
+                            expect(result).not.to.be.undefined;
                             if (result) {
-                                expect(result.length).toBe(2);
+                                expect(result.length).to.equal(2);
                                 done(err);
                             } else {
                                 done('Error finding models');
@@ -157,9 +163,9 @@ describe('Mockgoose Find Tests', function () {
                 {email: 'multiples@invalid.com', password: 'password', values: ['two', 'three']},
                 function () {
                     AccountModel.findOne({values: {$in: ['three']}}, function (err, result) {
-                        expect(result).toBeDefined();
+                        expect(result).not.to.be.undefined;
                         if (result) {
-                            expect(result.values[1]).toBe('three');
+                            expect(result.values[1]).to.equal('three');
                             done(err);
                         } else {
                             done('Error finding model');
@@ -174,9 +180,9 @@ describe('Mockgoose Find Tests', function () {
                 {email: 'multiples@invalid.com', password: 'password', values: ['two', 'three']},
                 function () {
                     AccountModel.find({values: {$in: ['two']}}, function (err, result) {
-                        expect(result).toBeDefined();
+                        expect(result).not.to.be.undefined;
                         if (result) {
-                            expect(result.length).toBe(2);
+                            expect(result.length).to.equal(2);
                             done(err);
                         } else {
                             done('Error finding models');
@@ -191,9 +197,9 @@ describe('Mockgoose Find Tests', function () {
                 {email: 'multiples@invalid.com', password: 'password', values: ['two', 'three']},
                 function () {
                     AccountModel.find({values: {$in: ['two', 'three']}}, function (err, result) {
-                        expect(result).toBeDefined();
+                        expect(result).not.to.be.undefined;
                         if (result) {
-                            expect(result.length).toBe(2);
+                            expect(result.length).to.equal(2);
                             done(err);
                         } else {
                             done('Error finding models');
@@ -208,10 +214,10 @@ describe('Mockgoose Find Tests', function () {
                 {email: 'multiples@invalid.com', password: 'password', values: ['two', 'three']},
                 function () {
                     AccountModel.find({email: {$in: ['valid']}}, function (err, result) {
-                        expect(err).toBeFalsy();
-                        expect(result).toBeDefined();
+                        expect(err).not.to.be.ok;
+                        expect(result).not.to.be.undefined;
                         if (result) {
-                            expect(result.length).toBe(0);
+                            expect(result.length).to.equal(0);
                             done(err);
                         } else {
                             done('Incorrectly matched models');
@@ -234,8 +240,8 @@ describe('Mockgoose Find Tests', function () {
         it('work with nested values', function (done) {
             Test.create({ 'value': 'Test', 'nested.value': 'Test' }, function (er, test) {
                 Test.findOne({ 'nested.value': { $in: ['Test'] } }, function (er, result) {
-                    expect(er).toBeNull();
-                    expect(result._id.toString()).toBe(test._id.toString());
+                    expect(er).to.be.null;
+                    expect(result._id.toString()).to.equal(test._id.toString());
                     done();
                 });
             });
@@ -254,8 +260,8 @@ describe('Mockgoose Find Tests', function () {
         it('works with ObjectIds', function (done) {
             Test.create({myRefs: myIds}, function (er, test) {
                 Test.findOne({ myRefs: { $in: [myIds[0]] } }, function (er, result) {
-                    expect(er).toBeNull();
-                    expect(result._id.toString()).toBe(test._id.toString());
+                    expect(er).to.be.null;
+                    expect(result._id.toString()).to.equal(test._id.toString());
                     done();
                 });
             });

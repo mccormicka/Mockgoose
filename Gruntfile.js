@@ -1,12 +1,13 @@
+'use strict';
+
 module.exports = function (grunt) {
-    'use strict';
 
     //Default task runs tests, jshint and watches for changes.
     grunt.registerTask('default',
-        ['jasmine_node', 'jshint', 'watch']);
+        ['mochaTest', 'jshint', 'watch']);
 
     //Just run tests
-    grunt.registerTask('test', 'jasmine_node');
+    grunt.registerTask('test', 'mochaTest');
 
     //Alias for default
     grunt.registerTask('test:watch', 'default');
@@ -16,12 +17,12 @@ module.exports = function (grunt) {
         pkg: grunt.file.readJSON('package.json'),
 
         //Tests
-        jasmine_node: {
-            options: {
-                forceExit: true,
-                verbose: true
-            },
-            files: { src: 'test/**/*.spec.js'}
+        mochaTest: {
+            test: {
+                options: {
+                },
+                src: ['test/**/*.js']
+            }
         },
 
         //Clean code.
@@ -35,7 +36,7 @@ module.exports = function (grunt) {
         //Files to watch and actions to take when they are changed.
         watch: {
             files: ['Mockgoose.js', 'lib/**/*.js', 'test/**/*.spec.js'],
-            tasks: ['jshint', 'jasmine_node']
+            tasks: ['jshint', 'mochaTest']
         }
     });
 
@@ -43,7 +44,7 @@ module.exports = function (grunt) {
     // Watch the file system for changes.
     grunt.loadNpmTasks('grunt-contrib-watch');
     // Runs tests.
-    grunt.loadNpmTasks('grunt-jasmine-node');
+    grunt.loadNpmTasks('grunt-mocha-test');
     // Clean code validator.
     grunt.loadNpmTasks('grunt-contrib-jshint');
 };

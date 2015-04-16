@@ -1,4 +1,5 @@
 'use strict';
+
 module.exports = function (connection) {
 
     var db = connection;

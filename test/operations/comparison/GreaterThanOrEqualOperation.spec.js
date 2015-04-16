@@ -1,3 +1,7 @@
+/*jshint expr: true*/
+/*jshint -W079 */ //redefined expect
+var expect = require('chai').expect;
+
 describe('Mockgoose $gte Tests', function () {
     'use strict';
 
@@ -74,8 +78,8 @@ describe('Mockgoose $gte Tests', function () {
             Model.find({
                 qty: { num: { $gte: 120 } }
             }).exec().then(function (results) {
-                    expect(results).toBeDefined();
-                    expect(results.length).toBe(2);
+                    expect(results).not.to.be.undefined;
+                    expect(results.length).to.equal(2);
                     done();
                 }, done);
         });
@@ -83,8 +87,8 @@ describe('Mockgoose $gte Tests', function () {
         it('Not match values $gte the value', function (done) {
             Model.find({ qty: { num: { $gte: 500 } }
             }).exec().then(function (results) {
-                    expect(results).toBeDefined();
-                    expect(results.length).toBe(0);
+                    expect(results).not.to.be.undefined;
+                    expect(results.length).to.equal(0);
                     done();
                 }, done);
         });

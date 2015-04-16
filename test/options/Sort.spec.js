@@ -1,3 +1,7 @@
+/*jshint expr: true*/
+/*jshint -W079 */ //redefined expect
+var expect = require('chai').expect;
+
 describe('Mockgoose Find Tests', function () {
     'use strict';
 
@@ -24,14 +28,14 @@ describe('Mockgoose Find Tests', function () {
 
         it('Be able to sort items by field in ascending order ObjectId', function (done) {
             IndexModel.create({name: 'aaa'}, {name: 'bbb'}, function (err, results) {
-                expect(err).toBeNull();
-                expect(results).toBeDefined();
+                expect(err).not.to.be.ok;
+                expect(results).not.to.be.undefined;
                 if (results) {
                     IndexModel.findOne({}, {}, {sort: {_id: 1}}, function (err, model) {
-                        expect(err).toBeNull();
-                        expect(model).toBeDefined();
+                        expect(err).not.to.be.ok;
+                        expect(model).not.to.be.undefined;
                         if (model) {
-                            expect(model.name).toBe('aaa');
+                            expect(model.name).to.equal('aaa');
                             done(err);
                         } else {
                             done('Error finding models');
@@ -45,14 +49,14 @@ describe('Mockgoose Find Tests', function () {
 
         it('Be able to sort items by field in descending order ObjectId', function (done) {
             IndexModel.create({name: 'aaa'}, {name: 'bbb'}, function (err, results) {
-                expect(err).toBeNull();
-                expect(results).toBeDefined();
+                expect(err).not.to.be.ok;
+                expect(results).not.to.be.undefined;
                 if (results) {
                     IndexModel.findOne({}, {}, {sort: {_id: -1}}, function (err, model) {
-                        expect(err).toBeNull();
-                        expect(model).toBeDefined();
+                        expect(err).not.to.be.ok;
+                        expect(model).not.to.be.undefined;
                         if (model) {
-                            expect(model.name).toBe('bbb');
+                            expect(model.name).to.equal('bbb');
                             done(err);
                         } else {
                             done('Error finding models');
@@ -67,15 +71,15 @@ describe('Mockgoose Find Tests', function () {
 
         it('Be able to sort items by field in ascending order Numeric', function (done) {
             IndexModel.create({name: 'zzz', value: 1}, {name: 'aaa', value: 2}, function (err, results) {
-                expect(err).toBeNull();
-                expect(results).toBeDefined();
+                expect(err).not.to.be.ok;
+                expect(results).not.to.be.undefined;
                 if (results) {
                     IndexModel.findOne({}, {}, {sort: {value: 1}}, function (err, model) {
-                        expect(err).toBeNull();
-                        expect(model).toBeDefined();
+                        expect(err).not.to.be.ok;
+                        expect(model).not.to.be.undefined;
                         if (model) {
-                            expect(model.name).toBe('zzz');
-                            expect(model.value).toBe(1);
+                            expect(model.name).to.equal('zzz');
+                            expect(model.value).to.equal(1);
                             done(err);
                         } else {
                             done('Error finding models');
@@ -89,15 +93,15 @@ describe('Mockgoose Find Tests', function () {
 
         it('Be able to sort items by field in descending order Numeric', function (done) {
             IndexModel.create({name: 'zzz', value: 1}, {name: 'aaa', value: 2}, function (err, results) {
-                expect(err).toBeNull();
-                expect(results).toBeDefined();
+                expect(err).not.to.be.ok;
+                expect(results).not.to.be.undefined;
                 if (results) {
                     IndexModel.findOne({}, {}, {sort: {value: -1}}, function (err, model) {
-                        expect(err).toBeNull();
-                        expect(model).toBeDefined();
+                        expect(err).not.to.be.ok;
+                        expect(model).not.to.be.undefined;
                         if (model) {
-                            expect(model.name).toBe('aaa');
-                            expect(model.value).toBe(2);
+                            expect(model.name).to.equal('aaa');
+                            expect(model.value).to.equal(2);
                             done(err);
                         } else {
                             done('Error finding models');
@@ -112,15 +116,15 @@ describe('Mockgoose Find Tests', function () {
 
         it('Be able to sort items by field in ascending order Alpha', function (done) {
             IndexModel.create({name: 'zzz', value: 1}, {name: 'aaa', value: 2}, function (err, results) {
-                expect(err).toBeNull();
-                expect(results).toBeDefined();
+                expect(err).not.to.be.ok;
+                expect(results).not.to.be.undefined;
                 if (results) {
                     IndexModel.findOne({}, {}, {sort: {name: 1}}, function (err, model) {
-                        expect(err).toBeNull();
-                        expect(model).toBeDefined();
+                        expect(err).not.to.be.ok;
+                        expect(model).not.to.be.undefined;
                         if (model) {
-                            expect(model.name).toBe('aaa');
-                            expect(model.value).toBe(2);
+                            expect(model.name).to.equal('aaa');
+                            expect(model.value).to.equal(2);
                             done(err);
                         } else {
                             done('Error finding models');
@@ -134,15 +138,15 @@ describe('Mockgoose Find Tests', function () {
 
         it('Be able to sort items by field in descending order Alpha', function (done) {
             IndexModel.create({name: 'zzz', value: 1}, {name: 'aaa', value: 2}, function (err, results) {
-                expect(err).toBeNull();
-                expect(results).toBeDefined();
+                expect(err).not.to.be.ok;
+                expect(results).not.to.be.undefined;
                 if (results) {
                     IndexModel.findOne({}, {}, {sort: {name: -1}}, function (err, model) {
-                        expect(err).toBeNull();
-                        expect(model).toBeDefined();
+                        expect(err).not.to.be.ok;
+                        expect(model).not.to.be.undefined;
                         if (model) {
-                            expect(model.name).toBe('zzz');
-                            expect(model.value).toBe(1);
+                            expect(model.name).to.equal('zzz');
+                            expect(model.value).to.equal(1);
                             done(err);
                         } else {
                             done('Error finding models');
@@ -156,14 +160,14 @@ describe('Mockgoose Find Tests', function () {
 
         it('Be able to sort items by field in ascending order Date', function (done) {
             SimpleModel.create({name: 'one', date: new Date(1000)}, {name: 'two', date: new Date(2000)}, function (err, results) {
-                expect(err).toBeNull();
-                expect(results).toBeDefined();
+                expect(err).not.to.be.ok;
+                expect(results).not.to.be.undefined;
                 if (results) {
                     SimpleModel.findOne({}, {}, {sort: {date: 1}}, function (err, model) {
-                        expect(err).toBeNull();
-                        expect(model).toBeDefined();
+                        expect(err).not.to.be.ok;
+                        expect(model).not.to.be.undefined;
                         if (model) {
-                            expect(model.name).toBe('one');
+                            expect(model.name).to.equal('one');
                             done(err);
                         } else {
                             done('Error finding models');
@@ -177,14 +181,14 @@ describe('Mockgoose Find Tests', function () {
 
         it('Be able to sort items by field in descending order Date', function (done) {
             SimpleModel.create({name: 'one', date: new Date(1000)}, {name: 'two', date: new Date(2000)}, function (err, results) {
-                expect(err).toBeNull();
-                expect(results).toBeDefined();
+                expect(err).not.to.be.ok;
+                expect(results).not.to.be.undefined;
                 if (results) {
                     SimpleModel.findOne({}, {}, {sort: {date: -1}}, function (err, model) {
-                        expect(err).toBeNull();
-                        expect(model).toBeDefined();
+                        expect(err).not.to.be.ok;
+                        expect(model).not.to.be.undefined;
                         if (model) {
-                            expect(model.name).toBe('two');
+                            expect(model.name).to.equal('two');
                             done(err);
                         } else {
                             done('Error finding models');
@@ -214,21 +218,21 @@ describe('Mockgoose Find Tests', function () {
 
             it('Be able to sort when a field does not exists ascending', function (done) {
                 Model.findOne({}, {}, {sort: {email: 1}}).exec().then(function (result) {
-                    expect(result.name).toBe('y');
+                    expect(result.name).to.equal('y');
                     done();
                 });
             });
 
             it('Be able to sort when a field does not exists neutral', function (done) {
                 Model.findOne({}, {}, {sort: {email: 0}}).exec().then(function (result) {
-                    expect(result.name).toBe('y');
+                    expect(result.name).to.equal('y');
                     done();
                 });
             }); 
 
             it('Be able to sort when a field does not exist descending', function (done) {
                 Model.findOne({}, {}, {sort: {email: -1}}).exec().then(function (result) {
-                    expect(result.name).toBe('x');
+                    expect(result.name).to.equal('x');
                     done();
                 });
             });

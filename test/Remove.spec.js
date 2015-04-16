@@ -1,3 +1,7 @@
+/*jshint expr: true*/
+/*jshint -W079 */ //redefined expect
+var expect = require('chai').expect;
+
 describe('Mockgoose Remove Tests', function () {
     'use strict';
 
@@ -15,8 +19,8 @@ describe('Mockgoose Remove Tests', function () {
             {email: 'valid@valid.com', password: 'password'},
             {email: 'invalid@invalid.com', password: 'password'},
             function (err, models) {
-                expect(err).toBeFalsy();
-                expect(models).toBeTruthy();
+                expect(err).not.to.be.ok;
+                expect(models).to.be.ok;
                 SimpleModel.create(
                     {name: 'one', value: 'one'},
                     {name: 'one', value: 'two'},
@@ -24,8 +28,8 @@ describe('Mockgoose Remove Tests', function () {
                     {name: 'two', value: 'one'},
                     {name: 'two', value: 'two'},
                     function (err, models) {
-                        expect(err).toBeFalsy();
-                        expect(models).toBeTruthy();
+                        expect(err).not.to.be.ok;
+                        expect(models).to.be.ok;
                         done(err);
                     }
                 );
@@ -42,10 +46,10 @@ describe('Mockgoose Remove Tests', function () {
     describe('Remove', function () {
         it('should be able to remove a model', function (done) {
             SimpleModel.remove({name: 'one'}, function (err) {
-                expect(err).toBeFalsy();
+                expect(err).not.to.be.ok;
                 SimpleModel.findOne({name: 'one'}, function (err, model) {
-                    expect(err).toBeFalsy();
-                    expect(model).toBeFalsy();
+                    expect(err).not.to.be.ok;
+                    expect(model).not.to.be.ok;
                     done(err);
                 });
             });
@@ -55,7 +59,7 @@ describe('Mockgoose Remove Tests', function () {
             mockgoose.setMockReadyState(mongoose.connection, 0);
 
             SimpleModel.remove({name: 'one'}, function (err) {
-                expect(err).toBeDefined();
+                expect(err).not.to.be.undefined;
                 mockgoose.setMockReadyState(mongoose.connection, 1);
                 done();
             });
@@ -63,13 +67,13 @@ describe('Mockgoose Remove Tests', function () {
 
         it('should be able to remove a model from a model object', function (done) {
             SimpleModel.find({name: 'one'}, function (err, result) {
-                expect(err).toBeFalsy();
-                expect(result.length).toBe(3);
+                expect(err).not.to.be.ok;
+                expect(result.length).to.equal(3);
                 result[0].remove(function (err) {
-                    expect(err).toBeFalsy();
+                    expect(err).not.to.be.ok;
                     SimpleModel.find({name: 'one'}, function (err, models) {
-                        expect(err).toBeFalsy();
-                        expect(models.length).toBe(2);
+                        expect(err).not.to.be.ok;
+                        expect(models.length).to.equal(2);
                         done(err);
                     });
                 });
@@ -78,10 +82,10 @@ describe('Mockgoose Remove Tests', function () {
 
         it('should be able to remove multiple model', function (done) {
             AccountModel.remove({email: 'valid@valid.com'}, function (err) {
-                expect(err).toBeFalsy();
+                expect(err).not.to.be.ok;
                 AccountModel.findOne({email: 'valid@valid.com'}, function (err, model) {
-                    expect(err).toBeFalsy();
-                    expect(model).toBeFalsy();
+                    expect(err).not.to.be.ok;
+                    expect(model).not.to.be.ok;
                     done(err);
                 });
             });
@@ -127,10 +131,10 @@ describe('Mockgoose Remove Tests', function () {
                     results[0].friends[0].books.pop();
                     results[0].friends[0].books[0].name = 'Book 2 - updated';
                     results[0].save(function(err){
-                        expect(err).toBe(null);
+                        expect(err).to.equal(null);
                         BugModel.findOne({name:'MyName'}).exec().then(function(result){
-                            expect(result.friends[0].books.length).toBe(1);
-                            expect(result.friends[0].books[0].name).toBe('Book 2 - updated');
+                            expect(result.friends[0].books.length).to.equal(1);
+                            expect(result.friends[0].books[0].name).to.equal('Book 2 - updated');
                             done();
                         });
                     });

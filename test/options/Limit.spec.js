@@ -1,3 +1,7 @@
+/*jshint expr: true*/
+/*jshint -W079 */ //redefined expect
+var expect = require('chai').expect;
+
 describe('Mockgoose Limit Tests', function () {
     'use strict';
 
@@ -20,7 +24,7 @@ describe('Mockgoose Limit Tests', function () {
         }, done);
     });
 
-    afterAll(function (done) {
+    after(function (done) {
         mockgoose.reset();
         done();
     });
@@ -28,20 +32,20 @@ describe('Mockgoose Limit Tests', function () {
     describe('Limit', function () {
         it('Be able to not use limit at all', function (done) {
             SimpleModel.find({}, function (err, data) {
-                expect(err).toBeNull();
-                expect(data).toBeDefined();
-                expect(Array.isArray(data)).toBe(true);
-                expect(data.length).toBe(10);
+                expect(err).not.to.be.ok;
+                expect(data).not.to.be.undefined;
+                expect(Array.isArray(data)).to.equal(true);
+                expect(data.length).to.equal(10);
                 done();
             });
         });
 
         it('Be able to limit 0 items (same as no limit)', function (done) {
             SimpleModel.find({}, null, {limit: 0}, function (err, data) {
-                expect(err).toBeNull();
-                expect(data).toBeDefined();
-                expect(Array.isArray(data)).toBe(true);
-                expect(data.length).toBe(10);
+                expect(err).not.to.be.ok;
+                expect(data).not.to.be.undefined;
+                expect(Array.isArray(data)).to.equal(true);
+                expect(data.length).to.equal(10);
                 done();
             });
         });
@@ -50,30 +54,30 @@ describe('Mockgoose Limit Tests', function () {
             async.parallel([
                 function (done) {
                     SimpleModel.find({}, null, {limit: 5}, function (err, data) {
-                        expect(err).toBeNull();
-                        expect(data).toBeDefined();
-                        expect(Array.isArray(data)).toBe(true);
-                        expect(data.length).toBe(5);
+                        expect(err).not.to.be.ok;
+                        expect(data).not.to.be.undefined;
+                        expect(Array.isArray(data)).to.equal(true);
+                        expect(data.length).to.equal(5);
                         done(err);
                     });
                 },
 
                 function (done) {
                     SimpleModel.find({}, null, {limit: 1}, function (err, data) {
-                        expect(err).toBeNull();
-                        expect(data).toBeDefined();
-                        expect(Array.isArray(data)).toBe(true);
-                        expect(data.length).toBe(1);
+                        expect(err).not.to.be.ok;
+                        expect(data).not.to.be.undefined;
+                        expect(Array.isArray(data)).to.equal(true);
+                        expect(data.length).to.equal(1);
                         done(err);
                     });
                 },
 
                 function (done) {
                     SimpleModel.find({}, null, {limit: 11}, function (err, data) {
-                        expect(err).toBeNull();
-                        expect(data).toBeDefined();
-                        expect(Array.isArray(data)).toBe(true);
-                        expect(data.length).toBe(10);
+                        expect(err).not.to.be.ok;
+                        expect(data).not.to.be.undefined;
+                        expect(Array.isArray(data)).to.equal(true);
+                        expect(data.length).to.equal(10);
                         done(err);
                     });
                 }
@@ -85,9 +89,9 @@ describe('Mockgoose Limit Tests', function () {
 
         it('Should be able to call limit on the query object', function (done) {
             SimpleModel.find({}).limit(5).exec().then(function(data){
-                expect(data).toBeDefined();
-                expect(Array.isArray(data)).toBe(true);
-                expect(data.length).toBe(5);
+                expect(data).not.to.be.undefined;
+                expect(Array.isArray(data)).to.equal(true);
+                expect(data.length).to.equal(5);
                 done();
             });
         });

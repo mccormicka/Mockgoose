@@ -1,3 +1,7 @@
+/*jshint expr: true*/
+/*jshint -W079 */ //redefined expect
+var expect = require('chai').expect;
+
 describe('Mockgoose $nor Tests', function () {
     'use strict';
 
@@ -70,7 +74,7 @@ describe('Mockgoose $nor Tests', function () {
                 { price: 1.99 },
                 { sale: true }
             ]  }).exec().then(function (results) {
-                expect(results.length).toBe(4);
+                expect(results.length).to.equal(4);
                 done();
             });
         });
@@ -80,7 +84,7 @@ describe('Mockgoose $nor Tests', function () {
                 { qty: { $lt: 20 } },
                 { sale: true }
             ] }).exec().then(function (results) {
-                expect(results.length).toBe(3);
+                expect(results.length).to.equal(3);
                 done();
             });
         });
@@ -92,7 +96,7 @@ describe('Mockgoose $nor Tests', function () {
                 { sale: true },
                 { sale: { $exists: false } }
             ] }).exec().then(function (results) {
-                    expect(results.length).toBe(2);
+                    expect(results.length).to.equal(2);
                     done();
                 });
         });

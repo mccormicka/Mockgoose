@@ -1,3 +1,7 @@
+/*jshint expr: true*/
+/*jshint -W079 */ //redefined expect
+var expect = require('chai').expect;
+
 describe('Mockgoose $or Tests', function () {
     'use strict';
 
@@ -85,7 +89,7 @@ describe('Mockgoose $or Tests', function () {
                 { qty: { $lt: 20 } },
                 { sale: true }
             ] }).exec().then(function (results) {
-                    expect(results.length).toBe(3);
+                    expect(results.length).to.equal(3);
                     done();
                 });
         });
@@ -95,7 +99,7 @@ describe('Mockgoose $or Tests', function () {
                 { qty: { $gt: 40 } },
                 { sale: false }
             ] }).exec().then(function (results) {
-                    expect(results.length).toBe(2);
+                    expect(results.length).to.equal(2);
                     done();
                 });
         });
@@ -106,7 +110,7 @@ describe('Mockgoose $or Tests', function () {
                 { 'carrier.state': 'NY'}
             ] }, { $set: { sale: true } }).exec().then(function () {
                     Model.findOne({'carrier.state': 'NY'}).exec().then(function(result){
-                        expect(result.sale).toBe(true);
+                        expect(result.sale).to.equal(true);
                         done();
                     });
                 });
@@ -116,7 +120,7 @@ describe('Mockgoose $or Tests', function () {
                 { price: 1.99 },
                 { sale: true }
             ], qty: { $in: [20, 50] } }).exec().then(function (results) {
-                expect(results.length).toBe(2);
+                expect(results.length).to.equal(2);
                 done();
             });
         });
@@ -126,7 +130,7 @@ describe('Mockgoose $or Tests', function () {
                 { historyprice: 8.99 },
                 { price: 1.99 }
             ]}).exec().then(function(results) {
-                expect(results.length).toBe(5);
+                expect(results.length).to.equal(5);
                 done();
             });
         });

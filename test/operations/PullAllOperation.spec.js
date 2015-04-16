@@ -1,3 +1,7 @@
+/*jshint expr: true*/
+/*jshint -W079 */ //redefined expect
+var expect = require('chai').expect;
+
 describe('Mockgoose Update Tests', function () {
     'use strict';
 
@@ -14,8 +18,8 @@ describe('Mockgoose Update Tests', function () {
             {email: 'valid@valid.com', password: 'password'},
             {email: 'invalid@invalid.com', password: 'password'},
             function (err, models) {
-                expect(err).toBeFalsy();
-                expect(models).toBeTruthy();
+                expect(err).not.to.be.ok;
+                expect(models).to.be.ok;
                 done(err);
             });
 
@@ -34,10 +38,10 @@ describe('Mockgoose Update Tests', function () {
                 {email: 'tester@valid.com', password: 'password', values: ['one', 'two']},
                 function () {
                     AccountModel.findOneAndUpdate({email: 'tester@valid.com'}, {$pullAll: {values: ['one']}}, function (err, result) {
-                        expect(result).toBeDefined();
+                        expect(result).not.to.be.undefined;
                         if (result) {
-                            expect(result.values.length).toBe(1);
-                            expect(result.values[0]).toBe('two');
+                            expect(result.values.length).to.equal(1);
+                            expect(result.values[0]).to.equal('two');
                             done(err);
                         } else {
                             done('Error finding item');
@@ -55,11 +59,11 @@ describe('Mockgoose Update Tests', function () {
                 ]},
                 function () {
                     AccountModel.findOneAndUpdate({email: 'multiples@valid.com'}, {$pullAll: {values: [{name:'one'},{name:'two'}]}}, function (err, result) {
-                        expect(result).toBeDefined();
+                        expect(result).not.to.be.undefined;
                         if (result) {
-                            expect(result.values.length).toBe(1);
+                            expect(result.values.length).to.equal(1);
                             if (result.values.length === 1) {
-                                expect(result.values[0].name).toBe('three');
+                                expect(result.values[0].name).to.equal('three');
                                 done(err);
                             } else {
                                 done('invalid values length');

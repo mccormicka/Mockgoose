@@ -1,3 +1,7 @@
+/*jshint expr: true*/
+/*jshint -W079 */ //redefined expect
+var expect = require('chai').expect;
+
 describe('Mockgoose $ne Tests', function () {
     'use strict';
 
@@ -15,9 +19,9 @@ describe('Mockgoose $ne Tests', function () {
     beforeEach(function (done) {
         mockgoose.reset();
         Test.create({value: 'foo'}, {value: 'baz'}, function (err, foo, baz) {
-            expect(err).toBeNull();
-            expect(foo).toBeDefined();
-            expect(baz).toBeDefined();
+            expect(err).not.to.be.ok;
+            expect(foo).not.to.be.undefined;
+            expect(baz).not.to.be.undefined;
             done();
         });
     });
@@ -33,24 +37,28 @@ describe('Mockgoose $ne Tests', function () {
         it('Count should support $ne', function (done) {
             Test.count({value: {$ne: 'baz'}}).exec().then(
                 function (count) {
-                    expect(count).toBe(1);
+                    expect(count).to.equal(1);
                     done();
                 },
-                done
+                function(err) {
+                    done(err);
+                }
             );
         });
 
         it('Find should support $ne', function (done) {
             Test.find({value: {$ne: 'baz'}}).exec().then(
                 function (results) {
-                    expect(results).toBeDefined();
-                    expect(results.length).toBe(1);
+                    expect(results).not.to.be.undefined;
+                    expect(results.length).to.equal(1);
                     if(results.length === 1){
-                        expect(results[0].value).toBe('foo');
+                        expect(results[0].value).to.equal('foo');
                     }
                     done();
                 },
-                done
+                function(err) {
+                    done(err);
+                }
             );
         });
     });

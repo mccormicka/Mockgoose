@@ -1,35 +1,28 @@
+/*jshint expr: true*/
+/*jshint -W079 */ //redefined expect
+ 'use strict';
+var expect = require('chai').expect;
+var mockgoose = require('./../../Mockgoose');
+var Mongoose = require('mongoose').Mongoose;
+var mongoose = new Mongoose();
+mockgoose(mongoose);
+
+
+var Schema = new mongoose.Schema({
+    name: String,
+    email: String
+});
+var Model = mongoose.model('AllTests', Schema);
+
 describe('Mockgoose $exists Tests', function () {
-    'use strict';
 
-    var mockgoose = require('./../../Mockgoose');
-    var Mongoose = require('mongoose').Mongoose;
-    var mongoose = new Mongoose();
-    mockgoose(mongoose);
-    mongoose.connect('mongodb://localhost/TestingDB');
-
-    var Schema = new mongoose.Schema({
-        name: String,
-        email: String
-    });
-    var Model = mongoose.model('AllTests', Schema);
-
-    beforeEach(function (done) {
-        mockgoose.reset();
-        Model.create({
-                name: 'abc'
-            },
-            {
-                name: 'cde',
-                user: {
-                    email: 'test@test.com'
-                }
-            },
-            {
-                name: 'fgh',
-                email: 'test2@test.com'
-            }, function (err) {
-                done(err);
-            });
+    before(function(done) {
+        mongoose.connect('mongodb://localhost/TestingDB', function(err) {
+            if (err) {
+                    console.log(err);
+            }
+            done(err);
+        });
     });
 
     afterEach(function (done) {
@@ -39,45 +32,76 @@ describe('Mockgoose $exists Tests', function () {
     });
 
     describe('$exists Tests', function () {
+        beforeEach(function (done) {
+            mockgoose.reset();
+            Model.create({
+                    name: 'abc'
+                },
+                {
+                    name: 'cde',
+                    user: {
+                        email: 'test@test.com'
+                    }
+                },
+                {
+                    name: 'fgh',
+                    email: 'test2@test.com'
+                }, function (err) {
+                    if ( err ) {
+                        console.log(err);
+                    }
+                    done(err);
+                });
+        });
 
         it('Be able to match only one item with truthful $exists', function (done) {
             Model.find({
                 email: { $exists: true }
             }).exec().then(function (results) {
-                    expect(results).toBeDefined();
-                    expect(results.length).toBe(1);
+                    expect(results).not.to.be.undefined;
+                    expect(results.length).to.equal(1);
                     done();
-                }, done);
+                }, function(err) {
+                    done(err);
+                });
         });
 
         it('Be able to match only one item with deep truthful $exists', function (done) {
             Model.find({
                 user: { email: { $exists: true } }
             }).exec().then(function (results) {
-                    expect(results).toBeDefined();
-                    expect(results.length).toBe(1);
+                    expect(results).not.to.be.undefined;
+                    expect(results.length).to.equal(1);
                     done();
-                }, done);
+                }, function(err) {
+                    done(err);
+                });
         });
 
         it('Be able to match two items with false $exists', function (done) {
             Model.find({
                 email: { $exists: false }
             }).exec().then(function (results) {
-                    expect(results).toBeDefined();
-                    expect(results.length).toBe(2);
+                    expect(results).not.to.be.undefined;
+                    expect(results.length).to.equal(2);
                     done();
-                }, done);
+                }, function(err) {
+                    done(err);
+                });
         });
     });
 
     describe('$exists mongodb examples', function () {
-        var Records = mongoose.model('Records', new mongoose.Schema({
-            order:Number,
-            a: Number,
-            b: Number,
-            c: Number
-        }));
+        var Records;
+        before(function(done) {
+            Records = mongoose.model('Records', new mongoose.Schema({
+                order:Number,
+                a: Number,
+                b: Number,
+                c: Number
+            }));
+            done();
+        });
 
         beforeEach(function (done) {
             Records.create(
@@ -90,12 +114,14 @@ describe('Mockgoose $exists Tests', function () {
                 { order: 6, a: 4 },
                 { order: 7, b: 2, c: 4 },
                 { order: 8, b: 2 },
-                { order: 9, c: 6 }, done);
+                { order: 9, c: 6 }, function(err) {
+                    done(err);
+                });
         });
 
         it('a exists', function (done) {
             Records.find({ a: { $exists: true } }).exec().then(function (results) {
-                expect(results.length).toBe(7);
+                expect(results.length).to.equal(7);
                 var expected = [
                     { order: 0, a: 5, b: 5, c: null },
                     { order: 1, a: 3, b: null, c: 8 },
@@ -107,12 +133,15 @@ describe('Mockgoose $exists Tests', function () {
                 ];
                 assertResults(results, expected);
                 done();
+            }, function(err) {
+                console.log('error', err);
+                done(err);
             });
         });
 
         it('b does not exists', function (done) {
             Records.find({ b: { $exists: false } }).exec().then(function (results) {
-                expect(results.length).toBe(3);
+                expect(results.length).to.equal(3);
                 var expected = [
                     { order: 4, a: 2, c: 5 },
                     { order: 6, a: 4 },
@@ -120,18 +149,24 @@ describe('Mockgoose $exists Tests', function () {
                 ];
                 assertResults(results, expected);
                 done();
+            }, function(err) {
+                console.log(err);
+                done(err);
             });
         });
 
         it('c does not exists', function (done) {
             Records.find({ c: { $exists: false } }).exec().then(function (results) {
-                expect(results.length).toBe(3);
+                expect(results.length).to.equal(3);
                 var expected = [
                     { order: 5, a: 3, b: 2 },
                     { order: 6, a: 4 },
                     { order: 8, b: 2 }
                 ];
                 assertResults(results, expected);
+                done();
+            }, function(err) {
+                console.log(err);
                 done();
             });
         });
@@ -146,7 +181,7 @@ describe('Mockgoose $exists Tests', function () {
             expected = expected.sort(orderSort);
             var resultSet = toResultSet(results);
             for (var i = 0; i < expected.length; i++) {
-                expect(resultSet[i]).toEqual(expected[i]);
+                expect(resultSet[i]).to.deep.equal(expected[i]);
             }
         }
 

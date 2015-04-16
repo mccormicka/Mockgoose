@@ -1,3 +1,7 @@
+/*jshint expr: true*/
+/*jshint -W079 */ //redefined expect
+var expect = require('chai').expect;
+
 describe('Mockgoose Query Tests', function () {
     'use strict';
 
@@ -16,10 +20,10 @@ describe('Mockgoose Query Tests', function () {
             {email: 'valid@valid.com', password: 'password'},
             {email: 'invalid@invalid.com', password: 'password'},
             function (err, valid, invalid) {
-                expect(err).toBeFalsy();
-                expect(valid).toBeTruthy();
+                expect(err).not.to.be.ok;
+                expect(valid).to.be.ok;
                 accountId = valid._id;
-                expect(invalid).toBeTruthy();
+                expect(invalid).to.be.ok;
                 SimpleModel.create(
                     {name: 'one', value: 'one'},
                     {name: 'one', value: 'two'},
@@ -27,10 +31,10 @@ describe('Mockgoose Query Tests', function () {
                     {name: 'two', value: 'one'},
                     {name: 'two', value: 'two'},
                     function (err, one, two, three) {
-                        expect(err).toBeFalsy();
-                        expect(one).toBeTruthy();
-                        expect(two).toBeTruthy();
-                        expect(three).toBeTruthy();
+                        expect(err).not.to.be.ok;
+                        expect(one).to.be.ok;
+                        expect(two).to.be.ok;
+                        expect(three).to.be.ok;
                         done(err);
                     }
                 );
@@ -47,19 +51,19 @@ describe('Mockgoose Query Tests', function () {
     describe('Find', function () {
 
         it('should return a mongoose Query object', function () {
-            expect(SimpleModel.find({}) instanceof mongoose.Query).toBeTruthy();
+            expect(SimpleModel.find({}) instanceof mongoose.Query).to.be.ok;
         });
 
         it('should be able to call exec ', function (done) {
             AccountModel.create({email: 'one@one.com', password: 'password'},
                 {email: 'two@two.com', password: 'password'}, function (err, one, two) {
-                    expect(err).toBeFalsy();
-                    expect(two).toBeDefined();
+                    expect(err).not.to.be.ok;
+                    expect(two).not.to.be.undefined;
                     if (two) {
                         AccountModel.findById(two._id).exec(function (err, model) {
-                            expect(err).toBeFalsy();
+                            expect(err).not.to.be.ok;
                             if (model) {
-                                expect(model._id.toString()).toBe(two._id.toString());
+                                expect(model._id.toString()).to.equal(two._id.toString());
                                 done(err);
                             } else {
                                 done('Unable to find model by ID');
@@ -74,13 +78,13 @@ describe('Mockgoose Query Tests', function () {
 
     describe('findById', function () {
         it('should return a mongoose Query object', function () {
-            expect(SimpleModel.findById({}) instanceof mongoose.Query).toBeTruthy();
+            expect(SimpleModel.findById({}) instanceof mongoose.Query).to.be.ok;
         });
 
         it('should be able to call exec ', function (done) {
             AccountModel.findById(accountId).exec(function (err, model) {
-                expect(err).toBeFalsy();
-                expect(model.email).toBe('valid@valid.com');
+                expect(err).not.to.be.ok;
+                expect(model.email).to.equal('valid@valid.com');
                 done(err);
             });
         });
@@ -89,18 +93,18 @@ describe('Mockgoose Query Tests', function () {
     describe('findByIdAndRemove', function () {
 
         it('should return a mongoose Query object', function () {
-            expect(SimpleModel.findByIdAndRemove({}) instanceof mongoose.Query).toBeTruthy();
+            expect(SimpleModel.findByIdAndRemove({}) instanceof mongoose.Query).to.be.ok;
         });
 
         it('Be able to call exec', function (done) {
             SimpleModel.create(
                 {name: 'one', value: 'one'}, function (err, result) {
                     SimpleModel.findByIdAndRemove(result._id).exec(function (err, removed) {
-                        expect(err).toBeNull();
+                        expect(err).not.to.be.ok;
                         if (removed) {
-                            expect(removed._id.toString()).toEqual(result._id.toString());
+                            expect(removed._id.toString()).to.equal(result._id.toString());
                             SimpleModel.findOne({id: result._id}, function (err, item) {
-                                expect(item).toBeNull();
+                                expect(item).to.be.null;
                                 done(err);
                             });
                         }
@@ -115,7 +119,7 @@ describe('Mockgoose Query Tests', function () {
     describe('findByIdAndUpdate', function () {
 
         it('should return a mongoose Query object', function () {
-            expect(SimpleModel.findByIdAndUpdate({}) instanceof mongoose.Query).toBeTruthy();
+            expect(SimpleModel.findByIdAndUpdate({}) instanceof mongoose.Query).to.be.ok;
         });
 
         it('should be able to call exec ', function (done) {
@@ -124,9 +128,9 @@ describe('Mockgoose Query Tests', function () {
                 function (err, result) {
                     var id = result._id;
                     AccountModel.findByIdAndUpdate(id, {email: 'updatedemail@email.com'}).exec(function (err, result) {
-                        expect(result).toBeDefined();
+                        expect(result).not.to.be.undefined;
                         if (result) {
-                            expect(result.email).toBe('updatedemail@email.com');
+                            expect(result.email).to.equal('updatedemail@email.com');
                             done(err);
                         } else {
                             done('Error finding models');
@@ -139,13 +143,13 @@ describe('Mockgoose Query Tests', function () {
     describe('findOne', function () {
 
         it('should return a mongoose Query object', function () {
-            expect(SimpleModel.findOne({}) instanceof mongoose.Query).toBeTruthy();
+            expect(SimpleModel.findOne({}) instanceof mongoose.Query).to.be.ok;
         });
 
         it('should be able to call exec ', function (done) {
             AccountModel.findOne({email: 'valid@valid.com'}).exec(function (err, model) {
-                expect(err).toBeFalsy();
-                expect(model.email).toBe('valid@valid.com');
+                expect(err).not.to.be.ok;
+                expect(model.email).to.equal('valid@valid.com');
                 done(err);
             });
         });
@@ -155,18 +159,18 @@ describe('Mockgoose Query Tests', function () {
     describe('findOneAndRemove', function () {
 
         it('should return a mongoose Query object', function () {
-            expect(SimpleModel.findOneAndRemove({}) instanceof mongoose.Query).toBeTruthy();
+            expect(SimpleModel.findOneAndRemove({}) instanceof mongoose.Query).to.be.ok;
         });
 
         it('should be able to call exec ', function (done) {
             SimpleModel.create(
                 {name: 'unique', value: 'one'}, function (err, result) {
                     SimpleModel.findOneAndRemove({name: 'unique'}).exec(function (err, removed) {
-                        expect(err).toBeNull();
+                        expect(err).not.to.be.ok;
                         if (removed) {
-                            expect(removed._id.toString()).toEqual(result._id.toString());
+                            expect(removed._id.toString()).to.equal(result._id.toString());
                             SimpleModel.findOne({id: result._id}, function (err, item) {
-                                expect(item).toBeNull();
+                                expect(item).to.be.null;
                                 done(err);
                             });
                         }
@@ -182,7 +186,7 @@ describe('Mockgoose Query Tests', function () {
     describe('findOneAndUpdate', function () {
 
         it('should return a mongoose Query object', function () {
-            expect(SimpleModel.findOneAndUpdate({}) instanceof mongoose.Query).toBeTruthy();
+            expect(SimpleModel.findOneAndUpdate({}) instanceof mongoose.Query).to.be.ok;
         });
 
         it('should be able to call exec ', function (done) {
@@ -191,9 +195,9 @@ describe('Mockgoose Query Tests', function () {
                 function () {
                     AccountModel.findOneAndUpdate({email: 'multiples@valid.com'}, {email: 'updatedemail@email.com'})
                         .exec(function (err, result) {
-                            expect(result).toBeDefined();
+                            expect(result).not.to.be.undefined;
                             if (result) {
-                                expect(result.email).toBe('updatedemail@email.com');
+                                expect(result.email).to.equal('updatedemail@email.com');
                                 done(err);
                             } else {
                                 done('Error finding models');

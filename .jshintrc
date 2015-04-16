@@ -21,7 +21,6 @@
     "maxparams": 5,
     "maxdepth": 3,
     "maxlen": 160,
-
     "browser": true,
     "devel": false,
     "jquery": false,
@@ -40,6 +39,8 @@
         "afterEach",
         "expect",
         "default",
-        "spyOn"
+        "spyOn",
+        "after",
+        "before"
     ]
 }

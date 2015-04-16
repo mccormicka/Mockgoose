@@ -1,3 +1,7 @@
+/*jshint expr: true*/
+/*jshint -W079 */ //redefined expect
+var expect = require('chai').expect;
+
 describe('Mockgoose $not Tests', function () {
     'use strict';
 
@@ -77,14 +81,14 @@ describe('Mockgoose $not Tests', function () {
 
         it('Find prices that are not greater 1.99 ', function (done) {
             Model.find( { price: { $not: { $gt: 1.99 } } } ).exec().then(function (results) {
-                    expect(results.length).toBe(7);
+                    expect(results.length).to.equal(7);
                     done();
                 });
         });
 
         it('$not with regexp', function (done) {
             Model.find( { 'carrier.state': { $not: new RegExp('^L.*') } } ).exec().then(function (results) {
-                    expect(results.length).toBe(7);
+                    expect(results.length).to.equal(7);
                     done();
                 });
         });
