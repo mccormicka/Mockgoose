@@ -12,7 +12,7 @@ describe('Mockgoose Find Tests', function () {
     mongoose.connect('mongodb://localhost/TestingDB-58');
     var AccountModel = require('./models/AccountModel')(mongoose);
     var SimpleModel = require('./models/SimpleModel')(mongoose);
-    var ObjectId = require('mongodb').BSONPure.ObjectID;
+    var ObjectId = require('mongodb').ObjectID;
 
     var accountId;
     beforeEach(function (done) {

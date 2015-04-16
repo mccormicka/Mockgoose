@@ -3,7 +3,7 @@ module.exports = function (mongoose) {
 
     var db = mongoose.connection,
         Schema = mongoose.Schema,
-        validate = require('mongoose-validator').validate,
+        validate = require('mongoose-validator'),
         bcrypt = require('bcrypt');
 
     var SALT_WORK_FACTOR = 10;
@@ -18,12 +18,13 @@ module.exports = function (mongoose) {
             unique: true,
             lowercase: true,
             trim: true,
-            validate: [validate({message: 'invalid'}, 'isEmail')]
+            validate: [validate({message: 'invalid', validator: 'isEmail', passIfEmpty: true})]
         },
         password: {
             type: String,
             required: true,
-            validate: [validate({message: 'min.length:6'}, 'len', 6)]
+            //validate: [validate({message: 'min.length:6'}, 'len', 6)]
+            validate: [validate({message: 'min.length:6', validator: 'isLength', arguments: [6], passIfEmpty: true})]
         },
         values:[]
     });
