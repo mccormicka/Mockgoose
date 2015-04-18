@@ -63,6 +63,7 @@ module.exports = function (mongoose, throwErrors) {
             });
         });
         connection.model = mongoose.model;
+        connection.models = mongoose.models;
         return connection;
     };
 
