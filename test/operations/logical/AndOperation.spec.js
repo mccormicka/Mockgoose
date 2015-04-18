@@ -84,7 +84,7 @@ describe('Mockgoose $and Tests', function () {
                 { price: 1.99, sale: true },
                 { qty: { $gt: 20 }, sale: true }
             ] }).exec().then(function (results) {
-                    expect(results.length).toBe(2);
+                    expect(results.length).to.equal(2);
                     done();
                 });
         });
@@ -111,7 +111,7 @@ describe('Mockgoose $and Tests', function () {
                 { price: 1.99 },
                 { $or: [{qty: 19}, {sale: false}] }
             ] }).exec().then(function (results) {
-                    expect(results.length).toBe(2);
+                    expect(results.length).to.equal(2);
                     done();
                 });
         });
@@ -121,7 +121,7 @@ describe('Mockgoose $and Tests', function () {
                 { historyprice: 1.90 },
                 { price: 1.99 }
             ]}).exec().then(function(results) {
-                expect(results.length).toBe(1);
+                expect(results.length).to.equal(1);
                 done();
             });
         });

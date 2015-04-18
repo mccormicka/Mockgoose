@@ -130,7 +130,7 @@ describe('Mockgoose $or Tests', function () {
             { historyprice: 8.99, qty: 21 },
             { price: 1.99, qty: 20 }
           ]}).exec().then(function(results) {
-            expect(results.length).toBe(2);
+            expect(results.length).to.equal(2);
             done();
           });
         });
@@ -150,7 +150,7 @@ describe('Mockgoose $or Tests', function () {
                 { $and: [{price: 1.99}, {qty: 20}] },
                 { $and: [{price: 10}, {qty: 21}] }
             ] }).exec().then(function (results) {
-                    expect(results.length).toBe(2);
+                    expect(results.length).to.equal(2);
                     done();
                 });
         });
