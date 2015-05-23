@@ -59,14 +59,31 @@ describe('Mockgoose Populate test', function () {
     });
 
     describe('Populate', function () {
-        it('should find the childs within the parent', function (done) {
+        it('should find the children objects within the parent', function (done) {
             CompanyEntry.findOne({name: 'Test Company'},function (err) {
                 expect(err).not.to.be.ok;
 
             }).populate('users').exec(function (err, result) {
                     expect(result.users.length).to.equal(1);
+                    var isInstanceOfUserEntry = result.users[0] instanceof UserEntry;
+                    expect(isInstanceOfUserEntry).to.be.true;
                     done();
                 });
+        });
+
+        it('should not find children objects within the parent on subsequent non populate calls', function(done) {
+            async.waterfall([function(callback) {
+                CompanyEntry.findOne({name: 'Test Company'})
+                    .populate('users')
+                    .exec(callback);
+            }, function(result, callback) {
+                CompanyEntry.findOne({name: 'Test Company'}, callback);
+            }, function(result) {
+                expect(result.users.length).to.equal(1);
+                var isInstanceOfObjectId = result.users[0] instanceof Mongoose.Types.ObjectId;
+                expect(isInstanceOfObjectId).to.be.true;
+                done();
+            }]);
         });
 
     });
