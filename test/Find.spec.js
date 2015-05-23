@@ -209,6 +209,29 @@ describe('Mockgoose Find Tests', function () {
             });
         });
 
+        it('Be able to pass projection operator fields', function(done) {
+            AccountModel.create({email: 'default@email.com', password: 'password', values: [1, 2, 3]}, function (err, result) {
+                AccountModel.find({email: 'default@email.com'}, {values: {$slice: 2}}, function (err, models) {
+                    expect(err).not.to.be.ok;
+                    expect(models.length).to.equal(1);
+                    if (models[0]) {
+                        var model = models[0];
+                        expect(model.email).to.equal('default@email.com');
+                        expect(model.password).to.be.ok;
+                        expect(model.values.length).to.equal(1);
+                        expect(model.values[0]).to.equal(3);
+                        //Make sure our mask does not remove methods.
+                        expect(typeof model.save === 'function').to.be.true;
+                        //Make sure it also does not convert object types.
+                        expect(model._id.equals(result._id)).to.be.true;
+                        done(err);
+                    } else {
+                        done('Error finding model' + err + models);
+                    }
+                });
+            });
+        });
+
         it('Be able to pass a fields include string to find', function (done) {
             SimpleModel.create({name: 'fields', value: 'one', type: 'blue', bool: 1}, function () {
                 SimpleModel.find({type: 'blue'}, 'value type', function (err, models) {
