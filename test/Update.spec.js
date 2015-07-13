@@ -559,5 +559,55 @@ describe('Mockgoose Update Tests', function () {
             });
         });
 
+        describe('#131 https://github.com/mccormicka/Mockgoose/issues/131', function () {
+
+            var Schema = new mongoose.Schema(
+                {
+                    name: String
+                }
+            );
+
+            var Model = mongoose.model('Bug69', Schema);
+
+            afterEach(function (done) {
+                mockgoose.reset();
+                done();
+            });
+
+            it.only('should clone correctly model', function (done) {
+                Model.update({
+                    name: 'foo'
+                }, {
+                    name: 'foo'
+                }, {
+                    upsert: true
+                }, function(err, update) {
+                    expect(err).not.to.be.undefined;
+                    expect(update).to.eql(1);
+
+                    Model.count(function(err, count) {
+                        expect(err).not.to.be.undefined;
+                        expect(count).to.eql(1);
+
+                        Model.update({
+                            name: 'foo'
+                        }, {
+                            name: 'bar'
+                        }, function(err, update) {
+                            expect(err).not.to.be.undefined;
+                            expect(update).to.eql(1);
+
+                            Model.count(function(err, count) {
+                                expect(err).not.to.be.undefined;
+                                expect(count).to.eql(1);
+
+                                done(err);
+                            });
+                        });
+                    });
+                });
+            });
+        });
+
     });
 });
