@@ -574,7 +574,7 @@ describe('Mockgoose Update Tests', function () {
                 done();
             });
 
-            it.only('should clone correctly model', function (done) {
+            it('should clone correctly model', function (done) {
                 Model.update({
                     name: 'foo'
                 }, {
