@@ -19,7 +19,7 @@
     "in memory"
   ],
   "scripts": {
-    "test": "mocha --recursive test/ && grunt jshint"
+    "test": "mocha && grunt jshint"
   },
   "main": "Mockgoose",
   "files": [

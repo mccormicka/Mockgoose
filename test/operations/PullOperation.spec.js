@@ -2,7 +2,7 @@
 /*jshint -W079 */ //redefined expect
 'use strict';
 
-var mockgoose = require('../../../Mockgoose');
+var mockgoose = require('../../');
 var Mongoose = require('mongoose').Mongoose;
 var mongoose = new Mongoose();
 mockgoose(mongoose);

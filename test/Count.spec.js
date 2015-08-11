@@ -5,7 +5,7 @@ var expect = require('chai').expect;
 
 describe('Count Tests', function () {
 
-    var mockgoose = require('../Mockgoose');
+    var mockgoose = require('..');
     var Mongoose = require('mongoose').Mongoose;
     var mongoose = new Mongoose();
     mockgoose(mongoose);

@@ -6,7 +6,7 @@ describe('Mockgoose $ positional Tests', function () {
     'use strict';
 
     var _ = require('lodash');
-    var mockgoose = require('./../../Mockgoose');
+    var mockgoose = require('../..');
     var Mongoose = require('mongoose').Mongoose;
     var mongoose = new Mongoose();
     mockgoose(mongoose);

@@ -6,7 +6,7 @@ describe('Mockgoose Skip Tests', function () {
     'use strict';
 
     var async = require('async');
-    var mockgoose = require('./../../Mockgoose');
+    var mockgoose = require('../..');
     var Mongoose = require('mongoose').Mongoose;
     var mongoose = new Mongoose();
     mockgoose(mongoose);
