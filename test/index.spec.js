@@ -6,7 +6,7 @@ var expect = require('chai').expect;
 describe('Index Tests', function () {
     'use strict';
 
-    var mockgoose = require('../Mockgoose');
+    var mockgoose = require('..');
     var Mongoose = require('mongoose').Mongoose;
     var mongoose = new Mongoose();
     mockgoose(mongoose);
@@ -42,8 +42,8 @@ describe('Index Tests', function () {
 
             it('Be able to retrieve indexes from a model', function (done) {
                 collection.getIndexes(function(err, indexes){
-                    //expect(indexes).to.deep.equal({ _id_ : [ [ '_id', 1 ] ], expire_1 : [ [ 'expire', 1 ] ] });
-                    expect(indexes).to.deep.equal({ _id_ : [ [ '_id', 1 ] ] });
+                    expect(indexes).to.deep.equal({ _id_ : [ [ '_id', 1 ] ], expire_1 : [ [ 'expire', 1 ] ] });
+                    // expect(indexes).to.deep.equal({ _id_ : [ [ '_id', 1 ] ] }); wtf?
                     done();
                 });
             });

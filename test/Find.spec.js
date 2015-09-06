@@ -5,7 +5,7 @@ var expect = require('chai').expect;
 describe('Mockgoose Find Tests', function () {
     'use strict';
 
-    var mockgoose = require('../Mockgoose');
+    var mockgoose = require('..');
     var Mongoose = require('mongoose').Mongoose;
     var mongoose = new Mongoose();
     mockgoose(mongoose);
@@ -413,6 +413,43 @@ describe('Mockgoose Find Tests', function () {
                 });
         });
 
+        it('should match date values', function (done) {
+            SimpleModel.create(
+                {name: 'true', date: new Date('10-20-2014'), bool: true},
+                {name: 'false', date: '10-21-2014', bool: false}, function () {
+
+                    SimpleModel.findOne({date: new Date('10-20-2014')}, function (err, result) {
+                        if (result) {
+                            expect(result.name).to.equal('true');
+                            SimpleModel.findOne({date: '10-20-2014'}, function (err, result) {
+                                if (result) {
+                                    expect(result.name).to.equal('true');
+                                    SimpleModel.findOne({date: new Date('10-21-2014')}, function(err, result) {
+                                        if (result) {
+                                            expect(result.name).to.equal('false');
+                                            SimpleModel.findOne({date: '10-21-2014'}, function(err, result) {
+                                                if (result) {
+                                                    expect(result.name).to.equal('false');
+                                                    done(err);
+                                                } else {
+                                                    done('Unable to find' + err + result);
+                                                }
+                                            });
+                                        } else {
+                                            done('Unable to find' + err + result);
+                                        }
+                                    });
+                                } else {
+                                    done('Unable to find' + err + result);
+                                }
+                            });
+                        } else {
+                            done('Unable to find' + err + result);
+                        }
+
+                    });
+                });
+        });
         it('should find a models if an empty {} object is passed to findOne', function (done) {
             SimpleModel.findOne({}, function (err, result) {
                 expect(err).not.to.be.ok;

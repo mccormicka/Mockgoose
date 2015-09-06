@@ -5,7 +5,7 @@ var expect = require('chai').expect;
 describe('$(update) http://docs.mongodb.org/manual/reference/operator/update/positional/', function () {
     'use strict';
 
-    var mockgoose = require('./../../../Mockgoose');
+    var mockgoose = require('../../..');
     var Mongoose = require('mongoose').Mongoose;
     var mongoose = new Mongoose();
     mockgoose(mongoose);

@@ -5,7 +5,7 @@ var expect = require('chai').expect;
 describe('Mockgoose $nor Tests', function () {
     'use strict';
 
-    var mockgoose = require('./../../../Mockgoose');
+    var mockgoose = require('../../..');
     var Mongoose = require('mongoose').Mongoose;
     var mongoose = new Mongoose();
     mockgoose(mongoose);
