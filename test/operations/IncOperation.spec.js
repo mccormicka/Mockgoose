@@ -33,25 +33,40 @@ describe('Mockgoose $INC Operation Tests', function () {
     describe('$inc', function () {
 
         it('Be able to increment a value', function (done) {
-            IndexModel.findOneAndUpdate({name: 'one'}, {$inc: {value: 5}}, function (err, res) {
-                expect(res.value).to.equal(8);
-                done(err);
-            });
+            IndexModel.findOneAndUpdate(
+                {name: 'one'},
+                {$inc: {value: 5}},
+                {'new': true},
+                function (err, res) {
+                    expect(res.value).to.equal(8);
+                    done(err);
+                }
+            );
         });
 
         it('Be able to decrement a value', function (done) {
-            IndexModel.findOneAndUpdate({name: 'one'}, {$inc: {value: -5}}, function (err, res) {
-                expect(res.value).to.equal(-2);
-                done(err);
-            });
+            IndexModel.findOneAndUpdate(
+                {name: 'one'},
+                {$inc: {value: -5}},
+                {'new': true},
+                function (err, res) {
+                    expect(res.value).to.equal(-2);
+                    done(err);
+                }
+            );
         });
 
         it('Be able to update multiple values', function (done) {
-            IndexModel.findOneAndUpdate({name: 'one'}, {$inc: {value: -5, increment: 5}}, function (err, res) {
-                expect(res.value).to.equal(-2);
-                expect(res.increment).to.equal(10);
-                done(err);
-            });
+            IndexModel.findOneAndUpdate(
+                {name: 'one'},
+                {$inc: {value: -5, increment: 5}},
+                {'new': true},
+                function (err, res) {
+                    expect(res.value).to.equal(-2);
+                    expect(res.increment).to.equal(10);
+                    done(err);
+                }
+            );
         });
 
     });
