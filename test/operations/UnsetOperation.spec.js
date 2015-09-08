@@ -33,26 +33,39 @@ describe('Mockgoose $UNSET Operation Tests', function () {
 	describe('$unset', function () {
 
 		it('Be able to ignore non-existent fields', function(done) {
-			SimpleModel.findOneAndUpdate({name: 'rex'}, {$unset: {doesNotExist: ''}}, function(err, res) {
-				expect(res.value).to.equal('hi');
-				expect(res.bool).to.equal(true);
-				done(err);
-			});
+			SimpleModel.findOneAndUpdate(
+				{name: 'rex'},
+				{$unset: {doesNotExist: ''}},
+				{'new': true},
+				function(err, res) {
+					expect(res.value).to.equal('hi');
+					expect(res.bool).to.equal(true);
+					done(err);
+				}
+			);
 		});
 
 		it('Be able to unset a value', function(done) {
-			SimpleModel.findOneAndUpdate({name: 'rex'}, {$unset: {value: ''}}, function(err, res) {
-				expect(res.value).to.equal(undefined);
-				done(err);
-			});
+			SimpleModel.findOneAndUpdate(
+				{name: 'rex'},
+				{$unset: {value: ''}},
+				{'new': true},
+				function(err, res) {
+					expect(res.value).to.equal(undefined);
+					done(err);
+				});
 		});
 
 		it('Be able to unset multiple values', function(done) {
-			SimpleModel.findOneAndUpdate({name: 'rex'}, {$unset: {value: '', bool: ''}}, function(err, res) {
-				expect(res.value).to.equal(undefined);
-				expect(res.bool).to.equal(undefined);
-				done(err);
-			});
+			SimpleModel.findOneAndUpdate(
+				{name: 'rex'},
+				{$unset: {value: '', bool: ''}},
+				{'new': true},
+				function(err, res) {
+					expect(res.value).to.equal(undefined);
+					expect(res.bool).to.equal(undefined);
+					done(err);
+				});
 		});
 	});
 });
