@@ -60,7 +60,6 @@ describe('Mockgoose $and Tests', function () {
     });
 
     describe('$and Tests', function () {
-
         it('Find values that match $and operation', function (done) {
             Model.find({ $and: [
                 { price: 1.99 },
@@ -69,7 +68,8 @@ describe('Mockgoose $and Tests', function () {
             ] }).exec().then(function (results) {
                     expect(results.length).to.equal(2);
                     done();
-                });
+                }
+            );
         });
 
         it('Find values that match implicit $and operation', function (done) {
@@ -79,14 +79,15 @@ describe('Mockgoose $and Tests', function () {
             });
         });
 
-        it('Find values that match $and operation containing implicit and operations', function (done) {
+        it('Find values that match $and operation containing implicit $and operations', function (done) {
             Model.find({ $and: [
                 { price: 1.99, sale: true },
                 { qty: { $gt: 20 }, sale: true }
             ] }).exec().then(function (results) {
                     expect(results.length).to.equal(2);
                     done();
-                });
+                }
+            );
         });
 
         it('Perform the $and operation on a single field', function (done) {
@@ -94,14 +95,14 @@ describe('Mockgoose $and Tests', function () {
                 { price: { $ne: 1.99 } },
                 { price: { $gt: 0 } }
             ] }, { $set: { qty: 15 } }).exec().then(function (result) {
-                    expect(result).to.equal(1);
-                    done();
-                });
+                expect(result.n).to.equal(1);
+                done();
+            });
         });
 
         it('Perform the $and operation on a single field combined', function (done) {
             Model.update({ price: { $ne: 1.99, $gt: 0 } }, { $set: { qty: 15 } }).exec().then(function (result) {
-                expect(result).to.equal(1);
+                expect(result.n).to.equal(1);
                 done();
             });
         });
@@ -113,7 +114,8 @@ describe('Mockgoose $and Tests', function () {
             ] }).exec().then(function (results) {
                     expect(results.length).to.equal(2);
                     done();
-                });
+                }
+            );
         });
 
         it('$and in an array of values', function (done) {
@@ -127,7 +129,6 @@ describe('Mockgoose $and Tests', function () {
         });
 
         describe('Mongoose', function () {
-
             it('Find values with Mongoose and operation', function (done) {
                 Model.find().and([
                         { price: 1.99 },
@@ -136,13 +137,13 @@ describe('Mockgoose $and Tests', function () {
                     ]).exec().then(function (results) {
                         expect(results.length).to.equal(2);
                         done();
-                    });
+                    }
+                );
             });
         });
     });
 
     describe('$and Tests Bugs', function () {
-
         describe('#41 Unexpected behavior such as null err and result with findOneAndUpdate `$and` queries', function () {
             var AccountModel = require('../../models/AccountModel')(mongoose);
             beforeEach(function(done){
