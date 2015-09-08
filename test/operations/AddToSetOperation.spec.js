@@ -31,24 +31,39 @@ describe('Mockgoose $addToSet Tests', function () {
     describe('$addToSet', function () {
 
         it('Be able to a value to the set', function (done) {
-            AccountModel.findOneAndUpdate({email: 'valid@valid.com'}, {$addToSet: {values: 3}}, function (err, res) {
-                expect(res.values.toString()).to.equal([1,2,3].toString());
-                done(err);
-            });
+            AccountModel.findOneAndUpdate(
+                {email: 'valid@valid.com'},
+                {$addToSet: {values: 3}},
+                {'new': true},
+                function (err, res) {
+                    expect(res.values.toString()).to.equal([1,2,3].toString());
+                    done(err);
+                }
+            );
         });
 
         it('NOT Be able to add a DUPLICATE value to the set', function (done) {
-            AccountModel.findOneAndUpdate({email: 'valid@valid.com'}, {$addToSet: {values: 2}}, function (err, res) {
-                expect(res.values.toString()).to.equal([1,2].toString());
-                done(err);
-            });
+            AccountModel.findOneAndUpdate(
+                {email: 'valid@valid.com'},
+                {$addToSet: {values: 2}},
+                {'new': true},
+                function (err, res) {
+                    expect(res.values.toString()).to.equal([1,2].toString());
+                    done(err);
+                }
+            );
         });
 
         it('$each NOT add items from array that are DUPLICATE ', function (done) {
-            AccountModel.findOneAndUpdate({email: 'valid@valid.com'}, {$addToSet: {values: {$each:[1,2,3,4,5]}}}, function (err, res) {
-                expect(res.values.toString()).to.equal([1,2, 3, 4, 5].toString());
-                done(err);
-            });
+            AccountModel.findOneAndUpdate(
+                {email: 'valid@valid.com'},
+                {$addToSet: {values: {$each:[1,2,3,4,5]}}},
+                {'new': true},
+                function (err, res) {
+                    expect(res.values.toString()).to.equal([1,2, 3, 4, 5].toString());
+                    done(err);
+                }
+            );
         });
     });
 });
