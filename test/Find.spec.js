@@ -5,7 +5,7 @@ var expect = require('chai').expect;
 describe('Mockgoose Find Tests', function () {
     'use strict';
 
-    var mockgoose = require('../Mockgoose');
+    var mockgoose = require('..');
     var Mongoose = require('mongoose').Mongoose;
     var mongoose = new Mongoose();
     mockgoose(mongoose);
@@ -50,7 +50,6 @@ describe('Mockgoose Find Tests', function () {
     });
 
     describe('Find', function () {
-
         it('should be able to find an item by id', function (done) {
             AccountModel.create({email: 'one@one.com', password: 'password'},
                 {email: 'two@two.com', password: 'password'}, function (err, one, two) {
@@ -69,7 +68,8 @@ describe('Mockgoose Find Tests', function () {
                     } else {
                         done('Error creating items' + err + one + two);
                     }
-                });
+                }
+            );
         });
 
         it('should find all models if an empty {} object is passed to find', function (done) {
@@ -334,7 +334,6 @@ describe('Mockgoose Find Tests', function () {
     });
 
     describe('findOne', function () {
-
         it('should be able to findOne model by using a simple query', function (done) {
             AccountModel.findOne({email: 'valid@valid.com'}, function (err, model) {
                 expect(err).not.to.be.ok;
@@ -370,7 +369,6 @@ describe('Mockgoose Find Tests', function () {
                     }
                 });
             });
-
         });
 
         it('Be able to pass a fields includes string to findOne', function (done) {
@@ -408,9 +406,47 @@ describe('Mockgoose Find Tests', function () {
                         } else {
                             done('Unable to find' + err + result);
                         }
-
                     });
-                });
+                }
+            );
+        });
+
+        it('should match date values', function (done) {
+            SimpleModel.create(
+                {name: 'true', date: new Date('10-20-2014'), bool: true},
+                {name: 'false', date: '10-21-2014', bool: false}, function () {
+
+                    SimpleModel.findOne({date: new Date('10-20-2014')}, function (err, result) {
+                        if (result) {
+                            expect(result.name).to.equal('true');
+                            SimpleModel.findOne({date: '10-20-2014'}, function (err, result) {
+                                if (result) {
+                                    expect(result.name).to.equal('true');
+                                    SimpleModel.findOne({date: new Date('10-21-2014')}, function(err, result) {
+                                        if (result) {
+                                            expect(result.name).to.equal('false');
+                                            SimpleModel.findOne({date: '10-21-2014'}, function(err, result) {
+                                                if (result) {
+                                                    expect(result.name).to.equal('false');
+                                                    done(err);
+                                                } else {
+                                                    done('Unable to find' + err + result);
+                                                }
+                                            });
+                                        } else {
+                                            done('Unable to find' + err + result);
+                                        }
+                                    });
+                                } else {
+                                    done('Unable to find' + err + result);
+                                }
+                            });
+                        } else {
+                            done('Unable to find' + err + result);
+                        }
+                    });
+                }
+            );
         });
 
         it('should find a models if an empty {} object is passed to findOne', function (done) {
@@ -424,7 +460,6 @@ describe('Mockgoose Find Tests', function () {
             });
         });
 
-
         it('Should have an error when mongoose is disconnected', function(done) {
             mockgoose.setMockReadyState(mongoose.connection, 0);
 
@@ -437,7 +472,6 @@ describe('Mockgoose Find Tests', function () {
         });
 
         describe('FindOne on nested document array', function () {
-
             var schema = new mongoose.Schema({ names: [] });
             var Model = mongoose.model('TestArrayQueries', schema);
 
@@ -464,7 +498,6 @@ describe('Mockgoose Find Tests', function () {
                 });
             });
         });
-
     });
 
     describe('findOneAndUpdate', function () {
@@ -472,24 +505,34 @@ describe('Mockgoose Find Tests', function () {
         it('should be able to findOneAndUpdate models', function (done) {
             AccountModel.create(
                 {email: 'multiples@valid.com', password: 'password', values: ['one', 'two']},
-                function () {
-                    AccountModel.findOneAndUpdate({email: 'multiples@valid.com'}, {email: 'updatedemail@email.com'}, function (err, result) {
-                        expect(result).to.not.be.undefined;
-                        if (result) {
-                            expect(result.email).to.equal('updatedemail@email.com');
-                            done(err);
-                        } else {
-                            done('Error finding models');
+                function() {
+                    AccountModel.findOneAndUpdate(
+                        {email: 'multiples@valid.com'},
+                        {email: 'updatedemail@email.com'},
+                        {'new': true}, // Tell Mongoose 4.x to return the new object.
+                        function (err, result) {
+                            expect(result).to.not.be.undefined;
+                            if (result) {
+                                expect(result.email).to.equal('updatedemail@email.com');
+                                done(err);
+                            } else {
+                                done('Error finding models');
+                            }
                         }
-                    });
-                });
+                    );
+                }
+            );
         });
 
         it('should be able to findOneAndUpdate models and saved model changed', function (done) {
             AccountModel.create(
                 {email: 'multiples@valid.com', password: 'password', values: ['one', 'two']},
                 function () {
-                    AccountModel.findOneAndUpdate({email: 'multiples@valid.com'}, {email: 'updatedemails@email.com'}, function (err, result) {
+                    AccountModel.findOneAndUpdate(
+                        {email: 'multiples@valid.com'},
+                        {email: 'updatedemails@email.com'},
+                        {'new': true}, // Tell Mongoose 4.x to return the new object.
+                        function (err, result) {
                         expect(result).to.not.be.undefined;
                         if (result) {
                             expect(result.email).to.equal('updatedemails@email.com');
@@ -499,15 +542,19 @@ describe('Mockgoose Find Tests', function () {
                             done(err);
                         });
                     });
-                });
+                }
+            );
         });
 
         it('should be able to findOneAndUpdate multiple values in models', function (done) {
             AccountModel.create(
                 {email: 'multiples@valid.com', password: 'password', values: ['one', 'two']},
                 function () {
-                    AccountModel.findOneAndUpdate({email: 'multiples@valid.com'},
-                        {email: 'updatedemail@email.com', values: ['updated']}, function (err, result) {
+                    AccountModel.findOneAndUpdate(
+                        {email: 'multiples@valid.com'},
+                        {email: 'updatedemail@email.com', values: ['updated']},
+                        {'new': true}, // Tell Mongoose 4.x to return the new object.
+                        function (err, result) {
                             expect(result).to.not.be.undefined;
                             if (result) {
                                 expect(result.email).to.equal('updatedemail@email.com');
@@ -516,12 +563,18 @@ describe('Mockgoose Find Tests', function () {
                             } else {
                                 done('Error finding models');
                             }
-                        });
-                });
+                        }
+                    );
+                }
+            );
         });
 
         it('should be able to findOneAndUpdate with an upsert', function (done) {
-            SimpleModel.findOneAndUpdate({name: 'upsert'}, {name: 'upsert'}, {upsert: true}, function (err, result) {
+            SimpleModel.findOneAndUpdate(
+                {name: 'upsert'},
+                {name: 'upsert'},
+                {upsert: true, 'new': true}, // Tell Mongoose 4.x to return the new object.
+                function (err, result) {
                 expect(err).not.to.be.ok;
                 expect(result).to.be.ok;
                 if (result) {
@@ -560,16 +613,22 @@ describe('Mockgoose Find Tests', function () {
                 {email: 'multiples@valid.com', password: 'password', values: ['one', 'two']},
                 function (err, result) {
                     var id = result._id;
-                    AccountModel.findByIdAndUpdate(id, {email: 'updatedemail@email.com'}, function (err, result) {
-                        expect(result).to.not.be.undefined;
-                        if (result) {
-                            expect(result.email).to.equal('updatedemail@email.com');
-                            done(err);
-                        } else {
-                            done('Error finding models');
+                    AccountModel.findByIdAndUpdate(
+                        id,
+                        {email: 'updatedemail@email.com'},
+                        {'new': true}, // Tell Mongoose 4.x to return the new object.
+                        function (err, result) {
+                            expect(result).to.not.be.undefined;
+                            if (result) {
+                                expect(result.email).to.equal('updatedemail@email.com');
+                                done(err);
+                            } else {
+                                done('Error finding models');
+                            }
                         }
-                    });
-                });
+                    );
+                }
+            );
         });
 
         it('should be able to findOneAndUpdate models and saved model changed', function (done) {
@@ -577,17 +636,23 @@ describe('Mockgoose Find Tests', function () {
                 {email: 'multiples@valid.com', password: 'password', values: ['one', 'two']},
                 function (err, result) {
                     var id = result._id;
-                    AccountModel.findByIdAndUpdate(id, {email: 'updatedemails@email.com'}, function (err, result) {
-                        expect(result).to.not.be.undefined;
-                        if (result) {
-                            expect(result.email).to.equal('updatedemails@email.com');
+                    AccountModel.findByIdAndUpdate(
+                        id,
+                        {email: 'updatedemails@email.com'},
+                        {'new': true}, // Tell Mongoose 4.x to return the new object.
+                        function (err, result) {
+                            expect(result).to.not.be.undefined;
+                            if (result) {
+                                expect(result.email).to.equal('updatedemails@email.com');
+                            }
+                            AccountModel.findOne({email: 'updatedemails@email.com'}, function (err, found) {
+                                expect(found).to.not.be.undefined;
+                                done(err);
+                            });
                         }
-                        AccountModel.findOne({email: 'updatedemails@email.com'}, function (err, found) {
-                            expect(found).to.not.be.undefined;
-                            done(err);
-                        });
-                    });
-                });
+                    );
+                }
+            );
         });
 
         it('should be able to findByIdAndUpdate multiple values in models', function (done) {
@@ -595,8 +660,11 @@ describe('Mockgoose Find Tests', function () {
                 {email: 'multiples@valid.com', password: 'password', values: ['one', 'two']},
                 function (err, result) {
                     var id = result._id;
-                    AccountModel.findByIdAndUpdate(id,
-                        {email: 'updatedemail@email.com', values: ['updated']}, function (err, result) {
+                    AccountModel.findByIdAndUpdate(
+                        id,
+                        {email: 'updatedemail@email.com', values: ['updated']},
+                        {'new': true}, // Tell Mongoose 4.x to return the new object.
+                        function (err, result) {
                             expect(result).to.not.be.undefined;
                             if (result) {
                                 expect(result.email).to.equal('updatedemail@email.com');
@@ -605,12 +673,18 @@ describe('Mockgoose Find Tests', function () {
                             } else {
                                 done('Error finding models');
                             }
-                        });
-                });
+                        }
+                    );
+                }
+            );
         });
 
         it('should be able to findByIdAndUpdate with an upsert', function (done) {
-            SimpleModel.findByIdAndUpdate('525ae43faa26361773000008', {name: 'upsert'}, {upsert: true}, function (err, result) {
+            SimpleModel.findByIdAndUpdate(
+                '525ae43faa26361773000008',
+                {name: 'upsert'},
+                {upsert: true, 'new': true}, // Tell Mongoose 4.x to return the new object.
+                function (err, result) {
                 expect(err).not.to.be.ok;
                 expect(result).to.be.ok;
                 if (result) {
@@ -651,7 +725,8 @@ describe('Mockgoose Find Tests', function () {
                             done('Error removing item!');
                         }
                     });
-                });
+                }
+            );
         });
 
         it('Not return an item if no item found to remove', function (done) {
@@ -681,7 +756,8 @@ describe('Mockgoose Find Tests', function () {
                             done('Error removing item!');
                         }
                     });
-                });
+                }
+            );
         });
 
         it('Not return an item if no item found to remove', function (done) {

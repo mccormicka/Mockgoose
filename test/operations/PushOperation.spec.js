@@ -5,7 +5,7 @@ var expect = require('chai').expect;
 describe('Mockgoose Update Tests', function () {
     'use strict';
 
-    var mockgoose = require('../../../Mockgoose');
+    var mockgoose = require('../..');
     var Mongoose = require('mongoose').Mongoose;
     var mongoose = new Mongoose();
     mockgoose(mongoose);
@@ -31,7 +31,6 @@ describe('Mockgoose Update Tests', function () {
     });
 
     describe('$push', function () {
-
         it('should be able to use $push with a static update', function (done) {
             AccountModel.create({email: 'pushed@pushed.com', password: 'password', values: [
                     {name: 'one'},
@@ -44,7 +43,7 @@ describe('Mockgoose Update Tests', function () {
                     if (result) {
                         AccountModel.update({email: 'pushed@pushed.com'}, {$push: {values: {name: 'pushed'}}}, function (err, result) {
                             expect(err).not.to.be.ok;
-                            expect(result).to.equal(1);
+                            expect(result.n).to.equal(1);
                             if (result) {
                                 AccountModel.findOne({email: 'pushed@pushed.com'}, function (err, pushed) {
                                     expect(err).not.to.be.ok;
@@ -77,7 +76,7 @@ describe('Mockgoose Update Tests', function () {
                     if (result) {
                         result.update({$push: {values: {name: 'pushed'}}}, function (err, result) {
                             expect(err).not.to.be.ok;
-                            expect(result).to.equal(1);
+                            expect(result.n).to.equal(1);
                             if (result) {
                                 AccountModel.findOne({email: 'pushed@pushed.com'}, function (err, pushed) {
                                     expect(err).not.to.be.ok;
@@ -114,7 +113,7 @@ describe('Mockgoose Update Tests', function () {
                             {name: 'pushed2'}
                         ]}}}, function (err, result) {
                             expect(err).not.to.be.ok;
-                            expect(result).to.equal(1);
+                            expect(result.n).to.equal(1);
                             if (result) {
                                 AccountModel.findOne({email: 'pushed@pushed.com'}, function (err, pushed) {
                                     expect(err).not.to.be.ok;
@@ -144,7 +143,7 @@ describe('Mockgoose Update Tests', function () {
                     if (result) {
                         AccountModel.update({}, {$push: {values: 'pushed'}}, {multi: 0, sort: {email: 1}}, function (err, result) {
                             expect(err).not.to.be.ok;
-                            expect(result).to.equal(1);
+                            expect(result.n).to.equal(1);
                             if (result) {
                                 AccountModel.find({values: {$in: ['pushed']}}, function (err, pushed) {
                                     expect(err).not.to.be.ok;
@@ -174,7 +173,7 @@ describe('Mockgoose Update Tests', function () {
                     if (result) {
                         AccountModel.update({}, {$push: {values: 'pushed'}}, {multi: 1}, function (err, result) {
                             expect(err).not.to.be.ok;
-                            expect(result).to.equal(3);
+                            expect(result.n).to.equal(3);
                             if (result) {
                                 AccountModel.find({values: {$in: ['pushed']}}, function (err, pushed) {
                                     expect(err).not.to.be.ok;

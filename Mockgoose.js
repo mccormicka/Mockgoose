@@ -56,6 +56,9 @@ module.exports = function (mongoose, throwErrors) {
             options = {};
         }
 
+        // Mongoose won't complain that a "blank" database doesn't exist.
+        database = '';
+
         logger.info('Creating Mockgoose database: CreateConnection', database, ' options: ', options);
         var connection = mongoose.originalCreateConnection.call(mongoose, database, options, function (err) {
             process.nextTick(function() {
@@ -112,9 +115,14 @@ module.exports = function (mongoose, throwErrors) {
             options = {};
         }
 
+        // Mongoose won't complain that a "blank" database doesn't exist.
+        database = '';
+
         logger.info('Creating Mockgoose database: Connect ', database, ' options: ', options);
-        mongoose.originalConnect(database, options, function (err) {
-            handleConnection(callback, mongoose.connection, err);
+        mongoose.originalConnect.call(mongoose, database, options, function (err) {
+            process.nextTick(function() {
+                handleConnection(callback, mongoose.connection, err);
+            });
         });
         mongoose.connection.model = mongoose.model;
         return mongoose;

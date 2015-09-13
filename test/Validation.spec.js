@@ -6,7 +6,7 @@ var async  = require('async');
 describe('Mockgoose model validation Tests', function () {
     'use strict';
 
-    var mockgoose = require('../Mockgoose');
+    var mockgoose = require('..');
     var Mongoose = require('mongoose').Mongoose;
     var mongoose = new Mongoose();
     mockgoose(mongoose);

@@ -27,7 +27,7 @@ module.exports = function (mongoose) {
             validate: [validate({message: 'min.length:6', validator: 'isLength', arguments: [6], passIfEmpty: true})]
         },
         values:[]
-    });
+    }, {strict: false});
 
     /**
      * Expose type to outside world.

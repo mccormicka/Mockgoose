@@ -5,7 +5,7 @@ var expect = require('chai').expect;
 describe('$(update) http://docs.mongodb.org/manual/reference/operator/update/positional/', function () {
     'use strict';
 
-    var mockgoose = require('./../../../Mockgoose');
+    var mockgoose = require('../../..');
     var Mongoose = require('mongoose').Mongoose;
     var mongoose = new Mongoose();
     mockgoose(mongoose);
@@ -94,16 +94,19 @@ describe('$(update) http://docs.mongodb.org/manual/reference/operator/update/pos
 
             it('Not throw an error when using the update positional operator.', function (done) {
                 expect(function () {
-                    Model.findOneAndUpdate({ p: 'SomeId', 'grps.grpId': 'SomeGrpId' }, {
+                    Model.findOneAndUpdate(
+                        { p: 'SomeId', 'grps.grpId': 'SomeGrpId' }, {
                         '$push': {
                             'grps.$.attrs': {
                                 attrId: 'SomeNewAttrId'
                             }
-                        }
-                    }).exec().then(function (model) {
-                            expect(model.grps[0].attrs[1].attrId).to.equal('SomeNewAttrId');
-                            done();
-                        });
+                        },
+                    },
+                    {'new': true}).
+                    exec().then(function (model) {
+                        expect(model.grps[0].attrs[1].attrId).to.equal('SomeNewAttrId');
+                        done();
+                    });
                 }).not.to.throw();
             });
         });
@@ -147,16 +150,19 @@ describe('$(update) http://docs.mongodb.org/manual/reference/operator/update/pos
 
             it('$Pull does not work with nested arrays and positional operator', function (done) {
                 expect(function () {
-                    Model.findOneAndUpdate({ p: 'SomeId', 'grps.grpId': 'SomeGrpId' }, {
+                    Model.findOneAndUpdate(
+                        { p: 'SomeId', 'grps.grpId': 'SomeGrpId' }, {
                         '$pull': {
                             'grps.$.attrs': {
                                 attrId: 'SomeAttrId'
                             }
                         }
-                    }).exec().then(function (model) {
-                            expect(model.grps[0].attrs.length).to.equal(0);
-                            done();
-                        });
+                    },
+                    {'new': true}).
+                    exec().then(function (model) {
+                        expect(model.grps[0].attrs.length).to.equal(0);
+                        done();
+                    });
                 }).not.to.throw();
             });
         });

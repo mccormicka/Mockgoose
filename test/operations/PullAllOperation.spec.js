@@ -5,7 +5,7 @@ var expect = require('chai').expect;
 describe('Mockgoose Update Tests', function () {
     'use strict';
 
-    var mockgoose = require('../../../Mockgoose');
+    var mockgoose = require('../../');
     var Mongoose = require('mongoose').Mongoose;
     var mongoose = new Mongoose();
     mockgoose(mongoose);
@@ -37,16 +37,21 @@ describe('Mockgoose Update Tests', function () {
             AccountModel.create(
                 {email: 'tester@valid.com', password: 'password', values: ['one', 'two']},
                 function () {
-                    AccountModel.findOneAndUpdate({email: 'tester@valid.com'}, {$pullAll: {values: ['one']}}, function (err, result) {
-                        expect(result).not.to.be.undefined;
-                        if (result) {
-                            expect(result.values.length).to.equal(1);
-                            expect(result.values[0]).to.equal('two');
-                            done(err);
-                        } else {
-                            done('Error finding item');
+                    AccountModel.findOneAndUpdate(
+                        {email: 'tester@valid.com'},
+                        {$pullAll: {values: ['one']}},
+                        {'new': true},
+                        function (err, result) {
+                            expect(result).not.to.be.undefined;
+                            if (result) {
+                                expect(result.values.length).to.equal(1);
+                                expect(result.values[0]).to.equal('two');
+                                done(err);
+                            } else {
+                                done('Error finding item');
+                            }
                         }
-                    });
+                    );
                 });
         });
 
@@ -58,20 +63,25 @@ describe('Mockgoose Update Tests', function () {
                     {name: 'three'}
                 ]},
                 function () {
-                    AccountModel.findOneAndUpdate({email: 'multiples@valid.com'}, {$pullAll: {values: [{name:'one'},{name:'two'}]}}, function (err, result) {
-                        expect(result).not.to.be.undefined;
-                        if (result) {
-                            expect(result.values.length).to.equal(1);
-                            if (result.values.length === 1) {
-                                expect(result.values[0].name).to.equal('three');
-                                done(err);
+                    AccountModel.findOneAndUpdate(
+                        {email: 'multiples@valid.com'},
+                        {$pullAll: {values: [{name:'one'},{name:'two'}]}},
+                        {'new': true},
+                        function (err, result) {
+                            expect(result).not.to.be.undefined;
+                            if (result) {
+                                expect(result.values.length).to.equal(1);
+                                if (result.values.length === 1) {
+                                    expect(result.values[0].name).to.equal('three');
+                                    done(err);
+                                } else {
+                                    done('invalid values length');
+                                }
                             } else {
-                                done('invalid values length');
+                                done('Error finding models');
                             }
-                        } else {
-                            done('Error finding models');
                         }
-                    });
+                    );
                 });
         });
     });

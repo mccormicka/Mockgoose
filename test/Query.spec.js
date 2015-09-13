@@ -5,7 +5,7 @@ var expect = require('chai').expect;
 describe('Mockgoose Query Tests', function () {
     'use strict';
 
-    var mockgoose = require('../Mockgoose');
+    var mockgoose = require('..');
     var Mongoose = require('mongoose').Mongoose;
     var mongoose = new Mongoose();
     mockgoose(mongoose);
@@ -127,15 +127,20 @@ describe('Mockgoose Query Tests', function () {
                 {email: 'multiples@valid.com', password: 'password', values: ['one', 'two']},
                 function (err, result) {
                     var id = result._id;
-                    AccountModel.findByIdAndUpdate(id, {email: 'updatedemail@email.com'}).exec(function (err, result) {
-                        expect(result).not.to.be.undefined;
-                        if (result) {
-                            expect(result.email).to.equal('updatedemail@email.com');
-                            done(err);
-                        } else {
-                            done('Error finding models');
+                    AccountModel.findByIdAndUpdate(
+                        id,
+                        {email: 'updatedemail@email.com'},
+                        {'new': true}).
+                        exec(function (err, result) {
+                            expect(result).not.to.be.undefined;
+                            if (result) {
+                                expect(result.email).to.equal('updatedemail@email.com');
+                                done(err);
+                            } else {
+                                done('Error finding models');
+                            }
                         }
-                    });
+                    );
                 });
         });
     });
@@ -165,19 +170,23 @@ describe('Mockgoose Query Tests', function () {
         it('should be able to call exec ', function (done) {
             SimpleModel.create(
                 {name: 'unique', value: 'one'}, function (err, result) {
-                    SimpleModel.findOneAndRemove({name: 'unique'}).exec(function (err, removed) {
-                        expect(err).not.to.be.ok;
-                        if (removed) {
-                            expect(removed._id.toString()).to.equal(result._id.toString());
-                            SimpleModel.findOne({id: result._id}, function (err, item) {
-                                expect(item).to.be.null;
-                                done(err);
-                            });
+                    SimpleModel.findOneAndRemove(
+                        {name: 'unique'},
+                        {'new': true}).
+                        exec(function (err, removed) {
+                            expect(err).not.to.be.ok;
+                            if (removed) {
+                                expect(removed._id.toString()).to.equal(result._id.toString());
+                                SimpleModel.findOne({id: result._id}, function (err, item) {
+                                    expect(item).to.be.null;
+                                    done(err);
+                                });
+                            }
+                            else {
+                                done('Error removing item!');
+                            }
                         }
-                        else {
-                            done('Error removing item!');
-                        }
-                    });
+                    );
                 });
         });
 
@@ -193,7 +202,10 @@ describe('Mockgoose Query Tests', function () {
             AccountModel.create(
                 {email: 'multiples@valid.com', password: 'password', values: ['one', 'two']},
                 function () {
-                    AccountModel.findOneAndUpdate({email: 'multiples@valid.com'}, {email: 'updatedemail@email.com'})
+                    AccountModel.findOneAndUpdate(
+                        {email: 'multiples@valid.com'},
+                        {email: 'updatedemail@email.com'},
+                        {'new': true})
                         .exec(function (err, result) {
                             expect(result).not.to.be.undefined;
                             if (result) {

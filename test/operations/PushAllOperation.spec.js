@@ -5,7 +5,7 @@ var expect = require('chai').expect;
 describe('Mockgoose Update Tests', function () {
     'use strict';
 
-    var mockgoose = require('../../../Mockgoose');
+    var mockgoose = require('../..');
     var Mongoose = require('mongoose').Mongoose;
     var mongoose = new Mongoose();
     mockgoose(mongoose);
@@ -21,7 +21,8 @@ describe('Mockgoose Update Tests', function () {
                 expect(err).not.to.be.ok;
                 expect(models).to.be.ok;
                 done(err);
-            });
+            }
+        );
     });
 
     afterEach(function (done) {
@@ -44,7 +45,7 @@ describe('Mockgoose Update Tests', function () {
                     if (result) {
                         AccountModel.update({email: 'pushed@pushed.com'}, {$pushAll: {values: [{name: 'pushed'}]}}, function (err, result) {
                             expect(err).not.to.be.ok;
-                            expect(result).to.equal(1);
+                            expect(result.n).to.equal(1);
                             if (result) {
                                 AccountModel.findOne({email: 'pushed@pushed.com'}, function (err, pushed) {
                                     expect(err).not.to.be.ok;
@@ -62,7 +63,8 @@ describe('Mockgoose Update Tests', function () {
                     } else {
                         done('Error creating model');
                     }
-                });
+                }
+            );
         });
 
         it('should be able to use $pushAll with a update', function (done) {
@@ -77,7 +79,7 @@ describe('Mockgoose Update Tests', function () {
                     if (result) {
                         result.update({$pushAll: {values: [{name: 'pushed'}, {name: 'last'}]}}, function (err, result) {
                             expect(err).not.to.be.ok;
-                            expect(result).to.equal(1);
+                            expect(result.n).to.equal(1);
                             if (result) {
                                 AccountModel.findOne({email: 'pushed@pushed.com'}, function (err, pushed) {
                                     expect(err).not.to.be.ok;
@@ -98,7 +100,8 @@ describe('Mockgoose Update Tests', function () {
                     } else {
                         done('Error creating model');
                     }
-                });
+                }
+            );
         });
 
         it('should be able to use $pushAll with a multi 0  update', function (done) {
@@ -109,7 +112,7 @@ describe('Mockgoose Update Tests', function () {
                     if (result) {
                         AccountModel.update({}, {$pushAll: {values: ['pushed']}}, {multi: 0, sort: {email: 1}}, function (err, result) {
                             expect(err).not.to.be.ok;
-                            expect(result).to.equal(1);
+                            expect(result.n).to.equal(1);
                             if (result) {
                                 AccountModel.find({values: {$in: ['pushed']}}, function (err, pushed) {
                                     expect(err).not.to.be.ok;
@@ -128,7 +131,8 @@ describe('Mockgoose Update Tests', function () {
                     } else {
                         done('Error creating model');
                     }
-                });
+                }
+            );
         });
 
         it('should be able to use $pushAll with a multi 1  update', function (done) {
@@ -139,7 +143,7 @@ describe('Mockgoose Update Tests', function () {
                     if (result) {
                         AccountModel.update({}, {$pushAll: {values: ['pushed']}}, {multi: 1}, function (err, result) {
                             expect(err).not.to.be.ok;
-                            expect(result).to.equal(3);
+                            expect(result.n).to.equal(3);
                             if (result) {
                                 AccountModel.find({values: {$in: ['pushed']}}, function (err, pushed) {
                                     expect(err).not.to.be.ok;
@@ -163,7 +167,8 @@ describe('Mockgoose Update Tests', function () {
                     } else {
                         done('Error creating model');
                     }
-                });
+                }
+            );
         });
     });
 

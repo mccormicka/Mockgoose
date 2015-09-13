@@ -2,13 +2,15 @@
 /*jshint -W106 *///Camel_Case
 /*jshint -W079 */ //redefined expect
 var expect = require('chai').expect;
+var mockgoose = require('..');
+var Mongoose = require('mongoose').Mongoose;
+var mongoose = new Mongoose();
+var Schema = mongoose.Schema;
 
 describe('Index Tests', function () {
     'use strict';
 
-    var mockgoose = require('../Mockgoose');
-    var Mongoose = require('mongoose').Mongoose;
-    var mongoose = new Mongoose();
+
     mockgoose(mongoose);
     var db = mongoose.connect('mongodb://localhost:27017/TestingDB');
 
@@ -22,13 +24,13 @@ describe('Index Tests', function () {
     describe('SHOULD', function () {
 
         describe('Setup Indexes', function () {
-            var indexSchema = {
+            var indexSchema = new Schema({
                 expire: {
                     type: Date,
                     expires: 1000,
                     'default': Date.now
                 }
-            };
+            });
             var IndexModel = db.model('indexmodel', indexSchema);
 
             beforeEach(function(done){
@@ -42,8 +44,7 @@ describe('Index Tests', function () {
 
             it('Be able to retrieve indexes from a model', function (done) {
                 collection.getIndexes(function(err, indexes){
-                    //expect(indexes).to.deep.equal({ _id_ : [ [ '_id', 1 ] ], expire_1 : [ [ 'expire', 1 ] ] });
-                    expect(indexes).to.deep.equal({ _id_ : [ [ '_id', 1 ] ] });
+                    expect(indexes).to.deep.equal({ _id_ : [ [ '_id', 1 ] ], expire_1 : [ [ 'expire', 1 ] ] });
                     done();
                 });
             });

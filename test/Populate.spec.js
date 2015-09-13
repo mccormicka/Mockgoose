@@ -6,7 +6,7 @@ describe('Mockgoose Populate test', function () {
     'use strict';
     var async = require('async');
 
-    var mockgoose = require('../Mockgoose');
+    var mockgoose = require('..');
     var Mongoose = require('mongoose');
 
     mockgoose(Mongoose);
@@ -62,13 +62,15 @@ describe('Mockgoose Populate test', function () {
         it('should find the children objects within the parent', function (done) {
             CompanyEntry.findOne({name: 'Test Company'},function (err) {
                 expect(err).not.to.be.ok;
-
-            }).populate('users').exec(function (err, result) {
-                    expect(result.users.length).to.equal(1);
-                    var isInstanceOfUserEntry = result.users[0] instanceof UserEntry;
-                    expect(isInstanceOfUserEntry).to.be.true;
-                    done();
-                });
+            }).populate('users').exec(function (err, results) {
+                // Mongoose ignores the fact that this is a `findOne` and not a `find`
+                // after calling populate.
+                var result = results[0];
+                expect(result.users.length).to.equal(1);
+                var isInstanceOfUserEntry = result.users[0] instanceof UserEntry;
+                expect(isInstanceOfUserEntry).to.be.true;
+                done();
+            });
         });
 
         it('should not find children objects within the parent on subsequent non populate calls', function(done) {
