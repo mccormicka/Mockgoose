@@ -65,7 +65,7 @@ describe('Mockgoose Populate test', function () {
             }).populate('users').exec(function (err, results) {
                 // Mongoose ignores the fact that this is a `findOne` and not a `find`
                 // after calling populate.
-                var result = results[0];
+                var result = results;
                 expect(result.users.length).to.equal(1);
                 var isInstanceOfUserEntry = result.users[0] instanceof UserEntry;
                 expect(isInstanceOfUserEntry).to.be.true;
