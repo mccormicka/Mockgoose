@@ -12,6 +12,7 @@ describe('Mockgoose Find Tests', function () {
     mongoose.connect('mongodb://localhost/TestingDB-58');
     var AccountModel = require('./models/AccountModel')(mongoose);
     var SimpleModel = require('./models/SimpleModel')(mongoose);
+    var NestedModel = require('./models/NestedModel.js')(mongoose);
     var ObjectId = mongoose.Types.ObjectId;
 
     var accountId;
@@ -36,11 +37,20 @@ describe('Mockgoose Find Tests', function () {
                         expect(one).to.be.ok;
                         expect(two).to.be.ok;
                         expect(three).to.be.ok;
-                        done(err);
+
+                        NestedModel.create(
+                            {foo : [{bar : [{baz : 1}, {baz : 2}, {baz : 3}]}]},
+                            {foo : [{bar : [{baz : 1}]}, {bar : [{baz : 42}]}]},
+                            function(err, m1, m2) {
+                                expect(err).not.to.be.ok;
+                                expect(m1).to.be.ok;
+                                expect(m2).to.be.ok;
+                                done(err);
+                            }
+                        );
                     }
                 );
             });
-
     });
 
     afterEach(function (done) {
@@ -864,6 +874,22 @@ describe('Mockgoose Find Tests', function () {
                     done();
                 });
             });
+        });
+
+        describe('Support any level of nesting (recursive)', function() {
+            it('should match any deep nested value', function(done){
+                NestedModel.find({'foo.bar.baz' : 1}, function(err, models) {
+                    expect(models.length).to.equal(2); 
+                    done();
+                });
+            });
+            it('should match with any subdocument layout', function(done){
+                NestedModel.find({'foo.bar.baz' : 42}, function(err, models) {
+                    expect(models.length).to.equal(1);
+                    done();
+                });
+            });
+
         });
     });
 });
