@@ -15,7 +15,8 @@ describe('Mockgoose $and Tests', function () {
         price: Number,
         qty: Number,
         sale: Boolean,
-        historyprice: [Number]
+        historyprice: [Number],
+        properties: {color: String}
     });
     var Model = mongoose.model('AllTests', Schema);
 
@@ -26,27 +27,32 @@ describe('Mockgoose $and Tests', function () {
                 price: 1.99,
                 qty: 21,
                 sale: true,
-                historyprice: [1.90, 1.77, 1.50]
+                historyprice: [1.90, 1.77, 1.50],
+                properties: {color: 'white'}
             },
             {
                 price: 1.99,
                 qty: 21,
                 sale: true,
-                historyprice: [20, 42]
+                historyprice: [20, 42],
+                properties: {color: 'black'}
             },
             {
                 price: 1.99,
                 qty: 19,
-                sale: true
+                sale: true,
+                properties: {color: 'red'}
             },
             {
                 price: 1.99,
                 qty: 21,
-                sale: false
+                sale: false,
+                properties: {color: 'green'}
             }, {
                 price: 1,
                 qty: 21,
-                sale: false
+                sale: false,
+                properties: {color: 'yellow'}
             }
         ).then(function () {
                 done();
@@ -85,6 +91,18 @@ describe('Mockgoose $and Tests', function () {
                 { qty: { $gt: 20 }, sale: true }
             ] }).exec().then(function (results) {
                     expect(results.length).to.equal(2);
+                    done();
+                }
+            );
+        });
+
+        it('Find values that match $and operation on a field of a sub-document written in dot-notation', function (done) {
+            Model.find({
+                $and: [
+                    { 'properties.color': 'black' }
+                ]
+            }).exec().then(function (results) {
+                    expect(results.length).to.equal(1);
                     done();
                 }
             );
