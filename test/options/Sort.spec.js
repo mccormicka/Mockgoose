@@ -200,6 +200,42 @@ describe('Mockgoose Find Tests', function () {
             });
         });
 
+        it('Be able to sort items by multiple fields', function (done) {
+            var fixtures = [
+                {name: 'test name 1', date: new Date(3000), number: 15}, 
+                {name: 'test name 2', date: new Date(2000), number: 20}, 
+                {name: 'test name 3', date: new Date(1000), number: 15}, 
+                {name: 'test name 4', date: new Date(2000), number: 20}, 
+                {name: 'test name 5', date: new Date(4000), number: 10}
+            ];
+
+            var expectedOrder = [4, 0, 2, 1, 3];
+
+            SimpleModel.create.apply(
+                SimpleModel,
+                fixtures.concat(function (err, results) {
+                    expect(err).not.to.be.ok;
+                    expect(results).not.to.be.undefined;
+                    
+                    if (results) {
+                        SimpleModel.find({}, {}, {sort: {number: 1, date: -1, name: 1}}, function (err, models) {
+                            expect(err).not.to.be.ok;
+
+                            models.forEach(function(model, index) {
+                                var expectedModel = fixtures[expectedOrder[index]];
+                                expect(model.name).to.equal(expectedModel.name);
+                                expect(model.date.getTime()).to.equal(expectedModel.date.getTime());
+                                expect(model.number).to.equal(expectedModel.number);
+                            });
+
+                            done(err);
+                        });
+                    } else {
+                        done('Error creating Models!');
+                    }
+                })
+            );
+        });
     });
 
     describe('Sort Bugs', function () {

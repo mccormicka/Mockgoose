@@ -13,6 +13,7 @@ module.exports = function (connection) {
         value: String,
         bool: Boolean,
         date: Date,
+        number: Number,
         profile:{}
     });
 
