@@ -1,156 +1,73 @@
 'use strict';
-var _ = require('lodash');
 
-var mock = require('./lib/Model');
-var db = require('./lib/db');
-var logger = require('./lib/Logger');
+var mongod = require('mongodb-prebuilt');
+var path = require('path');
+var fs = require('fs');
+var debug = require('debug')('Mockgoose');
 
-module.exports = function (mongoose, throwErrors) {
-
-    var Models = {};
-    if (!mongoose.originalCreateConnection) {
-        mongoose.originalCreateConnection = mongoose.createConnection;
-        mongoose.originalConnect = mongoose.connect;
-        mongoose.originalModel = mongoose.model;
+module.exports = function(mongoose, db_opts, callback) {
+    if (db_opts instanceof Function) {
+        callback = db_opts;
+        db_opts = {};
     }
 
-    mongoose.model = function (name, schema, collection, skipInit) {
-//        Mongoose is case sensitive!
-//        if (name) {
-//            name = name.toLowerCase();
-//        }
-        var model = mongoose.originalModel.call(mongoose, name, schema, collection, skipInit);
-        mock(model);
-        if(model.schema.options.autoIndex){
-            model.ensureIndexes();
-        }
-        Models[name] = model;
-        return model;
-    };
+    var orig_connect = mongoose.connect;
 
-    mongoose.createConnection = function (host, database, port, options, callback) {
-        if (_.isFunction(database)) {
-            callback = database;
-            database = null;
-        }
-        if (!_.isString(database) && _.isString(host)) {
-            database = host.slice(host.lastIndexOf('/') + 1);
-        }
-        if (_.isFunction(database)) {
-            callback = database;
-            options = {};
-        } else if (_.isFunction(port)) {
-            callback = port;
-            options = {};
-        } else if (_.isFunction(options)) {
-            callback = options;
-            options = {};
-        }
-        if (_.isObject(options)) {
-            if (_.isString(options.db)) {
-                database = options.db;
-            }
-            options = {};
-        }
-        if (_.isUndefined(options)) {
-            options = {};
-        }
+    //  create temp directory for db lock files, etc..
+    if (! db_opts.dbpath ) {
+        db_opts.dbpath = path.join(__dirname, ".mongooseTempDB");
+        debug("dbpath: %s", db_opts.dbpath);
 
-        // Mongoose won't complain that a "blank" database doesn't exist.
-        database = '';
-
-        logger.info('Creating Mockgoose database: CreateConnection', database, ' options: ', options);
-        var connection = mongoose.originalCreateConnection.call(mongoose, database, options, function (err) {
-            process.nextTick(function() {
-                handleConnection(callback, connection, err);
+        try {
+            fs.readdirSync(db_opts.dbpath).forEach(function(file,index){
+                var curPath = path.join(db_opts.dbpath, file);
+                fs.unlinkSync(curPath);
             });
-        });
-        connection.model = mongoose.model;
-        connection.models = mongoose.models;
-        return connection;
-    };
-
-    function handleConnection(callback, connection, err) {
-        setMockReadyState(connection, 2);
-        connection.emit('connecting');
-        if (callback) {
-            //Always return true as we are faking it.
-            callback(null, connection);
-        }
-        if (throwErrors) {
-            setMockReadyState(connection, 0);
-            connection.emit('error', err);
-        } else {
-            setMockReadyState(connection, 1);
-            connection.emit('connected');
-            connection.emit('open');
+            fs.rmdirSync(db_opts.dbpath);
+        } catch(e) {
+            if (!e.code === "ENOENT") throw e;
         }
     }
 
-    mongoose.connect = function (host, database, port, options, callback) {
-        if (_.isFunction(database)) {
-            callback = database;
-            database = null;
-        }
-        if (!_.isString(database)) {
-            database = host.slice(host.lastIndexOf('/') + 1);
-        }
-        if (_.isFunction(database)) {
-            callback = database;
-            options = {};
-        } else if (_.isFunction(port)) {
-            callback = port;
-            options = {};
-        } else if (_.isFunction(options)) {
-            callback = options;
-            options = {};
-        }
-        if (_.isObject(options)) {
-            if (_.isString(options.db)) {
-                database = options.db;
-            }
-            options = {};
-        }
-        if (_.isUndefined(options)) {
-            options = {};
-        }
+    try {
+        fs.mkdirSync(db_opts.dbpath);
+    } catch (e) {
+        if (e.code !== "EEXIST" ) throw e;
+    }
 
-        // Mongoose won't complain that a "blank" database doesn't exist.
-        database = '';
+    if (! db_opts.storageEngine ) {
+        db_opts.storageEngine = "inMemoryExperiment";
+    }
 
-        logger.info('Creating Mockgoose database: Connect ', database, ' options: ', options);
-        mongoose.originalConnect.call(mongoose, database, options, function (err) {
-            process.nextTick(function() {
-                handleConnection(callback, mongoose.connection, err);
+    if (! db_opts.port ) {
+        db_opts.port = 27017;
+        db_opts.port_roll = true;
+    }
+
+    mongoose.connect = function(uri) {
+        debug("connecting to %s", uri);
+        return orig_connect.apply(this, arguments);
+    }
+
+    function start_server(port) {
+        try {
+            db_opts.port = port;
+            mongod.start_server(db_opts, function(err) {
+                if (err) console.log(err); 
+                if (callback) return callback(err);
             });
-        });
-        mongoose.connection.model = mongoose.model;
-        return mongoose;
-    };
-
-    var setMockReadyState = module.exports.setMockReadyState = function(connection, state) {
-        /**
-         * mock version of Connection#readyState
-         * http://mongoosejs.com/docs/api.html#connection_Connection-readyState
-         *
-         * 0 = disconnected
-         * 1 = connected
-         * 2 = connecting
-         * 3 = disconnecting
-         *
-         */
-        connection._mockReadyState = mongoose.connection._mockReadyState = state;
-    };
-
-    module.exports.reset = function (type) {
-        if (!type) {
-            _.map(Models, function (value, key) {
-                delete Models[key];
-            });
-        } else {
-            delete Models[type];
+        } catch(e) {
+            console.log(e);
+            throw e;
         }
-        db.reset(type);
-    };
-    return mongoose;
-};
+    }
+    start_server(db_opts.port);
+    
+    
+}
+
+// function connect (mongoose, callback) {
+
+// }
+
+// overload connect call URI with mockgoose URI
