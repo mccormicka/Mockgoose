@@ -1,15 +1,12 @@
-// Whether to use old or new Mongoose
-//var old = false;
-
-//var mongoose = require(old ? 'mockgoose/node_modules/mongoose' : 'mongoose');
 var mongoose = require('mongoose');
-var Mockgoose = require('./Mockgoose');
+var Mockgoose = require('./Mockgoose')(mongoose);
 
-Mockgoose(mongoose, {}, function(err) {
-    mongoose.connect('mongodb://localhost:27017/whatever', function(err) {
-        console.log('connected');
-        // start your test
-    });
+mongoose.connect('mongodb://localhost:27017');
+
+mongoose.connection.on('connected', function () {  
+  console.log('Mongoose open');
+}); 
+
+Mockgoose.on('mongodbStarted', function(db_opts) {
+	console.log('db_opts', db_opts);
 });
-
-

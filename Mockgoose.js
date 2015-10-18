@@ -1,32 +1,43 @@
 'use strict';
 
-var mongod = require('mongodb-prebuilt');
+var mongod = require('../mongodb-prebuilt');
 var path = require('path');
 var fs = require('fs');
 var debug = require('debug')('Mockgoose');
+var EventEmitter = require('events').EventEmitter;
+var emitter = new EventEmitter();
+var server_started = false;
 
-module.exports = function(mongoose, db_opts, callback) {
-    if (db_opts instanceof Function) {
-        callback = db_opts;
-        db_opts = {};
-    }
-
+module.exports = function(mongoose, db_opts) {
     var orig_connect = mongoose.connect;
 
-    //  create temp directory for db lock files, etc..
+    var connect_args;
+    mongoose.connect = function() {
+        connect_args = arguments;
+        start_server(db_opts);
+    }
+
+    emitter.once("mongodbStarted", function(db_opts) {
+        connect_args[0] = "mongodb://localhost:" + db_opts.port;
+        debug("connecting to %s", connect_args[0]);
+        orig_connect.apply(mongoose, connect_args);
+    });
+
+    if (!db_opts) db_opts = {};
+
+    if (! db_opts.storageEngine ) {
+        db_opts.storageEngine = "inMemoryExperiment";
+    }
+
+    if (! db_opts.port ) {
+        db_opts.port = 27017;
+    } else {
+        db_opts.port = Number(db_opts.port);
+    }
+
     if (! db_opts.dbpath ) {
         db_opts.dbpath = path.join(__dirname, ".mongooseTempDB");
         debug("dbpath: %s", db_opts.dbpath);
-
-        try {
-            fs.readdirSync(db_opts.dbpath).forEach(function(file,index){
-                var curPath = path.join(db_opts.dbpath, file);
-                fs.unlinkSync(curPath);
-            });
-            fs.rmdirSync(db_opts.dbpath);
-        } catch(e) {
-            if (!e.code === "ENOENT") throw e;
-        }
     }
 
     try {
@@ -35,39 +46,37 @@ module.exports = function(mongoose, db_opts, callback) {
         if (e.code !== "EEXIST" ) throw e;
     }
 
-    if (! db_opts.storageEngine ) {
-        db_opts.storageEngine = "inMemoryExperiment";
-    }
+    var orig_dbpath = db_opts.dbpath;
+    function start_server(db_opts) {
+        debug("attempting to start server on port: %d", db_opts.port);
+        db_opts.dbpath = path.join(orig_dbpath, db_opts.port.toString());
 
-    if (! db_opts.port ) {
-        db_opts.port = 27017;
-        db_opts.port_roll = true;
-    }
-
-    mongoose.connect = function(uri) {
-        debug("connecting to %s", uri);
-        return orig_connect.apply(this, arguments);
-    }
-
-    function start_server(port) {
         try {
-            db_opts.port = port;
-            mongod.start_server(db_opts, function(err) {
-                if (err) console.log(err); 
-                if (callback) return callback(err);
-            });
-        } catch(e) {
-            console.log(e);
-            throw e;
+            fs.mkdirSync(db_opts.dbpath);
+        } catch (e) {
+            if (e.code !== "EEXIST" ) throw e;
         }
+
+        mongod.start_server({args: db_opts}, function(err) {
+            if (!err) {
+                emitter.emit('mongodbStarted', db_opts);
+            } else {
+                db_opts.port++;
+                start_server(db_opts);
+            }
+        });
     }
-    start_server(db_opts.port);
-    
-    
+
+    process.on('uncaughtException', function(err) {
+        //if ( restarting === true ) return;
+        if (err.code !== "ENOTCONN") {
+            throw err;
+        }
+    });
+
+    var reset = function() {
+
+    };
+
+    return emitter;
 }
-
-// function connect (mongoose, callback) {
-
-// }
-
-// overload connect call URI with mockgoose URI
