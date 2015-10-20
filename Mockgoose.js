@@ -1,6 +1,6 @@
 'use strict';
 
-var mongod = require('../mongodb-prebuilt');
+var mongod = require('mongodb-prebuilt');
 var path = require('path');
 var fs = require('fs');
 var debug = require('debug')('Mockgoose');
