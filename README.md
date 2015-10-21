@@ -5,17 +5,17 @@ Please Share on Twitter if you like #mockgoose
 <img src="https://raw.github.com/mccormicka/Mockgoose/master/twittershare.png">
 </a>
 
-##What is Mockgoose?
+## What is Mockgoose?
 
 Mockgoose provides test database by spinning up mongod on the back when mockgoose.connect call is made. By default it is using in memory store which does not have persistance.
 
-##Install
+## Install
 To install the latest official version, use NPM:
 
     npm install mockgoose --save-dev
 
 
-##Usage
+## Usage
 You simply require Mongoose and Mockgoose and wrap Mongoose with Mockgoose.
 
     var mongoose = require('mongoose');
