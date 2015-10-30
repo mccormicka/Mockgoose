@@ -57,7 +57,7 @@ module.exports = function(mongoose, db_opts) {
             if (e.code !== "EEXIST" ) throw e;
         }
 
-        mongod.start_server({args: db_opts}, function(err) {
+        mongod.start_server({args: db_opts, auto_shutdown: true}, function(err) {
             if (!err) {
                 emitter.emit('mongodbStarted', db_opts);
             } else {
