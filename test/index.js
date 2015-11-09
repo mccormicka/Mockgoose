@@ -4,9 +4,8 @@ var expect = require('chai').expect;
 var Mongoose = require('mongoose').Mongoose;
 var mongoose = new Mongoose();
 
-var mockgoose = require('mockgoose');
+var mockgoose = require('../Mockgoose');
 mockgoose(mongoose);
-mongoose.connect('mongodb://localhost/TestingDB');
 
 before(function(done) {
     mongoose.connect('mongodb://example.com/TestingDB', function(err) {

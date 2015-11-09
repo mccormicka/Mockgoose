@@ -1,6 +1,7 @@
 'use strict';
 
 var mongod = require('mongodb-prebuilt');
+//var mongod = require('../mongodb-prebuilt');
 var path = require('path');
 var fs = require('fs');
 var debug = require('debug')('Mockgoose');
@@ -67,12 +68,12 @@ module.exports = function(mongoose, db_opts) {
         });
     }
 
-    process.on('uncaughtException', function(err) {
-        //if ( restarting === true ) return;
-        if (err.code !== "ENOTCONN") {
-            throw err;
-        }
-    });
+    // process.on('uncaughtException', function(err) {
+    //     //if ( restarting === true ) return;
+    //     if (err.code !== "ENOTCONN") {
+    //         throw err;
+    //     }
+    // });
 
     var reset = function() {
 
