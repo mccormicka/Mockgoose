@@ -1,7 +1,7 @@
 {
   "name": "mockgoose",
   "description": "Mockgoose is an in memory database mock to allow for testing of applications that rely on Mongoose.",
-  "version": "5.0.0-rc.8",
+  "version": "5.0.0-rc.9",
   "author": {
     "name": "Anthony McCormick",
     "email": "anthony.mccormick AT gmail.com"
@@ -19,7 +19,7 @@
     "in memory"
   ],
   "scripts": {
-    "test": "mocha && grunt jshint"
+    "test": "mocha test"
   },
   "main": "Mockgoose",
   "files": [
@@ -34,14 +34,9 @@
     "debug": "2.2.0"
   },
   "devDependencies": {
-    "async": "~1.4.2",
     "chai": "~2.2.0",
-    "grunt": "~0.4.5",
-    "grunt-cli": "~0.1.13",
-    "grunt-contrib-jshint": "0.11.1",
-    "grunt-contrib-watch": "0.6.1",
-    "grunt-mocha-test": "0.12.7",
-    "mocha": "~2.2.4"
+    "mocha": "~2.2.4",
+	"mongoose": "*"
   },
   "bugs": {
     "url": "https://github.com/mccormicka/Mockgoose/issues"
