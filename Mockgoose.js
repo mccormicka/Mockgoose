@@ -2,6 +2,7 @@
 
 var mongod = require('mongodb-prebuilt');
 //var mongod = require('../mongodb-prebuilt');
+var async = require('async');
 var path = require('path');
 var fs = require('fs');
 var debug = require('debug')('Mockgoose');
@@ -75,8 +76,12 @@ module.exports = function(mongoose, db_opts) {
     //     }
     // });
 
-    var reset = function() {
-
+    module.exports.reset = function(done) {
+        async.each(mongoose.connection.collections, function(obj, callback) {
+            obj.deleteMany(null, function() {
+                callback(null); // ignore errors
+            });
+        }, done);
     };
 
     return emitter;
