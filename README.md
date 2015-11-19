@@ -24,3 +24,26 @@ You simply require Mongoose and Mockgoose and wrap Mongoose with Mockgoose.
     mockgoose(mongoose);
 
 Once Mongoose has been wrapped by Mockgoose connect() will be intercepted by Mockgoose so that no MongoDB instance is created.
+
+## Mocha
+
+```javascript
+var Mongoose = require('mongoose').Mongoose;
+var mongoose = new Mongoose();
+
+var mockgoose = require('mockgoose');
+mockgoose(mongoose);
+
+before(function(done) {
+    mongoose.connect('mongodb://example.com/TestingDB', function(err) {
+        done(err);
+    }); 
+});
+
+describe('...', function() {
+	it("...", function(done) {
+		// ...
+        done();
+    });
+});
+```
