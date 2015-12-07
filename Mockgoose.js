@@ -75,13 +75,20 @@ module.exports = function(mongoose, db_opts) {
     //         throw err;
     //     }
     // });
-
     module.exports.reset = function(done) {
-        async.each(mongoose.connection.collections, function(obj, callback) {
+        var collections = mongoose.connection.collections,
+            remaining = collections.length;
+        if (remaining === 0) {
+            done(null);
+        }
+        collections.forEach(function(obj) {
             obj.deleteMany(null, function() {
-                callback(null); // ignore errors
+                remaining--;
+                if (remaining === 0) {
+                    done(null);
+                }
             });
-        }, done);
+        });
     };
 
     return emitter;
