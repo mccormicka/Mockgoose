@@ -1,7 +1,7 @@
 'use strict';
 
-var mongod = require('mongodb-prebuilt');
-//var mongod = require('../mongodb-prebuilt');
+//var mongod = require('mongodb-prebuilt');
+var mongod = require('../mongodb-prebuilt');
 var async = require('async');
 var path = require('path');
 var fs = require('fs');
@@ -9,6 +9,7 @@ var debug = require('debug')('Mockgoose');
 var EventEmitter = require('events').EventEmitter;
 var emitter = new EventEmitter();
 var server_started = false;
+var mongod_emitter;
 
 module.exports = function(mongoose, db_opts) {
     var orig_connect = mongoose.connect;
@@ -18,6 +19,11 @@ module.exports = function(mongoose, db_opts) {
         connect_args = arguments;
         start_server(db_opts);
     }
+
+    mongoose.connection.on('disconnected', function () {  
+        console.log('Mongoose disconnected');
+        mongod_emitter.emit('mongoShutdown');
+    }); 
 
     emitter.once("mongodbStarted", function(db_opts) {
         connect_args[0] = "mongodb://localhost:" + db_opts.port;
@@ -59,7 +65,7 @@ module.exports = function(mongoose, db_opts) {
             if (e.code !== "EEXIST" ) throw e;
         }
 
-        mongod.start_server({args: db_opts, auto_shutdown: true}, function(err) {
+        mongod_emitter = mongod.start_server({args: db_opts, auto_shutdown: true}, function(err) {
             if (!err) {
                 emitter.emit('mongodbStarted', db_opts);
             } else {
@@ -77,11 +83,17 @@ module.exports = function(mongoose, db_opts) {
     // });
 
     module.exports.reset = function(done) {
-        async.each(mongoose.connection.collections, function(obj, callback) {
+        var collections = mongoose.connection.collections;
+        var deleteProcessor = function(obj) {
             obj.deleteMany(null, function() {
-                callback(null); // ignore errors
+                if ( collections.length > 0 ) {
+                    deleteProcessor(collections.pop());
+                } else {
+                    done(null);
+                }
             });
-        }, done);
+        }
+        deleteProcessor(collections.pop());
     };
 
     return emitter;
