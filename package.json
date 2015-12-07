@@ -1,7 +1,7 @@
 {
   "name": "mockgoose",
   "description": "Mockgoose is an in memory database mock to allow for testing of applications that rely on Mongoose.",
-  "version": "5.0.6",
+  "version": "5.0.7",
   "author": {
     "name": "Anthony McCormick",
     "email": "anthony.mccormick AT gmail.com"
@@ -30,7 +30,6 @@
     "node": ">=0.10.0"
   },
   "dependencies": {
-    "async": "^1.5.0",
     "debug": "2.2.0",
     "mongodb-prebuilt": "^4.2.16"
   },
