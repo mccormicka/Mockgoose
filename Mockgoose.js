@@ -20,11 +20,11 @@ module.exports = function(mongoose, db_opts) {
     }
 
     mongoose.connection.on('disconnected', function () {  
-        console.log('Mongoose disconnected');
+        debug('Mongoose disconnected');
         mongod_emitter.emit('mongoShutdown');
     }); 
 
-    emitter.once("mongodbStarted", function(db_opts) {
+    emitter.on("mongodbStarted", function(db_opts) {
         connect_args[0] = "mongodb://localhost:" + db_opts.port;
         debug("connecting to %s", connect_args[0]);
         orig_connect.apply(mongoose, connect_args);
