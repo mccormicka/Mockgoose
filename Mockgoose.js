@@ -82,12 +82,17 @@ module.exports = function(mongoose, db_opts) {
     // });
     module.exports.reset = function(done) {
         var collections = mongoose.connection.collections,
-            remaining = collections.length;
+            collectionNames = Object.keys(collections),
+            remaining = collectionNames.length;
+
         if (remaining === 0) {
             done(null);
         }
-        collections.forEach(function(obj) {
-            obj.deleteMany(null, function() {
+        
+        collectionNames.forEach(function(name) {
+            var collection = collections[collectionNames];
+
+            collection.deleteMany(null, function() {
                 remaining--;
                 if (remaining === 0) {
                     done(null);
