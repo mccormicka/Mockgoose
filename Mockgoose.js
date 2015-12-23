@@ -74,26 +74,22 @@ module.exports = function(mongoose, db_opts) {
         });
     }
 
-    // process.on('uncaughtException', function(err) {
-    //     //if ( restarting === true ) return;
-    //     if (err.code !== "ENOTCONN") {
-    //         throw err;
-    //     }
-    // });
     module.exports.reset = function(done) {
-        var collections = mongoose.connection.collections,
-            remaining = collections.length;
+        var collections = mongoose.connection.collections;
+        var remaining = Object.keys(collections).length;
+
         if (remaining === 0) {
             done(null);
         }
-        collections.forEach(function(obj) {
-            obj.deleteMany(null, function() {
-                remaining--;
-                if (remaining === 0) {
-                    done(null);
-                }
-            });
-        });
+		for( var collection_name in collections ) {
+			var obj = collections[collection_name];
+        	obj.deleteMany(null, function() {
+        	    remaining--;
+        	    if (remaining === 0) {
+        	        done(null);
+        	    }
+        	});
+		}
     };
 
     return emitter;

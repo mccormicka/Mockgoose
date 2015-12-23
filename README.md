@@ -47,3 +47,14 @@ describe('...', function() {
     });
 });
 ```
+
+## Helper methods
+
+### reset()
+Reset method will remove **ALL** of the collections from a temporary store
+
+```javascript
+mockgoose.reset(function() {
+	done()
+});
+```

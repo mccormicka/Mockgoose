@@ -16,6 +16,12 @@ before(function(done) {
     }); 
 });
 
+after(function(done) {
+  mockgoose.reset(function() {
+    done()
+  });
+});
+
 describe('User functions', function() {
 	it("should create a cat foo", function(done) {
 		Cat.create({name: "foo"}, function(err, cat) {
