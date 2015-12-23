@@ -5,3 +5,4 @@ Version | Description
 5.0.9   | Updated mongodb-prebuilt, and added disconnected event listener, that calls database shutdown function now if mongoose.disconnect is called, and removed async dependency
 5.0.10  | Merged fix that allows reconnect after disconnect is made
 5.0.11	| Added fix for reset method, which was broken after removal of async, updated documentation with reset method
+5.1.0	| Added unmock and unmockAndReconnect functions

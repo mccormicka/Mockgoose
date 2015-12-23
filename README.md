@@ -48,13 +48,33 @@ describe('...', function() {
 });
 ```
 
-## Helper methods
+## Helper methods and variables
 
-### reset()
-Reset method will remove **ALL** of the collections from a temporary store
+### reset(callback)
+Reset method will remove **ALL** of the collections from a temporary store,
+note that this method is part of **mockgoose** object, and not defined under
+**mongoose**
 
 ```javascript
 mockgoose.reset(function() {
 	done()
 });
 ```
+
+### isMocked
+Returns **TRUE** from **mongoose** object if Mockgoose is applied
+
+```javascript
+if ( mongoose.isMocked === true ) {
+  // mongoose object is mocked
+}
+```
+
+## unmock(callback)
+Method that can be applied on **mongoose** to remove modifications added
+by **mockgoose**, it will perform disconnect on temporary store that was
+created, and **will not reconnect**
+
+## unmockAndReconnect(callback)
+Same as **unmock**, however it will reconnect to original URI that was
+passed during **connect**

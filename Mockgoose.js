@@ -13,11 +13,17 @@ var mongod_emitter;
 module.exports = function(mongoose, db_opts) {
     var orig_connect = mongoose.connect;
 
+	// caching original connect arguments for unmock method
+	var orig_connect_uri;
+
     var connect_args;
     mongoose.connect = function() {
         connect_args = arguments;
+		orig_connect_uri = connect_args[0];
         start_server(db_opts);
     }
+
+	mongoose.isMocked = true;
 
     mongoose.connection.on('disconnected', function () {  
         debug('Mongoose disconnected');
@@ -91,6 +97,32 @@ module.exports = function(mongoose, db_opts) {
         	});
 		}
     };
+
+	mongoose.unmock = function(callback) {
+		mongoose.disconnect(function() {
+			delete mongoose.isMocked;
+			connect_args[0] = orig_connect_uri;
+			mongoose.connect = orig_connect;
+			callback();
+		});
+	}
+
+	mongoose.unmockAndReconnect = function(callback) {
+		mongoose.unmock(function() {
+			var overloaded_callback = function(err) {
+				callback(err);
+			}
+			// mongoose connect prototype connect(String, Object?, Function?)
+			if ( connect_args[2] && typeof connect_args[2] === "function" ) {
+				connect_args[2] = overloaded_callback;
+			} else {
+				connect_args[1] = overloaded_callback;
+			}
+
+			orig_connect.apply(mongoose, connect_args);
+		});
+	}
+
 
     return emitter;
 }
