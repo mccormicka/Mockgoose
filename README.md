@@ -78,3 +78,22 @@ created, and **will not reconnect**
 ## unmockAndReconnect(callback)
 Same as **unmock**, however it will reconnect to original URI that was
 passed during **connect**
+
+## Development
+
+This section contains instructions for developers working on the Mockgoose codebase.
+It is not relevant if you just want to use Mockgoose as a library in your project. 
+
+### Pre-requisites
+
+* Node.js >= 0.10.0
+* Grunt (`npm install -g grunt-cli`)
+
+### Setup
+
+```
+git clone git@github.com:mccormicka/Mockgoose.git
+cd Mockgoose
+npm install
+grunt test
+```
