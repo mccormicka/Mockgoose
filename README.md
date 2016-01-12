@@ -47,3 +47,53 @@ describe('...', function() {
     });
 });
 ```
+
+## Helper methods and variables
+
+### reset(callback)
+Reset method will remove **ALL** of the collections from a temporary store,
+note that this method is part of **mockgoose** object, and not defined under
+**mongoose**
+
+```javascript
+mockgoose.reset(function() {
+	done()
+});
+```
+
+### isMocked
+Returns **TRUE** from **mongoose** object if Mockgoose is applied
+
+```javascript
+if ( mongoose.isMocked === true ) {
+  // mongoose object is mocked
+}
+```
+
+## unmock(callback)
+Method that can be applied on **mongoose** to remove modifications added
+by **mockgoose**, it will perform disconnect on temporary store that was
+created, and **will not reconnect**
+
+## unmockAndReconnect(callback)
+Same as **unmock**, however it will reconnect to original URI that was
+passed during **connect**
+
+## Development
+
+This section contains instructions for developers working on the Mockgoose codebase.
+It is not relevant if you just want to use Mockgoose as a library in your project. 
+
+### Pre-requisites
+
+* Node.js >= 0.10.0
+* Grunt (`npm install -g grunt-cli`)
+
+### Setup
+
+```
+git clone git@github.com:mccormicka/Mockgoose.git
+cd Mockgoose
+npm install
+grunt test
+```
