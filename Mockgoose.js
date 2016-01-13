@@ -43,8 +43,17 @@ module.exports = function(mongoose, db_opts) {
 
     if (!db_opts) db_opts = {};
 
+    if (! db_opts.version ) {
+        db_opts.version = mongod.active_version();
+    }
+
     if (! db_opts.storageEngine ) {
-        db_opts.storageEngine = "inMemoryExperiment";
+        var version = db_opts.version.split('.'); 
+        if ( version[0] >= 3 && version[1] >= 2 ) {
+            db_opts.storageEngine = "inMemory";
+        } else {
+            db_opts.storageEngine = "inMemoryExperiment";
+        }
     }
 
     if (! db_opts.port ) {
