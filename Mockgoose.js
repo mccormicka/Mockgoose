@@ -1,7 +1,12 @@
 'use strict';
 
-//var mongod = require('mongodb-prebuilt');
-var mongod = require('../mongodb-prebuilt');
+var mongod;
+if ( process.env.MONGODB_LOCAL_BUILD ) {
+    console.log("WARNING: USING ../mongodb-prebuilt, this option is for development only");
+    mongod = require('../mongodb-prebuilt');
+} else {
+    mongod = require('mongodb-prebuilt');
+}
 var path = require('path');
 var fs = require('fs');
 var debug = require('debug')('Mockgoose');
