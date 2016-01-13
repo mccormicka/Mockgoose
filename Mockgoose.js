@@ -75,6 +75,7 @@ module.exports = function(mongoose, db_opts) {
                 emitter.emit('mongodbStarted', db_opts);
             } else {
                 db_opts.port++;
+                mongod_emitter.removeAllListeners();
                 start_server(db_opts);
             }
         });
