@@ -19,7 +19,7 @@
     "in memory"
   ],
   "scripts": {
-    "test": "mocha --timeout 3000 test"
+    "test": "DEBUG=* mocha --timeout 3000 test"
   },
   "main": "Mockgoose",
   "files": [
