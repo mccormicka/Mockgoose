@@ -55,7 +55,7 @@ module.exports = function(mongoose, db_opts) {
     if (! db_opts.storageEngine ) {
         var parsed_version = db_version.split('.'); 
         if ( parsed_version[0] >= 3 && parsed_version[1] >= 2 ) {
-            db_opts.storageEngine = "inMemory";
+            db_opts.storageEngine = "ephemeralForTest";
         } else {
             db_opts.storageEngine = "inMemoryExperiment";
         }
