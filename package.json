@@ -19,7 +19,7 @@
     "in memory"
   ],
   "scripts": {
-    "test": "DEBUG=* mocha --timeout 3000 test"
+    "test": "mocha --timeout 3000 test"
   },
   "main": "Mockgoose",
   "files": [
@@ -31,7 +31,7 @@
   },
   "dependencies": {
     "debug": "2.2.0",
-    "mongodb-prebuilt": "^4.4.4"
+    "mongodb-prebuilt": "^4.4.7"
   },
   "devDependencies": {
     "chai": "~2.2.0",
