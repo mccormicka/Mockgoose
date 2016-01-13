@@ -31,7 +31,7 @@
   },
   "dependencies": {
     "debug": "2.2.0",
-    "mongodb-prebuilt": "^4.4.3"
+    "mongodb-prebuilt": "^4.4.4"
   },
   "devDependencies": {
     "chai": "~2.2.0",
