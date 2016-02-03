@@ -30,10 +30,10 @@ module.exports = function(mongoose, db_opts) {
 
 	mongoose.isMocked = true;
 
-    mongoose.connection.on('disconnected', function () {  
+    mongoose.connection.on('disconnected', function () {
         debug('Mongoose disconnected');
         mongod_emitter.emit('mongoShutdown');
-    }); 
+    });
 
     emitter.on("mongodbStarted", function(db_opts) {
         connect_args[0] = "mongodb://localhost:" + db_opts.port;
@@ -53,7 +53,7 @@ module.exports = function(mongoose, db_opts) {
     delete db_opts.version;
 
     if (! db_opts.storageEngine ) {
-        var parsed_version = db_version.split('.'); 
+        var parsed_version = db_version.split('.');
         if ( parsed_version[0] >= 3 && parsed_version[1] >= 2 ) {
             db_opts.storageEngine = "ephemeralForTest";
         } else {
@@ -100,21 +100,33 @@ module.exports = function(mongoose, db_opts) {
     }
 
     module.exports.reset = function(done) {
-        var collections = mongoose.connection.collections;
-        var remaining = Object.keys(collections).length;
+      var collections = mongoose.connection.collections;
+      var models = mongoose.models;
+      var remainingCollections = Object.keys(collections).length;
+      var remainingModels = Object.keys(models).length;
 
-        if (remaining === 0) {
+      if (remainingCollections === 0 && remainingModels === 0) {
+        done(null);
+      }
+
+      for( var model_name in models ) {
+        delete models[model_name];
+        remainingModels--;
+      }
+
+      if (remainingCollections === 0 && remainingModels === 0) {
+        done(null);
+      }
+
+      for( var collection_name in collections ) {
+        var obj = collections[collection_name];
+        obj.deleteMany(null, function() {
+          remainingCollections--;
+          if (remainingCollections === 0 && remainingModels === 0) {
             done(null);
-        }
-		for( var collection_name in collections ) {
-			var obj = collections[collection_name];
-        	obj.deleteMany(null, function() {
-        	    remaining--;
-        	    if (remaining === 0) {
-        	        done(null);
-        	    }
-        	});
-		}
+          }
+        });
+      }
     };
 
 	mongoose.unmock = function(callback) {
