@@ -37,7 +37,6 @@
         "beforeAll",
         "beforeEach",
         "afterEach",
-        "expect",
         "default",
         "spyOn",
         "after",
