@@ -16,29 +16,72 @@ var server_started = false;
 var mongod_emitter;
 
 module.exports = function(mongoose, db_opts) {
-    var orig_connect = mongoose.connect;
+    var ConnectionPrototype = mongoose.Connection.prototype;
+    var origOpen = ConnectionPrototype.open;
+    var origOpenPrivate = ConnectionPrototype._open;
+    var openCallList = [];
 
-	// caching original connect arguments for unmock method
-	var orig_connect_uri;
+    ConnectionPrototype.open = function() {
+        var connection = this;
+        var args = arguments;
+        openCallList.push({
+            connection: connection,
+            args: args,
+            isConnected: false,
+        });
 
-    var connect_args;
-    mongoose.connect = function() {
-        connect_args = arguments;
-		orig_connect_uri = connect_args[0];
-        start_server(db_opts);
+        function resume() {
+            origOpen.apply(connection, args);
+        }
+        if (mongod_emitter === undefined) {
+            start_server(db_opts);
+            emitter.once("mongodbStarted", resume);
+        }
+        else {
+            resume();
+        }
     }
 
-	mongoose.isMocked = true;
+    ConnectionPrototype._open = function() {
+        if (mongod_emitter === undefined) {
+            origOpenPrivate.apply(this, arguments);
+            return;
+        }
 
-    mongoose.connection.on('disconnected', function () {  
-        debug('Mongoose disconnected');
-        mongod_emitter.emit('mongoShutdown');
-    }); 
+        this.host = 'localhost';
+        this.port = db_opts.port;
 
-    emitter.on("mongodbStarted", function(db_opts) {
-        connect_args[0] = "mongodb://localhost:" + db_opts.port;
-        debug("connecting to %s", connect_args[0]);
-        orig_connect.apply(mongoose, connect_args);
+        var connection = this;
+        openCallList.filter(function(call, index) {
+            if (call.connection !== connection) {
+                return false;
+            }
+
+            connection.once('connected', function() {
+                call.isConnected = true;
+                debug('Mongoose connected %d', index);
+            });
+            connection.once('disconnected', function() {
+                call.isConnected = false;
+                debug('Mongoose disconnected %d', index);
+
+                if (! openCallList.some(function(_call) {
+                    return _call.isConnected;
+                }) && (mongod_emitter !== undefined)) {
+                    mongod_emitter.emit('mongoShutdown');
+                }
+            });
+            return true;
+        });
+
+        origOpenPrivate.apply(this, arguments);
+    }
+
+
+    mongoose.isMocked = true;
+
+    emitter.once("mongodbStarted", function(db_opts) {
+        debug("started server on port: %d", db_opts.port);
     });
 
     if (!db_opts) db_opts = {};
@@ -100,46 +143,89 @@ module.exports = function(mongoose, db_opts) {
     }
 
     module.exports.reset = function(done) {
-        var collections = mongoose.connection.collections;
-        var remaining = Object.keys(collections).length;
-
-        if (remaining === 0) {
-            done(null);
+        if (! mongoose.isMocked) {
+            return done(null);
         }
-		for( var collection_name in collections ) {
-			var obj = collections[collection_name];
-        	obj.deleteMany(null, function() {
-        	    remaining--;
-        	    if (remaining === 0) {
-        	        done(null);
-        	    }
-        	});
-		}
+
+        var collections = openCallList.reduce(function(total, call) {
+            var objs = call.connection.collections;
+            for (var key in objs) {
+                total.push(objs[key]);
+            }
+            return total;
+        }, []);
+
+        var remaining = collections.length;
+        if (remaining === 0) {
+            return done(null);
+        }
+
+        collections.forEach(function(obj) {
+            obj.deleteMany(null, function() {
+                remaining--;
+                if (remaining === 0) {
+                    done(null);
+                }
+            });
+        });
     };
 
 	mongoose.unmock = function(callback) {
-		mongoose.disconnect(function() {
-			delete mongoose.isMocked;
-			connect_args[0] = orig_connect_uri;
-			mongoose.connect = orig_connect;
-			emitter.removeAllListeners();
-			callback();
-		});
+        function restore() {
+            delete mongoose.isMocked;
+
+            ConnectionPrototype.open = origOpen;
+            ConnectionPrototype._open = origOpenPrivate;
+            openCallList = [];
+
+            emitter.removeAllListeners();
+            mongod_emitter = undefined;
+
+            callback && callback();
+        }
+
+        if ((! this.isMocked) || (openCallList.length === 0)) {
+            return restore();
+        }
+
+        openCallList.forEach(function(call) {
+            call.connection.close();
+        });
+        mongod_emitter.once('mongoShutdown', restore);
 	}
 
 	mongoose.unmockAndReconnect = function(callback) {
-		mongoose.unmock(function() {
-			var overloaded_callback = function(err) {
-				callback(err);
-			}
-			// mongoose connect prototype connect(String, Object?, Function?)
-			if ( connect_args[2] && typeof connect_args[2] === "function" ) {
-				connect_args[2] = overloaded_callback;
-			} else {
-				connect_args[1] = overloaded_callback;
-			}
+        var reconnectCallList = openCallList;
+        var remaining = openCallList.length;
 
-			orig_connect.apply(mongoose, connect_args);
+		mongoose.unmock(function() {
+            if (remaining === 0) {
+                callback && callback();
+                return;
+            }
+
+            var anyError;
+            reconnectCallList.forEach(function(call, index) {
+                var connection = call.connection;
+                var args = Array.prototype.slice.call(call.args);
+                var cb = args.pop();
+                if (typeof cb !== 'function') {
+                    args.push(cb);
+                }
+
+                args.push(function(err) {
+                    debug('Mongoose reconnected %d', index);
+
+                    anyError = anyError || err;
+
+                    remaining--;
+                    if ((remaining === 0)) {
+                        callback && callback(anyError);
+                    }
+                });
+
+                connection.open.apply(connection, args);
+            });
 		});
 	}
 
