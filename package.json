@@ -34,11 +34,9 @@
     "mongodb-prebuilt": "^4.4.9"
   },
   "devDependencies": {
-    "async": "~1.5.2",
     "chai": "~2.2.0",
     "mocha": "~2.2.4",
-    "mongoose": "*",
-    "sinon": "~1.17.3"
+    "mongoose": "*"
   },
   "bugs": {
     "url": "https://github.com/mccormicka/Mockgoose/issues"
