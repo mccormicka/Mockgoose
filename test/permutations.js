@@ -19,9 +19,14 @@ var DB = 'DB';
 var DB2 = 'DB2';
 var PORT = 27017;
 var MOCK_HOST = 'localhost';
-var MOCK_OPTIONS = {
+
+// FIXME: avoiding the default :27017
+var FIXME_OPTIONS = {
     port: 27027
 };
+// FIXME: patiently wait for mongod to shut down
+//   or else we can't guarantee :27017 across tests
+var FIXME_INTER_TEST_DELAY = 1000;
 
 
 describe('mockgoose', function() {
@@ -35,9 +40,7 @@ describe('mockgoose', function() {
             // AFTER we've put back any spys & stubs
             sandbox.restore();
 
-            // patiently wait for mongod to shut down
-            //   or else we can't guarantee `MOCK_OPTIONS.port` across tests
-            setTimeout(done, 200);
+            setTimeout(done, FIXME_INTER_TEST_DELAY);
         });
     });
 
@@ -48,7 +51,7 @@ describe('mockgoose', function() {
         var connection;
 
         beforeEach(function() {
-            mockgoose(mongoose, MOCK_OPTIONS);
+            mockgoose(mongoose, FIXME_OPTIONS);
 
             collections = [];
             sandbox.spy(Collection.prototype, 'deleteMany');
@@ -122,6 +125,11 @@ describe('mockgoose', function() {
         });
 
         it('does nothing outside of mock-hood', function(done) {
+            if (! process.env.MOCKGOOSE_LIVE) {
+                return done();
+            }
+
+
             async.series([
                 function(next) {
                     connection = new Connection(CONNECTION_BASE);
@@ -157,7 +165,7 @@ describe('mockgoose', function() {
             closeSpy = sandbox.spy(ConnectionPrototype, 'close');
 
             // AFTER we apply the spys
-            mockgoose(mongoose, MOCK_OPTIONS);
+            mockgoose(mongoose, FIXME_OPTIONS);
 
             expect(mongoose.isMocked).to.equal(true);
             expect(ConnectionPrototype.open).to.not.equal(openSpy);
@@ -200,7 +208,7 @@ describe('mockgoose', function() {
                 function(next) {
                     connections.forEach(function(connection) {
                         expect(connection.host).to.equal(MOCK_HOST);
-                        expect(connection.port).to.equal(MOCK_OPTIONS.port);
+                        expect(connection.port).to.equal(FIXME_OPTIONS.port);
                         expect(connection.readyState).to.equal(mongoose.STATES.connected);
                     });
 
@@ -262,14 +270,14 @@ describe('mockgoose', function() {
 
 
         it('exists on `mongoose`', function() {
-            mockgoose(mongoose, MOCK_OPTIONS);
+            mockgoose(mongoose, FIXME_OPTIONS);
 
             expect(mongoose.unmockAndReconnect).to.be.instanceof(Function);
         });
 
         it('works without any Connections', function(done) {
             // AFTER we apply the spys
-            mockgoose(mongoose, MOCK_OPTIONS);
+            mockgoose(mongoose, FIXME_OPTIONS);
 
             async.series([
                 function(next) {
@@ -291,7 +299,7 @@ describe('mockgoose', function() {
         });
 
         it('works with Connections', function(done) {
-            mockgoose(mongoose, MOCK_OPTIONS);
+            mockgoose(mongoose, FIXME_OPTIONS);
 
             async.series([
                 function(next) {
@@ -305,7 +313,7 @@ describe('mockgoose', function() {
                 function(next) {
                     connections.forEach(function(connection) {
                         expect(connection.host).to.equal(MOCK_HOST);
-                        expect(connection.port).to.equal(MOCK_OPTIONS.port);
+                        expect(connection.port).to.equal(FIXME_OPTIONS.port);
                         expect(connection.readyState).to.equal(mongoose.STATES.connected);
                     });
 
@@ -345,7 +353,7 @@ describe('mockgoose', function() {
             });
 
             // AFTER we apply the spys
-            mockgoose(mongoose, MOCK_OPTIONS);
+            mockgoose(mongoose, FIXME_OPTIONS);
 
             async.series([
                 function(next) {
@@ -359,7 +367,7 @@ describe('mockgoose', function() {
                 function(next) {
                     connections.forEach(function(connection) {
                         expect(connection.host).to.equal(MOCK_HOST);
-                        expect(connection.port).to.equal(MOCK_OPTIONS.port);
+                        expect(connection.port).to.equal(FIXME_OPTIONS.port);
                         expect(connection.readyState).to.equal(mongoose.STATES.connected);
                     });
 
@@ -387,7 +395,7 @@ describe('mockgoose', function() {
         });
 
         it('is cool being called outside of mock-hood', function(done) {
-            mockgoose(mongoose, MOCK_OPTIONS);
+            mockgoose(mongoose, FIXME_OPTIONS);
 
             async.series([
                 function(next) {
@@ -406,7 +414,7 @@ describe('mockgoose', function() {
         });
 
         it('is cool being called without a callback', function() {
-            mockgoose(mongoose, MOCK_OPTIONS);
+            mockgoose(mongoose, FIXME_OPTIONS);
 
             mongoose.unmockAndReconnect();
         });

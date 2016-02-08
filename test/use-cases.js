@@ -12,24 +12,27 @@ var Cat;
 var HOST = '127.0.0.1'; // because `process.env.MOCKGOOSE_LIVE`
 var DB = 'DB';
 var PORT = 27017;
-var MOCK_OPTIONS = {
+
+// FIXME: avoiding the default :27017
+var FIXME_OPTIONS = {
     port: 27027
 };
+// FIXME: patiently wait for mongod to shut down
+//   or else we can't guarantee :27017 across tests
+var FIXME_INTER_TEST_DELAY = 1000;
 
 
 describe('mockgoose', function() {
     beforeEach(function() {
         mongoose = new Mongoose();
 
-        mockgoose(mongoose, MOCK_OPTIONS);
+        mockgoose(mongoose, FIXME_OPTIONS);
     });
 
     afterEach(function(done) {
         // safety in the face of assertion failure
         mongoose.unmock(function() {
-            // patiently wait for mongod to shut down
-            //   or else we can't guarantee `MOCK_OPTIONS.port` across tests
-            setTimeout(done, 200);
+            setTimeout(done, FIXME_INTER_TEST_DELAY);
         });
     });
 
@@ -135,7 +138,7 @@ describe('mockgoose', function() {
                         mongoose.unmock(next);
                     },
                     function(next) {
-                        mockgoose(mongoose, MOCK_OPTIONS);
+                        mockgoose(mongoose, FIXME_OPTIONS);
 
                         mongoose.connect(HOST, DB, PORT, next);
                     },
@@ -180,7 +183,7 @@ describe('mockgoose', function() {
                         mongoose.unmock(next);
                     },
                     function(next) {
-                        mockgoose(mongoose, MOCK_OPTIONS);
+                        mockgoose(mongoose, FIXME_OPTIONS);
 
                         connection = mongoose.createConnection();
                         connection.open(HOST, DB, PORT, next);

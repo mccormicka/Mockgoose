@@ -18,13 +18,18 @@ var HOST = '127.0.0.1'; // because `process.env.MOCKGOOSE_LIVE`
 var DB = 'DB';
 var DB2 = 'DB2';
 var PORT = 27017;
-var MOCK_OPTIONS = {
-    port: 27027
-};
 var HOST_DB_PORT = [ HOST, DB, PORT ];
 var HOST_DB2_PORT = [ HOST, DB2, PORT ];
-var MOCK_DB_PORT = [ 'localhost', DB, MOCK_OPTIONS.port ];
-var MOCK_DB2_PORT = [ 'localhost', DB2, MOCK_OPTIONS.port ];
+
+// FIXME: avoiding the default :27017
+var FIXME_OPTIONS = {
+    port: 27027
+};
+// FIXME: patiently wait for mongod to shut down
+//   or else we can't guarantee :27017 across tests
+var FIXME_INTER_TEST_DELAY = 1000;
+var MOCK_DB_PORT = [ 'localhost', DB, FIXME_OPTIONS.port ];
+var MOCK_DB2_PORT = [ 'localhost', DB2, FIXME_OPTIONS.port ];
 
 
 describe('mongoose.Connection', function() {
@@ -38,9 +43,7 @@ describe('mongoose.Connection', function() {
             // AFTER we've put back any spys & stubs
             sandbox.restore();
 
-            // patiently wait for mongod to shut down
-            //   or else we can't guarantee :27017 across tests
-            setTimeout(done, 200);
+            setTimeout(done, FIXME_INTER_TEST_DELAY);
         });
     });
 
@@ -69,7 +72,7 @@ describe('mongoose.Connection', function() {
             });
 
             // AFTER we apply the spys & stubs
-            mockgoose(mongoose, MOCK_OPTIONS);
+            mockgoose(mongoose, FIXME_OPTIONS);
         });
 
 

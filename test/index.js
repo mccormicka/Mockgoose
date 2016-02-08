@@ -10,10 +10,18 @@ var Cat = mongoose.model('Cat', { name: String });
 
 mockgoose(mongoose);
 
+// FIXME: patiently wait for mongod to shut down
+//   or else we can't guarantee :27017 across tests
+var FIXME_INTER_TEST_DELAY = 1000;
+
+
 before(function(done) {
     mongoose.connect('mongodb://127.0.0.1:27017/TestingDB', function(err) {
         done(err);
-    }); 
+    });
+});
+after(function(done) {
+    setTimeout(done, FIXME_INTER_TEST_DELAY);
 });
 
 describe('User functions', function() {
