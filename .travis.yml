@@ -2,9 +2,13 @@ sudo: false
 before_install:
   - npm install -g npm
   - npm update -g npm
-os: 
+
+os:
   - linux
-  - osx
+  # # "Node.js runtime is not yet available on OS X"
+  # #   https://github.com/travis-ci/travis-ci/issues/2311
+  # - osx
+
 language: node_js
 node_js:
   - "4.1"
