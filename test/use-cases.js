@@ -9,16 +9,13 @@ var mockgoose = require('../Mockgoose');
 var mongoose;
 var Cat;
 
-var HOST = '127.0.0.1'; // because `process.env.MOCKGOOSE_LIVE`
-var DB = 'DB';
+// localhost:27017 is likely to conflict with `process.env.MOCKGOOSE_LIVE`
+//   which makes for an excellent Test Scenario
+var HOST = 'localhost';
 var PORT = 27017;
+var DB = 'DB';
 
-// FIXME: avoiding the default :27017
-var FIXME_OPTIONS = {
-    port: 27027
-};
 // FIXME: patiently wait for mongod to shut down
-//   or else we can't guarantee :27017 across tests
 var FIXME_INTER_TEST_DELAY = 1000;
 
 
@@ -26,7 +23,7 @@ describe('mockgoose', function() {
     beforeEach(function() {
         mongoose = new Mongoose();
 
-        mockgoose(mongoose, FIXME_OPTIONS);
+        mockgoose(mongoose);
     });
 
     afterEach(function(done) {
@@ -138,7 +135,7 @@ describe('mockgoose', function() {
                         mongoose.unmock(next);
                     },
                     function(next) {
-                        mockgoose(mongoose, FIXME_OPTIONS);
+                        mockgoose(mongoose);
 
                         mongoose.connect(HOST, DB, PORT, next);
                     },
@@ -183,7 +180,7 @@ describe('mockgoose', function() {
                         mongoose.unmock(next);
                     },
                     function(next) {
-                        mockgoose(mongoose, FIXME_OPTIONS);
+                        mockgoose(mongoose);
 
                         connection = mongoose.createConnection();
                         connection.open(HOST, DB, PORT, next);

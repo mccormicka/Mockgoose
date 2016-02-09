@@ -9,11 +9,14 @@ if ( process.env.MONGODB_LOCAL_BUILD ) {
 }
 var path = require('path');
 var fs = require('fs');
+var portfinder = require('portfinder');
 var debug = require('debug')('Mockgoose');
 var EventEmitter = require('events').EventEmitter;
 var emitter = new EventEmitter();
 var server_started = false;
 var mongod_emitter;
+var MONGOD_HOST = '127.0.0.1';
+var MONGOD_PORT = 27017;
 
 module.exports = function(mongoose, db_opts) {
     var ConnectionPrototype = mongoose.Connection.prototype;
@@ -34,7 +37,7 @@ module.exports = function(mongoose, db_opts) {
             origOpen.apply(connection, args);
         }
         if (mongod_emitter === undefined) {
-            start_server(db_opts);
+            prepare_server(db_opts);
             emitter.once("mongodbStarted", resume);
         }
         else {
@@ -48,7 +51,7 @@ module.exports = function(mongoose, db_opts) {
             return;
         }
 
-        this.host = 'localhost';
+        this.host = db_opts.bind_ip;
         this.port = db_opts.port;
 
         var connection = this;
@@ -81,7 +84,7 @@ module.exports = function(mongoose, db_opts) {
     mongoose.isMocked = true;
 
     emitter.once("mongodbStarted", function(db_opts) {
-        debug("started server on port: %d", db_opts.port);
+        debug("started server as %s:%d", db_opts.bind_ip, db_opts.port);
     });
 
     if (!db_opts) db_opts = {};
@@ -96,7 +99,7 @@ module.exports = function(mongoose, db_opts) {
     delete db_opts.version;
 
     if (! db_opts.storageEngine ) {
-        var parsed_version = db_version.split('.'); 
+        var parsed_version = db_version.split('.');
         if ( parsed_version[0] >= 3 && parsed_version[1] >= 2 ) {
             db_opts.storageEngine = "ephemeralForTest";
         } else {
@@ -104,8 +107,12 @@ module.exports = function(mongoose, db_opts) {
         }
     }
 
+    if (! db_opts.bind_ip ) {
+        db_opts.bind_ip = MONGOD_HOST;
+    }
+
     if (! db_opts.port ) {
-        db_opts.port = 27017;
+        db_opts.port = MONGOD_PORT;
     } else {
         db_opts.port = Number(db_opts.port);
     }
@@ -121,9 +128,25 @@ module.exports = function(mongoose, db_opts) {
         if (e.code !== "EEXIST" ) throw e;
     }
 
+    function prepare_server(db_opts) {
+      debug("identifying available port, base = %s:%d", db_opts.bind_ip, db_opts.port);
+
+      portfinder.getPort({
+        host: db_opts.bind_ip,
+        port: db_opts.port,
+      }, function(err, freePort) {
+        if (err) {
+          throw err;
+        }
+
+        db_opts.port = freePort;
+        start_server(db_opts);
+      });
+    }
+
     var orig_dbpath = db_opts.dbpath;
     function start_server(db_opts) {
-        debug("attempting to start server on port: %d", db_opts.port);
+        debug("attempting to start server as %s:%d", db_opts.bind_ip, db_opts.port);
         db_opts.dbpath = path.join(orig_dbpath, db_opts.port.toString());
 
         try {

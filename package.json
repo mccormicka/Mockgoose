@@ -31,7 +31,8 @@
   },
   "dependencies": {
     "debug": "2.2.0",
-    "mongodb-prebuilt": "^4.4.9"
+    "mongodb-prebuilt": "^4.4.9",
+    "portfinder": "^0.4.0"
   },
   "devDependencies": {
     "async": "~1.5.2",

@@ -11,7 +11,6 @@ var Cat = mongoose.model('Cat', { name: String });
 mockgoose(mongoose);
 
 // FIXME: patiently wait for mongod to shut down
-//   or else we can't guarantee :27017 across tests
 var FIXME_INTER_TEST_DELAY = 1000;
 
 
