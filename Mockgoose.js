@@ -25,7 +25,9 @@ module.exports = function(mongoose, db_opts) {
 
     var connect_args;
     mongoose.connect = function() {
+		console.log("here!");
         connect_args = arguments;
+		console.log(connect_args);
 		orig_connect_uri = connect_args[0];
         start_server(db_opts);
     }
@@ -84,17 +86,18 @@ module.exports = function(mongoose, db_opts) {
 
     var orig_dbpath = db_opts.dbpath;
     function start_server(db_opts) {
-        debug("attempting to start server on port: %d", db_opts.port);
-
+		debug("Starting to look for available port, base: %s:%d", db_opts.bind_ip, db_opts.port);
         portfinder.getPort({
             host: db_opts.bind_ip,
             port: db_opts.port,
             }, function(err, freePort) {
                 if (err) {
-                  throw err;
+					debug("error from portfinder:", err);
+                	throw err;
                 }
 
                 db_opts.port = freePort;
+        		debug("attempting to start server on %s:%d", db_opts.bind_ip, db_opts.port);
 
                 db_opts.dbpath = path.join(orig_dbpath, db_opts.port.toString());
 

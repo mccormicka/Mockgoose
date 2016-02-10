@@ -33,7 +33,6 @@ describe('User functions', function() {
     it("should NOT find cat foo", function(done) {
         Cat.findOne({name: "foo"}, function(err, cat) {
             expect(err).to.be.falsy;
-            console.log(cat);
             expect(cat).to.be.null;
             done(err);
         });
