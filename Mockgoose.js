@@ -7,6 +7,7 @@ if ( process.env.MONGODB_LOCAL_BUILD ) {
 } else {
     mongod = require('mongodb-prebuilt');
 }
+var rimraf = require('rimraf');
 var path = require('path');
 var fs = require('fs');
 var debug = require('debug')('Mockgoose');
@@ -83,19 +84,31 @@ module.exports = function(mongoose, db_opts) {
         debug("attempting to start server on port: %d", db_opts.port);
         db_opts.dbpath = path.join(orig_dbpath, db_opts.port.toString());
 
-        try {
-            fs.mkdirSync(db_opts.dbpath);
-        } catch (e) {
-            if (e.code !== "EEXIST" ) throw e;
-        }
-
-        mongod_emitter = mongod.start_server({args: db_opts, auto_shutdown: true}, function(err) {
-            if (!err) {
-                emitter.emit('mongodbStarted', db_opts);
-            } else {
-                db_opts.port++;
-                start_server(db_opts);
+        /*
+            when in place upgrade is done of mongodb,
+            we need to clean directory first, otherwise
+            this error is returned:
+                exception in initAndListen: 28662 Cannot start server. 
+                Detected data files in /Mockgoose/.mongooseTempDB/27017 
+                created by the 'inMemoryExperiment' storage engine, 
+                but the specified storage engine was 'ephemeralForTest'., 
+                terminating
+        */
+        rimraf(db_opts.dbpath, function(err) {
+            try {
+                fs.mkdirSync(db_opts.dbpath);
+            } catch (e) {
+                if (e.code !== "EEXIST" ) throw e;
             }
+
+            mongod_emitter = mongod.start_server({args: db_opts, auto_shutdown: true}, function(err) {
+                if (!err) {
+                    emitter.emit('mongodbStarted', db_opts);
+                } else {
+                    db_opts.port++;
+                    start_server(db_opts);
+                }
+            });
         });
     }
 
