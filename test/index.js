@@ -1,15 +1,12 @@
-var should = require('chai').should();
-var expect = require('chai').expect;
 
-var Mongoose = require('mongoose').Mongoose;
-var mongoose = new Mongoose();
-
-var mockgoose = require('../Mockgoose');
-
-var Cat = mongoose.model('Cat', { name: String });
+var should = require('chai').should()
+,expect = require('chai').expect
+, Mongoose = require('mongoose').Mongoose
+, mongoose = new Mongoose
+, mockgoose = require('../Mockgoose')
+, Cat = mongoose.model('Cat', { name: String });
 
 mockgoose(mongoose);
-
 
 describe('User functions', function() {
     before(function(done) {
@@ -19,14 +16,14 @@ describe('User functions', function() {
     });
 
     it("isMocked", function(done) {
-	expect(mongoose.isMocked).to.be.true;
-	done();
+		expect(mongoose.isMocked).to.be.true;
+		done();
     });
     it("should create a cat foo", function(done) {
-	Cat.create({name: "foo"}, function(err, cat) {
-	    expect(err).to.be.falsy;
-            done(err);
-	});
+		Cat.create({name: "foo"}, function(err, cat) {
+		    expect(err).to.be.falsy;
+	            done(err);
+		});
     });
 
     it("should find cat foo", function(done) {

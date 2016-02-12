@@ -7,26 +7,39 @@ if ( process.env.MONGODB_LOCAL_BUILD ) {
 } else {
     mongod = require('mongodb-prebuilt');
 }
-var rimraf = require('rimraf');
-var portfinder = require('portfinder');
-var path = require('path');
-var fs = require('fs');
-var debug = require('debug')('Mockgoose');
-var EventEmitter = require('events').EventEmitter;
-var server_started = false;
-var mongod_emitter;
+
+var rimraf = require('rimraf')
+, debug = require('debug')('Mockgoose')
+, portfinder = require('portfinder')
+, path = require('path')
+, fs = require('fs')
+, EventEmitter = require('events').EventEmitter;
 
 module.exports = function(mongoose, db_opts) {
     var orig_connect = mongoose.connect;
+    var orig_createConnection = mongoose.createConnection;
     var emitter = new EventEmitter();
+    var server_started = false;
+    var mongod_emitter;
 
     // caching original connect arguments for unmock method
     var orig_connect_uri;
+    var orig_createConnection_uri;
+    var connect_type = "";
 
     var connect_args;
     mongoose.connect = function() {
+        connect_type = "connect";
         connect_args = arguments;
-	orig_connect_uri = connect_args[0];
+        orig_connect_uri = connect_args[0];
+        start_server(db_opts);
+    }
+
+    var createConnection_args;
+    mongoose.createConnection = function() {
+        connect_type = "createConnection";
+        createConnection_args = arguments;
+        orig_createConnection_uri = createConnection_args[0];
         start_server(db_opts);
     }
 
@@ -38,10 +51,15 @@ module.exports = function(mongoose, db_opts) {
     }); 
 
     emitter.on("mongodbStarted", function(db_opts) {
-        connect_args[0] = "mongodb://localhost:" + db_opts.port;
-        debug("connecting to %s", connect_args[0]);
-        console.log('connecting to:', connect_args);
-        orig_connect.apply(mongoose, connect_args);
+        if ( connect_type === "connect" ) {
+            connect_args[0] = "mongodb://localhost:" + db_opts.port;
+            debug("connecting to %s", connect_args[0]);
+            orig_connect.apply(mongoose, connect_args);
+        } else {
+            createConnection_args[0] = "mongodb://localhost:" + db_opts.port;
+            debug("connecting to %s", createConnection_args[0]);
+            orig_createConnection.apply(mongoose, createConnection_args);
+        }
     });
 
     if (!db_opts) db_opts = {};
@@ -137,18 +155,15 @@ module.exports = function(mongoose, db_opts) {
         if (remaining === 0) {
             done(null);
         }
-	for( var collection_name in collections ) {
-            console.log('removing collection:', collection_name);
-	    var obj = collections[collection_name];
-            obj.deleteMany(null, function() {
-                remaining--;
-                console.log("remaining:", remaining);
-                if (remaining === 0) {
-                    console.log('returning');
-                    done(null);
-                }
-            });
-	}
+    	for( var collection_name in collections ) {
+    	    var obj = collections[collection_name];
+                obj.deleteMany(null, function() {
+                    remaining--;
+                    if (remaining === 0) {
+                        done(null);
+                    }
+                });
+    	}
     };
 
 	mongoose.unmock = function(callback) {

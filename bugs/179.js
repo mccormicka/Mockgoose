@@ -1,28 +1,23 @@
-var should = require('chai').should();
-var expect = require('chai').expect;
-
-var Mongoose = require('mongoose').Mongoose;
-var mongoose = new Mongoose();
-
-var mockgoose = require('../Mockgoose');
-
-var Cat = mongoose.model('Cat', { name: String });
+var should = require('chai').should()
+,expect = require('chai').expect
+, Mongoose = require('mongoose').Mongoose
+, mongoose = new Mongoose
+, mockgoose = require('../Mockgoose')
+, Cat = mongoose.model('Cat', { name: String });
 
 mockgoose(mongoose);
 
-
-describe('User functions', function() {
+describe('issue 179', function() {
     before(function(done) {
         mongoose.connect('mongodb://127.0.0.1:27017/TestingDB', function(err) {
-            done(err);
+         done(err);
         }); 
     });
     
     beforeEach(function(done) {
-      mockgoose.reset(function() {
-        console.log('resetting');
-        done();
-      });
+        mockgoose.reset(function() {
+            done();
+        });
     });
 
     it("should create a cat foo", function(done) {
