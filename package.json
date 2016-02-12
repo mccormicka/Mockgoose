@@ -31,8 +31,8 @@
   },
   "dependencies": {
     "debug": "2.2.0",
-    "mongodb-prebuilt": "^4.5.2",
-    "portfinder": "^1.0.1",
+    "mongodb-prebuilt": "^4.5.3",
+    "portfinder": "https://github.com/winfinit/node-portfinder.git",
     "rimraf": "^2.5.1"
   },
   "devDependencies": {

@@ -13,21 +13,20 @@ var path = require('path');
 var fs = require('fs');
 var debug = require('debug')('Mockgoose');
 var EventEmitter = require('events').EventEmitter;
-var emitter = new EventEmitter();
 var server_started = false;
 var mongod_emitter;
 
 module.exports = function(mongoose, db_opts) {
     var orig_connect = mongoose.connect;
+    var emitter = new EventEmitter();
 
-	// caching original connect arguments for unmock method
-	var orig_connect_uri;
+    // caching original connect arguments for unmock method
+    var orig_connect_uri;
 
     var connect_args;
     mongoose.connect = function() {
         connect_args = arguments;
-        console.log("connect args:", connect_args);
-		orig_connect_uri = connect_args[0];
+	orig_connect_uri = connect_args[0];
         start_server(db_opts);
     }
 
@@ -41,6 +40,7 @@ module.exports = function(mongoose, db_opts) {
     emitter.on("mongodbStarted", function(db_opts) {
         connect_args[0] = "mongodb://localhost:" + db_opts.port;
         debug("connecting to %s", connect_args[0]);
+        console.log('connecting to:', connect_args);
         orig_connect.apply(mongoose, connect_args);
     });
 
@@ -137,15 +137,18 @@ module.exports = function(mongoose, db_opts) {
         if (remaining === 0) {
             done(null);
         }
-		for( var collection_name in collections ) {
-			var obj = collections[collection_name];
-        	obj.deleteMany(null, function() {
-        	    remaining--;
-        	    if (remaining === 0) {
-        	        done(null);
-        	    }
-        	});
-		}
+	for( var collection_name in collections ) {
+            console.log('removing collection:', collection_name);
+	    var obj = collections[collection_name];
+            obj.deleteMany(null, function() {
+                remaining--;
+                console.log("remaining:", remaining);
+                if (remaining === 0) {
+                    console.log('returning');
+                    done(null);
+                }
+            });
+	}
     };
 
 	mongoose.unmock = function(callback) {

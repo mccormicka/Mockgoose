@@ -10,19 +10,21 @@ var Cat = mongoose.model('Cat', { name: String });
 
 mockgoose(mongoose);
 
-before(function(done) {
-    mongoose.connect('mongodb://127.0.0.1:27017/TestingDB', function(err) {
-        done(err);
-    }); 
-});
-
-beforeEach(function(done) {
-  mockgoose.reset(function() {
-    done();
-  });
-});
 
 describe('User functions', function() {
+    before(function(done) {
+        mongoose.connect('mongodb://127.0.0.1:27017/TestingDB', function(err) {
+            done(err);
+        }); 
+    });
+    
+    beforeEach(function(done) {
+      mockgoose.reset(function() {
+        console.log('resetting');
+        done();
+      });
+    });
+
     it("should create a cat foo", function(done) {
         Cat.create({name: "foo"}, function(err, cat) {
             expect(err).to.be.falsy;
