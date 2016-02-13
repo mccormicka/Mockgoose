@@ -134,16 +134,32 @@ module.exports = function(mongoose, db_opts) {
                     } catch (e) {
                         if (e.code !== "EEXIST" ) throw e;
                     }
-
-                    mongod_emitter = mongod.start_server({args: db_opts, auto_shutdown: true}, function(err) {
+        
+                    var starting_up = true, startup_log_buffer = '';
+                    function logs_callback(buffer) {
+                        if (starting_up) {
+                            startup_log_buffer += buffer;
+                        }
+                    }
+            
+                    var server_opts = {args: db_opts, auto_shutdown: true, logs_callback: logs_callback};
+                    mongod_emitter = mongod.start_server(server_opts, function(err) {
                         if (!err) {
+                            starting_up = false;
+                            debug('Started up MongoDB successfully');
                             emitter.emit('mongodbStarted', db_opts);
                         } else {
-                            db_opts.port++;
-                            start_server(db_opts);
+                            debug(startup_log_buffer);
+                            debug('Error starting server.');
+                            if (err.code === 'EADDRINUSE') {
+                                debug('Address in use. Trying alternative port...');
+                                db_opts.port++;
+                                startup_log_buffer = '';
+                                start_server(db_opts);
+                            }
                         }
                     });
-                });        
+                });
             }
         );
     }
