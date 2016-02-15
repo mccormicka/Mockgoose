@@ -19,7 +19,6 @@ module.exports = function(mongoose, db_opts) {
     var orig_connect = mongoose.connect;
     var orig_createConnection = mongoose.createConnection;
     var emitter = new EventEmitter();
-    var server_started = false;
     var mongod_emitter;
 
     // caching original connect arguments for unmock method
@@ -62,7 +61,9 @@ module.exports = function(mongoose, db_opts) {
         }
     });
 
-    if (!db_opts) db_opts = {};
+    if (!db_opts) {
+        db_opts = {};
+    }
 
     var db_version;
     if (!db_opts.version) {
@@ -98,7 +99,9 @@ module.exports = function(mongoose, db_opts) {
     try {
         fs.mkdirSync(db_opts.dbpath);
     } catch (e) {
-        if (e.code !== "EEXIST") throw e;
+        if (e.code !== "EEXIST") {
+            throw e;
+        }
     }
 
     var orig_dbpath = db_opts.dbpath;
@@ -130,10 +133,13 @@ module.exports = function(mongoose, db_opts) {
                     terminating
             */
             rimraf(db_opts.dbpath, function(err) {
+                debug("Error from rimraf:", err);
                 try {
                     fs.mkdirSync(db_opts.dbpath);
                 } catch (e) {
-                    if (e.code !== "EEXIST") throw e;
+                    if (e.code !== "EEXIST") {
+                        throw e;
+                    }
                 }
 
                 var starting_up = true,
@@ -171,7 +177,7 @@ module.exports = function(mongoose, db_opts) {
     }
 
     module.exports.reset = function(done) {
-        mongoose.connection.db.dropDatabase(function(err, result) {
+        mongoose.connection.db.dropDatabase(function(err) {
             done(err);
         });
     };
