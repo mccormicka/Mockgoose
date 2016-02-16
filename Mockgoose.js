@@ -178,7 +178,9 @@ module.exports = function(mongoose, db_opts) {
 
     module.exports.reset = function(done) {
         mongoose.connection.db.dropDatabase(function(err) {
-            done(err);
+            if (typeof done === "function") {
+                done(err);
+            }
         });
     };
 
