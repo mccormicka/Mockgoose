@@ -1,7 +1,7 @@
 {
   "name": "mockgoose",
   "description": "Mockgoose is an in memory database mock to allow for testing of applications that rely on Mongoose.",
-  "version": "5.3.2",
+  "version": "5.3.3",
   "author": {
     "name": "Anthony McCormick",
     "email": "anthony.mccormick AT gmail.com"
@@ -34,7 +34,7 @@
   "dependencies": {
     "debug": "2.2.0",
     "mongodb-prebuilt": "^4.5.5",
-    "portfinder": "https://github.com/winfinit/node-portfinder.git",
+    "portfinder": "1.0.2",
     "rimraf": "^2.5.1"
   },
   "devDependencies": {
