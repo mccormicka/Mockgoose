@@ -7,7 +7,7 @@ Please Share on Twitter if you like #mockgoose
 
 ## What is Mockgoose?
 
-Mockgoose provides test database by spinning up mongod on the back when mockgoose.connect call is made. By default it is using in memory store which does not have persistence.
+Mockgoose provides test database by spinning up mongod on the back when mongoose.connect call is made. By default it is using in memory store which does not have persistence.
 
 ## Install
 To install the latest official version, use NPM:
