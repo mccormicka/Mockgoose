@@ -14,6 +14,12 @@ var portfinder = require('portfinder');
 var path = require('path');
 var fs = require('fs');
 var EventEmitter = require('events').EventEmitter;
+var deasync = require('deasync');
+
+// Create sync functions
+var rimrafSync = deasync(rimraf);
+var mongodStartServerSync = deasync(mongod.start_server);
+var portFinderGetPortSync = deasync(portfinder.getPort);
 
 module.exports = function(mongoose, db_opts) {
     var orig_connect = mongoose.connect;
@@ -39,7 +45,7 @@ module.exports = function(mongoose, db_opts) {
         connect_type = "createConnection";
         createConnection_args = arguments;
         orig_createConnection_uri = createConnection_args[0];
-        start_server(db_opts);
+        return start_server(db_opts);
     };
 
     mongoose.isMocked = true;
@@ -49,17 +55,17 @@ module.exports = function(mongoose, db_opts) {
         mongod_emitter.emit('mongoShutdown');
     });
 
-    emitter.on("mongodbStarted", function(db_opts) {
-        if (connect_type === "connect") {
-            connect_args[0] = "mongodb://localhost:" + db_opts.port;
-            debug("connecting to %s", connect_args[0]);
-            orig_connect.apply(mongoose, connect_args);
-        } else {
-            createConnection_args[0] = "mongodb://localhost:" + db_opts.port;
-            debug("connecting to %s", createConnection_args[0]);
-            orig_createConnection.apply(mongoose, createConnection_args);
-        }
-    });
+    function mongodbStarted(db_opts){
+      if (connect_type === "connect") {
+          connect_args[0] = "mongodb://localhost:" + db_opts.port;
+          debug("connecting to %s", connect_args[0]);
+          orig_connect.apply(mongoose, connect_args);
+      } else {
+          createConnection_args[0] = "mongodb://localhost:" + db_opts.port;
+          debug("connecting to %s", createConnection_args[0]);
+          return orig_createConnection.apply(mongoose, createConnection_args);
+      }
+    }
 
     if (!db_opts) {
         db_opts = {};
@@ -108,72 +114,78 @@ module.exports = function(mongoose, db_opts) {
 
     function start_server(db_opts) {
         debug("Starting to look for available port, base: %s:%d", db_opts.bind_ip, db_opts.port);
-        portfinder.getPort({
+        var freePort;
+        try{
+          freePort = portFinderGetPortSync({
             host: db_opts.bind_ip,
-            port: db_opts.port,
-        }, function(err, freePort) {
-            if (err) {
-                debug("error from portfinder:", err);
-                throw err;
-            }
+            port: db_opts.port
+          });
+        }catch(err){
+          debug("error from portfinder:", err);
+          throw err;
+        }
 
-            db_opts.port = freePort;
-            debug("attempting to start server on %s:%d", db_opts.bind_ip, db_opts.port);
+        db_opts.port = freePort;
+        debug("attempting to start server on %s:%d", db_opts.bind_ip, db_opts.port);
 
-            db_opts.dbpath = path.join(orig_dbpath, db_opts.port.toString());
+        db_opts.dbpath = path.join(orig_dbpath, db_opts.port.toString());
 
-            /*
-                when in place upgrade is done of mongodb,
-                we need to clean directory first, otherwise
-                this error is returned:
-                    exception in initAndListen: 28662 Cannot start server. 
-                    Detected data files in /Mockgoose/.mongooseTempDB/27017 
-                    created by the 'inMemoryExperiment' storage engine, 
-                    but the specified storage engine was 'ephemeralForTest'., 
-                    terminating
-            */
-            rimraf(db_opts.dbpath, function(err) {
-                debug("Error from rimraf:", err);
-                try {
-                    fs.mkdirSync(db_opts.dbpath);
-                } catch (e) {
-                    if (e.code !== "EEXIST") {
-                        throw e;
-                    }
-                }
+        /*
+         when in place upgrade is done of mongodb,
+         we need to clean directory first, otherwise
+         this error is returned:
+         exception in initAndListen: 28662 Cannot start server.
+         Detected data files in /Mockgoose/.mongooseTempDB/27017
+         created by the 'inMemoryExperiment' storage engine,
+         but the specified storage engine was 'ephemeralForTest'.,
+         terminating
+         */
+        try {
+          rimrafSync(db_opts.dbpath);
+        } catch (err) {
+          debug("Error from rimraf:", err);
+          throw err;
+        }
 
-                var starting_up = true,
-                    startup_log_buffer = '';
+        try {
+          fs.mkdirSync(db_opts.dbpath);
+        } catch (e) {
+          if (e.code !== "EEXIST") {
+            throw e;
+          }
+        }
 
-                function logs_callback(buffer) {
-                    if (starting_up) {
-                        startup_log_buffer += buffer;
-                    }
-                }
+        var starting_up = true,
+          startup_log_buffer = '';
 
-                var server_opts = {
-                    args: db_opts,
-                    auto_shutdown: true,
-                    logs_callback: logs_callback
-                };
-                mongod_emitter = mongod.start_server(server_opts, function(err) {
-                    if (!err) {
-                        starting_up = false;
-                        debug('Started up MongoDB successfully');
-                        emitter.emit('mongodbStarted', db_opts);
-                    } else {
-                        debug(startup_log_buffer);
-                        debug('Error starting server.');
-                        if (err.code === 'EADDRINUSE') {
-                            debug('Address in use. Trying alternative port...');
-                            db_opts.port++;
-                            startup_log_buffer = '';
-                            start_server(db_opts);
-                        }
-                    }
-                });
-            });
-        });
+        function logs_callback(buffer) {
+          if (starting_up) {
+            startup_log_buffer += buffer;
+          }
+        }
+
+        var server_opts = {
+          args: db_opts,
+          auto_shutdown: true,
+          logs_callback: logs_callback
+        };
+
+        try {
+          mongodStartServerSync(server_opts);
+          starting_up = false;
+          debug('Started up MongoDB successfully');
+          return mongodbStarted(db_opts);
+
+        } catch (err) {
+          debug(startup_log_buffer);
+          debug('Error starting server.');
+          if (err.code === 'EADDRINUSE') {
+            debug('Address in use. Trying alternative port...');
+            db_opts.port++;
+            startup_log_buffer = '';
+            start_server(db_opts);
+          }
+        }
     }
 
     module.exports.reset = function(done) {

@@ -32,6 +32,7 @@
     "node": ">=0.10.0"
   },
   "dependencies": {
+    "deasync": "^0.1.4",
     "debug": "2.2.0",
     "mongodb-prebuilt": "^4.6.0",
     "portfinder": "1.0.2",
