@@ -82,12 +82,11 @@ passed during **connect**
 ## Development
 
 This section contains instructions for developers working on the Mockgoose codebase.
-It is not relevant if you just want to use Mockgoose as a library in your project. 
+It is not relevant if you just want to use Mockgoose as a library in your project.
 
 ### Pre-requisites
 
 * Node.js >= 0.10.0
-* Grunt (`npm install -g grunt-cli`)
 
 ### Setup
 
@@ -95,5 +94,5 @@ It is not relevant if you just want to use Mockgoose as a library in your projec
 git clone git@github.com:mccormicka/Mockgoose.git
 cd Mockgoose
 npm install
-grunt test
+npm test
 ```
