@@ -28,8 +28,10 @@ module.exports = function(mongoose, db_opts) {
 
     var connect_args;
     mongoose.connect = function() {
+    console.log('here2');
         connect_type = "connect";
         connect_args = arguments;
+        console.log(connect_args);
         orig_connect_uri = connect_args[0];
         start_server(db_opts);
     };
