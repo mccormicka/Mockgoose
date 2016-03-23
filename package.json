@@ -34,7 +34,7 @@
   "dependencies": {
     "debug": "2.2.0",
     "mongodb-prebuilt": "^4.6.0",
-    "portfinder": "1.0.3,
+    "portfinder": "^1.0.3",
     "rimraf": "^2.5.1"
   },
   "devDependencies": {
