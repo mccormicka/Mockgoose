@@ -28,7 +28,6 @@ module.exports = function(mongoose, db_opts) {
 
     var connect_args;
     mongoose.connect = function() {
-    console.log('here2');
         connect_type = "connect";
         connect_args = arguments;
         console.log(connect_args);
