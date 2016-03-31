@@ -20,8 +20,8 @@
   ],
   "scripts": {
     "hint": "jshint --config .jshintrc Mockgoose.js test",
-    "test": "DEBUG=mongodb*,Mockgoose mocha --timeout 3000 test",
-    "test-debug": "DEBUG=mongodb*,Mockgoose mocha debug --timeout 3000 test"
+    "test": "DEBUG=mongodb*,Mockgoose mocha --timeout 50000 test",
+    "test-debug": "DEBUG=mongodb*,Mockgoose mocha debug --timeout 50000 test"
   },
   "main": "Mockgoose",
   "files": [
