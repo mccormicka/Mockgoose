@@ -6,3 +6,4 @@ Version | Description
 5.0.10  | Merged fix that allows reconnect after disconnect is made
 5.0.11	| Added fix for reset method, which was broken after removal of async, updated documentation with reset method
 5.1.0	| Added unmock and unmockAndReconnect functions
+6.0.0	| Removed support for 0.10 nodeJS and changed mock interface to utilize promises, to avoid race conditions
