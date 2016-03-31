@@ -21,7 +21,9 @@ You simply require Mongoose and Mockgoose and wrap Mongoose with Mockgoose.
     var mongoose = require('mongoose');
     var mockgoose = require('mockgoose');
 
-    mockgoose(mongoose);
+    mockgoose(mongoose).then(function() {
+		// mongoose connection		
+	});
 
 Once Mongoose has been wrapped by Mockgoose connect() will be intercepted by Mockgoose so that no MongoDB instance is created.
 
@@ -32,12 +34,13 @@ var Mongoose = require('mongoose').Mongoose;
 var mongoose = new Mongoose();
 
 var mockgoose = require('mockgoose');
-mockgoose(mongoose);
 
 before(function(done) {
-    mongoose.connect('mongodb://example.com/TestingDB', function(err) {
-        done(err);
-    });
+	mockgoose(mongoose).then(function() {
+    	mongoose.connect('mongodb://example.com/TestingDB', function(err) {
+    	    done(err);
+    	});
+	});
 });
 
 describe('...', function() {

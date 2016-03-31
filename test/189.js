@@ -5,12 +5,13 @@ describe('callback', function todoDescribe() {
   var Mongoose = require('mongoose').Mongoose;
   var mockgoose = require('../Mockgoose');
   var mongoose = new Mongoose();
-  mockgoose(mongoose);
   
   before(function(done) {
-    mongoose.connect('mongodb://localhost/mydb', function() {
-        done(); 
-    });
+  	mockgoose(mongoose).then(function() {
+    	mongoose.connect('mongodb://localhost/mydb', function() {
+    	    done(); 
+    	});
+	});
   });
 
   it('should call callback by reset', function(done) {

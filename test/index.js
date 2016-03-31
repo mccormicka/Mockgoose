@@ -6,13 +6,14 @@ var should = require('chai').should()
 , mockgoose = require('../Mockgoose')
 , Cat = mongoose.model('Cat', { name: String });
 
-mockgoose(mongoose);
 
 describe('User functions', function() {
     before(function(done) {
-        mongoose.connect('mongodb://127.0.0.1:27017/TestingDB', function(err) {
-            done(err);
-        }); 
+		mockgoose(mongoose).then(function() {
+        	mongoose.connect('mongodb://127.0.0.1:27017/TestingDB', function(err) {
+        	    done(err);
+        	}); 
+		});
     });
 
     it("isMocked", function(done) {

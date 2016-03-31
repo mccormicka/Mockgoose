@@ -8,13 +8,14 @@ var Cat = mongoose.model('Cat', {
     name: String
 });
 
-mockgoose(mongoose);
 
 describe('issue 179', function() {
     before(function(done) {
-        mongoose.connect('mongodb://127.0.0.1:27017/TestingDB', function(err) {
-            done(err);
-        });
+		mockgoose(mongoose).then(function() {
+        	mongoose.connect('mongodb://127.0.0.1:27017/TestingDB', function(err) {
+        	    done(err);
+        	});
+		});
     });
 
     beforeEach(function(done) {
