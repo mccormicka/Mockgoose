@@ -13,13 +13,10 @@ var debug = require('debug')('Mockgoose');
 var portfinder = require('portfinder');
 var path = require('path');
 var fs = require('fs');
-var EventEmitter = require('events').EventEmitter;
 
 module.exports = function(mongoose, db_opts) {
     var orig_connect = mongoose.connect;
     var orig_createConnection = mongoose.createConnection;
-    var emitter = new EventEmitter();
-    var mongod_emitter;
 
     // caching original connect arguments for unmock method
     var orig_connect_uri;
@@ -30,7 +27,6 @@ module.exports = function(mongoose, db_opts) {
     mongoose.connect = function() {
         connect_type = "connect";
         connect_args = arguments;
-        console.log(connect_args);
         orig_connect_uri = connect_args[0];
         start_server(db_opts);
     };
@@ -47,10 +43,9 @@ module.exports = function(mongoose, db_opts) {
 
     mongoose.connection.on('disconnected', function() {
         debug('Mongoose disconnected');
-        mongod_emitter.emit('mongoShutdown');
     });
 
-    emitter.on("mongodbStarted", function(db_opts) {
+	var mongodbStarted = function(db_opts) {
         if (connect_type === "connect") {
             connect_args[0] = "mongodb://localhost:" + db_opts.port;
             debug("connecting to %s", connect_args[0]);
@@ -60,7 +55,7 @@ module.exports = function(mongoose, db_opts) {
             debug("connecting to %s", createConnection_args[0]);
             orig_createConnection.apply(mongoose, createConnection_args);
         }
-    });
+    };
 
     if (!db_opts) {
         db_opts = {};
@@ -157,22 +152,16 @@ module.exports = function(mongoose, db_opts) {
                     auto_shutdown: true,
                     logs_callback: logs_callback
                 };
-                mongod_emitter = mongod.start_server(server_opts, function(err) {
-                    if (!err) {
-                        starting_up = false;
-                        debug('Started up MongoDB successfully');
-                        emitter.emit('mongodbStarted', db_opts);
-                    } else {
-                        debug(startup_log_buffer);
-                        debug('Error starting server.');
-                        if (err.code === 'EADDRINUSE') {
-                            debug('Address in use. Trying alternative port...');
-                            db_opts.port++;
-                            startup_log_buffer = '';
-                            start_server(db_opts);
-                        }
-                    }
-                });
+
+                var startResult = mongod.start_server(server_opts);
+				if (startResult === 0) {
+					debug('mongod.start_server connected');
+					mongodbStarted(db_opts);
+				} else {
+					debug('unable to start mongodb on: %d', freePort);
+					db_opts.port = ++freePort;
+					start_server(db_opts);
+				}
             });
         });
     }
@@ -190,7 +179,6 @@ module.exports = function(mongoose, db_opts) {
             delete mongoose.isMocked;
             connect_args[0] = orig_connect_uri;
             mongoose.connect = orig_connect;
-            emitter.removeAllListeners();
             callback();
         });
     };
@@ -210,6 +198,4 @@ module.exports = function(mongoose, db_opts) {
             orig_connect.apply(mongoose, connect_args);
         });
     };
-
-    return emitter;
 };

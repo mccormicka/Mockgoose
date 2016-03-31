@@ -1,9 +1,9 @@
 "use strict";
 
 var expect = require('chai').expect;
-const Mongoose = require('mongoose').Mongoose;
-let mockgoose = require('../Mockgoose');
-let mongoose = new Mongoose();
+var Mongoose = require('mongoose').Mongoose;
+var mockgoose = require('../Mockgoose');
+var mongoose = new Mongoose();
 mockgoose(mongoose);
 
 before(function(done) {
@@ -15,7 +15,7 @@ before(function(done) {
 });
 
 describe('callback', function todoDescribe() {
-  const modelSchema = new Schema({
+  var modelSchema = new Schema({
       name: {
           type: Schema.Types.String,
           trim: true,

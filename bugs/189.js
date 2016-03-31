@@ -2,9 +2,9 @@
 
 
 describe('callback', function todoDescribe() {
-  const Mongoose = require('mongoose').Mongoose;
-  let mockgoose = require('../Mockgoose');
-  let mongoose = new Mongoose();
+  var Mongoose = require('mongoose').Mongoose;
+  var mockgoose = require('../Mockgoose');
+  var mongoose = new Mongoose();
   mockgoose(mongoose);
   
   before(function(done) {
@@ -13,27 +13,27 @@ describe('callback', function todoDescribe() {
     });
   });
 
-  it('should call callback by reset', (done) => {
+  it('should call callback by reset', function(done) {
     mockgoose.reset(function(err) {
        done();
     });
   });
 
-  it('should call callback by model create', (done) => {
-    const SomeSchemaFactory= mongoose.Schema;
-    const SomeSchema= new SomeSchemaFactory({
+  it('should call callback by model create', function(done) {
+    var SomeSchemaFactory= mongoose.Schema;
+    var SomeSchema= new SomeSchemaFactory({
       item1: String,
       item2: String,
     });
-    const MyModel= mongoose.model('MyModel', SomeSchema);
-    const someDoc = {
+    var MyModel= mongoose.model('MyModel', SomeSchema);
+    var someDoc = {
       item1: String,
       item2: String,
     };
     MyModel.create(someDoc, done);
   });
 
-  it('should work with empty callback', ()=>{
+  it('should work with empty callback', function(){
     mockgoose.reset();
   });
 });

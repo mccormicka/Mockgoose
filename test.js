@@ -7,6 +7,3 @@ mongoose.connection.on('connected', function () {
   console.log('Mongoose open');
 }); 
 
-Mockgoose.on('mongodbStarted', function(db_opts) {
-	console.log('db_opts', db_opts);
-});
