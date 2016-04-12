@@ -78,8 +78,8 @@ module.exports = function(mongoose, db_opts) {
     	    connect_type = "connect";
     	    connect_args = arguments;
     	    orig_connect_uri = connect_args[0];
-			connect_args[0] = mockgoose_uri;
-    	    orig_connect.apply(mongoose, connect_args);
+	    connect_args[0] = mockgoose_uri;
+    	    return orig_connect.apply(mongoose, connect_args);
     	};
 
     	mongoose.createConnection = function() {
@@ -87,7 +87,7 @@ module.exports = function(mongoose, db_opts) {
     	    createConnection_args = arguments;
     	    orig_createConnection_uri = createConnection_args[0];
     	    createConnection_args[0] = mockgoose_uri;
-    	    orig_createConnection.apply(mongoose, createConnection_args);
+    	    return orig_createConnection.apply(mongoose, createConnection_args);
     	};
 
     	mongoose.isMocked = true;
@@ -96,7 +96,7 @@ module.exports = function(mongoose, db_opts) {
     	    debug('Mongoose disconnected');
     	});
 		deferred.resolve(mockgoose_uri);
-	});
+    });
 
 
 
