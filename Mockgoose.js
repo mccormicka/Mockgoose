@@ -16,7 +16,7 @@ var fs = require('fs');
 var Q = require('q');
 
 module.exports = function(mongoose, db_opts) {
-	var deferred = Q.defer();
+    var deferred = Q.defer();
     var orig_connect = mongoose.connect;
     var orig_createConnection = mongoose.createConnection;
 
@@ -28,9 +28,9 @@ module.exports = function(mongoose, db_opts) {
     var connect_args;
     var createConnection_args;
 
-	if (!db_opts) {
-		db_opts = {};
-	} 
+    if (!db_opts) {
+        db_opts = {};
+    }
 
     var db_version;
     if (!db_opts.version) {
@@ -73,29 +73,29 @@ module.exports = function(mongoose, db_opts) {
 
     var orig_dbpath = db_opts.dbpath;
     start_server(db_opts, function(mockgoose_uri) {
-		// for now no errors
-    	mongoose.connect = function() {
-    	    connect_type = "connect";
-    	    connect_args = arguments;
-    	    orig_connect_uri = connect_args[0];
-	    connect_args[0] = mockgoose_uri;
-    	    return orig_connect.apply(mongoose, connect_args);
-    	};
+        // for now no errors
+        mongoose.connect = function() {
+            connect_type = "connect";
+            connect_args = arguments;
+            orig_connect_uri = connect_args[0];
+            connect_args[0] = mockgoose_uri;
+            return orig_connect.apply(mongoose, connect_args);
+        };
 
-    	mongoose.createConnection = function() {
-    	    connect_type = "createConnection";
-    	    createConnection_args = arguments;
-    	    orig_createConnection_uri = createConnection_args[0];
-    	    createConnection_args[0] = mockgoose_uri;
-    	    return orig_createConnection.apply(mongoose, createConnection_args);
-    	};
+        mongoose.createConnection = function() {
+            connect_type = "createConnection";
+            createConnection_args = arguments;
+            orig_createConnection_uri = createConnection_args[0];
+            createConnection_args[0] = mockgoose_uri;
+            return orig_createConnection.apply(mongoose, createConnection_args);
+        };
 
-    	mongoose.isMocked = true;
+        mongoose.isMocked = true;
 
-    	mongoose.connection.on('disconnected', function() {
-    	    debug('Mongoose disconnected');
-    	});
-		deferred.resolve(mockgoose_uri);
+        mongoose.connection.on('disconnected', function() {
+            debug('Mongoose disconnected');
+        });
+        deferred.resolve(mockgoose_uri);
     });
 
 
@@ -142,15 +142,15 @@ module.exports = function(mongoose, db_opts) {
                 };
 
                 var startResult = mongod.start_server(server_opts);
-				if (startResult === 0) {
-					debug('mongod.start_server connected');
-					var mock_uri = "mongodb://localhost:" + db_opts.port;
-					start_server_callback(mock_uri);
-				} else {
-					debug('unable to start mongodb on: %d', freePort);
-					db_opts.port = ++freePort;
-					start_server(db_opts, start_server_callback);
-				}
+                if (startResult === 0) {
+                    debug('mongod.start_server connected');
+                    var mock_uri = "mongodb://localhost:" + db_opts.port;
+                    start_server_callback(mock_uri);
+                } else {
+                    debug('unable to start mongodb on: %d', freePort);
+                    db_opts.port = ++freePort;
+                    start_server(db_opts, start_server_callback);
+                }
             });
         });
     }
@@ -188,5 +188,5 @@ module.exports = function(mongoose, db_opts) {
         });
     };
 
-	return deferred.promise;
+    return deferred.promise;
 };
