@@ -92,7 +92,7 @@ module.exports = function(mongoose, db_opts) {
 
         mongoose.isMocked = true;
 
-        mongoose.connection.on('disconnected', function() {
+        mongoose.connection.once('disconnected', function() {
             debug('Mongoose disconnected');
         });
         deferred.resolve(mockgoose_uri);
