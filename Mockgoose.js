@@ -96,7 +96,7 @@ module.exports = function(mongoose, db_opts) {
             debug('Mongoose disconnected');
         });
         deferred.resolve(mockgoose_uri);
-    });s
+    });
 
 
 
