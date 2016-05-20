@@ -37,17 +37,17 @@ var mockgoose = require('mockgoose');
 
 before(function(done) {
 	mockgoose(mongoose).then(function() {
-    	mongoose.connect('mongodb://example.com/TestingDB', function(err) {
-    	    done(err);
-    	});
+		mongoose.connect('mongodb://example.com/TestingDB', function(err) {
+			done(err);
+		});
 	});
 });
 
 describe('...', function() {
 	it("...", function(done) {
 		// ...
-        done();
-    });
+		done();
+	});
 });
 ```
 
