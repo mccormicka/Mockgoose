@@ -91,8 +91,12 @@ module.exports = function(mongoose, db_opts) {
 
     db_opts.bind_ip = "127.0.0.1";
 
+    function getRandomIntInclusive(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
     if (!db_opts.port) {
-        db_opts.port = 27017;
+        db_opts.port = getRandomIntInclusive(27017, 65000); // max port allowed 65536
     } else {
         db_opts.port = Number(db_opts.port);
     }
