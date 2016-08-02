@@ -168,6 +168,7 @@ module.exports = function(mongoose, db_opts) {
             delete mongoose.isMocked;
             connect_args[0] = orig_connect_uri;
             mongoose.connect = orig_connect;
+            mongod.shutdown();
             callback();
         });
     };
