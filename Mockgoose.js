@@ -102,12 +102,14 @@ module.exports = function(mongoose, db_opts) {
             debug('Mongoose disconnected');
         });
         deferred.resolve(mockgoose_uri);
+
+        function mock_open(){
+            arguments[0] = mockgoose_uri;
+            return orig_open.apply(this, arguments)
+        }
     });
 
-    function mock_open(){
-        arguments[0] = mockgoose_uri;
-        return orig_open.apply(this, arguments)
-    }
+
 
 
 
