@@ -156,25 +156,43 @@ module.exports = function(mongoose, db_opts) {
     }
 
     module.exports.reset = function(done) {
-        if (mongoose.connection.db !== undefined) {
-            mongoose.connection.db.dropDatabase(function(err) {
-                if (typeof done === "function") {
-                    return done(err);
-                }
-                return;
-            });
-        }
+        var dbs = [];
+        var isCallback = (typeof done === 'function');
+
         mongoose.connections.forEach(function (connection) {
             if (connection.db !== undefined) {
-                connection.db.dropDatabase(function (err) {
-                    if (err) {
-                        throw new Error("Error dropping database");
-                    }
-                });
+                dbs.push(connection.db);
             }
         });
-        if (typeof done === "function") {
-            return done();
+        if (dbs.length > 0) {
+            (function dropDatabase(index){
+                if (dbs[index]._listening !== true) {
+                    if (isCallback === true) {
+                        return done();
+                    }
+                    return;
+                }
+                dbs[index].dropDatabase(function(err) {
+                    if (err) {
+                        if (isCallback === true) {
+                            return done(err);
+                        }
+                        return;
+                    }
+                    if (index + 1 === dbs.length) {
+                        if (isCallback === true) {
+                            return done();
+                        }
+                        return;
+                    }
+                    dropDatabase(index + 1);
+                });
+            }(0));
+        } else {
+            if (isCallback === true) {
+                return done();
+            }
+            return;
         }
     };
 
