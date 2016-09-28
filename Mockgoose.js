@@ -120,10 +120,10 @@ module.exports = function(mongoose, db_opts) {
                 when in place upgrade is done of mongodb,
                 we need to clean directory first, otherwise
                 this error is returned:
-                    exception in initAndListen: 28662 Cannot start server. 
-                    Detected data files in /Mockgoose/.mongooseTempDB/27017 
-                    created by the 'inMemoryExperiment' storage engine, 
-                    but the specified storage engine was 'ephemeralForTest'., 
+                    exception in initAndListen: 28662 Cannot start server.
+                    Detected data files in /Mockgoose/.mongooseTempDB/27017
+                    created by the 'inMemoryExperiment' storage engine,
+                    but the specified storage engine was 'ephemeralForTest'.,
                     terminating
             */
             rimraf(db_opts.dbpath, function(err) {
@@ -156,11 +156,26 @@ module.exports = function(mongoose, db_opts) {
     }
 
     module.exports.reset = function(done) {
-        mongoose.connection.db.dropDatabase(function(err) {
-            if (typeof done === "function") {
-                done(err);
+        if (mongoose.connection.db !== undefined) {
+            mongoose.connection.db.dropDatabase(function(err) {
+                if (typeof done === "function") {
+                    return done(err);
+                }
+                return;
+            });
+        }
+        mongoose.connections.forEach(function (connection) {
+            if (connection.db !== undefined) {
+                connection.db.dropDatabase(function (err) {
+                    if (err) {
+                        throw new Error("Error dropping database");
+                    }
+                });
             }
         });
+        if (typeof done === "function") {
+            return done();
+        }
     };
 
     mongoose.unmock = function(callback) {
