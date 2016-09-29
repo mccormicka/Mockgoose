@@ -164,36 +164,23 @@ module.exports = function(mongoose, db_opts) {
                 dbs.push(connection.db);
             }
         });
-        if (dbs.length > 0) {
-            (function dropDatabase(index){
-                if (dbs[index]._listening !== true) {
+        (function dropDatabase(index){
+            if (dbs[index] === undefined || dbs[index]._listening !== true) {
+                if (isCallback === true) {
+                    return done();
+                }
+                return;
+            }
+            dbs[index].dropDatabase(function(err) {
+                if (err) {
                     if (isCallback === true) {
-                        return done();
+                        return done(err);
                     }
                     return;
                 }
-                dbs[index].dropDatabase(function(err) {
-                    if (err) {
-                        if (isCallback === true) {
-                            return done(err);
-                        }
-                        return;
-                    }
-                    if (index + 1 === dbs.length) {
-                        if (isCallback === true) {
-                            return done();
-                        }
-                        return;
-                    }
-                    dropDatabase(index + 1);
-                });
-            }(0));
-        } else {
-            if (isCallback === true) {
-                return done();
-            }
-            return;
-        }
+                dropDatabase(index + 1);
+            });
+        }(0));
     };
 
     mongoose.unmock = function(callback) {
