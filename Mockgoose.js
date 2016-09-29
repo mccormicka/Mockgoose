@@ -120,10 +120,10 @@ module.exports = function(mongoose, db_opts) {
                 when in place upgrade is done of mongodb,
                 we need to clean directory first, otherwise
                 this error is returned:
-                    exception in initAndListen: 28662 Cannot start server. 
-                    Detected data files in /Mockgoose/.mongooseTempDB/27017 
-                    created by the 'inMemoryExperiment' storage engine, 
-                    but the specified storage engine was 'ephemeralForTest'., 
+                    exception in initAndListen: 28662 Cannot start server.
+                    Detected data files in /Mockgoose/.mongooseTempDB/27017
+                    created by the 'inMemoryExperiment' storage engine,
+                    but the specified storage engine was 'ephemeralForTest'.,
                     terminating
             */
             rimraf(db_opts.dbpath, function(err) {
@@ -156,11 +156,29 @@ module.exports = function(mongoose, db_opts) {
     }
 
     module.exports.reset = function(done) {
-        mongoose.connection.db.dropDatabase(function(err) {
-            if (typeof done === "function") {
-                done(err);
+        var dbs = [];
+        var isCallback = (typeof done === 'function');
+
+        mongoose.connections.forEach(function (connection) {
+            if (connection.db !== undefined) {
+                dbs.push(connection.db);
             }
         });
+        (function dropDatabase(index){
+            if (dbs[index] === undefined) {
+                return (isCallback === true ? done() : true);
+            }
+            if (dbs[index]._listening === true) {
+                dbs[index].dropDatabase(function(err) {
+                    if (err) {
+                        return (isCallback === true ? done(err) : false);
+                    }
+                    dropDatabase(index + 1);
+                });
+            } else {
+                dropDatabase(index + 1);
+            }
+        }(0));
     };
 
     mongoose.unmock = function(callback) {
