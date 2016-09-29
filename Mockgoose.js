@@ -165,21 +165,19 @@ module.exports = function(mongoose, db_opts) {
             }
         });
         (function dropDatabase(index){
-            if (dbs[index] === undefined || dbs[index]._listening !== true) {
-                if (isCallback === true) {
-                    return done();
-                }
-                return;
+            if (dbs[index] === undefined) {
+                return (isCallback === true ? done() : true);
             }
-            dbs[index].dropDatabase(function(err) {
-                if (err) {
-                    if (isCallback === true) {
-                        return done(err);
+            if (dbs[index]._listening === true) {
+                dbs[index].dropDatabase(function(err) {
+                    if (err) {
+                        return (isCallback === true ? done(err) : false);
                     }
-                    return;
-                }
+                    dropDatabase(index + 1);
+                });
+            } else {
                 dropDatabase(index + 1);
-            });
+            }
         }(0));
     };
 
