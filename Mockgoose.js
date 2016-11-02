@@ -19,6 +19,7 @@ module.exports = function(mongoose, db_opts) {
     var deferred = Q.defer();
     var orig_connect = mongoose.connect;
     var orig_createConnection = mongoose.createConnection;
+    var orig_open;
 
     // caching original connect arguments for unmock method
     var orig_connect_uri;
@@ -86,8 +87,13 @@ module.exports = function(mongoose, db_opts) {
             connect_type = "createConnection";
             createConnection_args = arguments;
             orig_createConnection_uri = createConnection_args[0];
-            createConnection_args[0] = mockgoose_uri;
-            return orig_createConnection.apply(mongoose, createConnection_args);
+            if(createConnection_args[0]){
+                createConnection_args[0] = mockgoose_uri;
+            }
+            var connection = orig_createConnection.apply(mongoose, createConnection_args);
+            orig_open = connection.open;
+            connection.open = mock_open;
+            return connection;
         };
 
         mongoose.isMocked = true;
@@ -96,7 +102,14 @@ module.exports = function(mongoose, db_opts) {
             debug('Mongoose disconnected');
         });
         deferred.resolve(mockgoose_uri);
+
+        function mock_open(){
+            arguments[0] = mockgoose_uri;
+            return orig_open.apply(this, arguments)
+        }
     });
+
+
 
 
 
