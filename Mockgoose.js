@@ -141,16 +141,17 @@ module.exports = function(mongoose, db_opts) {
                     auto_shutdown: true
                 };
 
-                var startResult = mongod.start_server(server_opts);
-                if (startResult === 0) {
-                    debug('mongod.start_server connected');
-                    var mock_uri = "mongodb://localhost:" + db_opts.port;
-                    start_server_callback(mock_uri);
-                } else {
-                    debug('unable to start mongodb on: %d', freePort);
-                    db_opts.port = ++freePort;
-                    start_server(db_opts, start_server_callback);
-                }
+                mongod.start_server(server_opts, function(err){
+                    if (!err) {
+                        debug('mongod.start_server connected');
+                        var mock_uri = "mongodb://localhost:" + db_opts.port;
+                        start_server_callback(mock_uri);
+                    } else {
+                        debug('unable to start mongodb on: %d', freePort);
+                        db_opts.port = ++freePort;
+                        start_server(db_opts, start_server_callback);
+                    }
+                });
             });
         });
     }
