@@ -141,7 +141,14 @@ module.exports = function(mongoose, db_opts) {
                     auto_shutdown: true
                 };
 
-                var startResult = mongod.start_server(server_opts);
+                var startResult = mongod.start_server(server_opts, function(response) {
+                    // This is a bad callback that should be fixed in mongodb-prebuilt (issue #12).
+                    // It's only called when there's an error or non-zero child process status code.
+                    // 'response' can be an error OR the process status code.
+                    // The child process status code is always returned, so keep using startResult until the issue resolves.
+                    // This callback is required so start_server doesn't crash trying to call undefined as a function.
+                    debug('mongod.start_server callback called: ' + response);
+                });
                 if (startResult === 0) {
                     debug('mongod.start_server connected');
                     var mock_uri = "mongodb://localhost:" + db_opts.port;
