@@ -141,7 +141,7 @@ module.exports = function(mongoose, db_opts) {
                     auto_shutdown: true
                 };
 
-                var startResult = mongod.start_server(server_opts);
+                var startResult = mongod.start_server(server_opts, function(){});
                 if (startResult === 0) {
                     debug('mongod.start_server connected');
                     var mock_uri = "mongodb://localhost:" + db_opts.port;
