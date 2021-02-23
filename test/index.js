@@ -1,65 +1,55 @@
+'use strict';
 
-var should = require('chai').should()
-,expect = require('chai').expect
-, Mongoose = require('mongoose').Mongoose
-, mongoose = new Mongoose
-, mockgoose = require('../Mockgoose')
-, Cat = mongoose.model('Cat', { name: String });
-
-mockgoose(mongoose);
+require('chai').should();
+var expect = require('chai').expect;
+var Mongoose = require('mongoose').Mongoose;
+var mongoose = new Mongoose();
+var Mockgoose = require('../built/mockgoose').Mockgoose;
+var mockgoose = new Mockgoose(mongoose);
+var Cat = mongoose.model('Cat', { name: String });
 
 describe('User functions', function() {
-    before(function(done) {
-        mongoose.connect('mongodb://127.0.0.1:27017/TestingDB', function(err) {
-            done(err);
-        }); 
-    });
+	before(function(done) {
+		mockgoose.prepareStorage().then(function() {
+			mongoose.connect('mongodb://127.0.0.1:27017/TestingDB', { useNewUrlParser: true }, function(err) {
+				done(err);
+			}); 
+		});
+	});
+
+	after(function() {
+		return mockgoose.shutdown();
+	});
 
     it("isMocked", function(done) {
-		expect(mongoose.isMocked).to.be.true;
+		expect(mockgoose.helper.isMocked()).to.be.true;
 		done();
-    });
+	});
+	
     it("should create a cat foo", function(done) {
-		Cat.create({name: "foo"}, function(err, cat) {
-		    expect(err).to.be.falsy;
-	            done(err);
+		Cat.create({name: "foo"}, function(err) {
+		    expect(err).not.to.be.ok;
+			done(err);
 		});
     });
 
     it("should find cat foo", function(done) {
-    	Cat.findOne({name: "foo"}, function(err, cat) {
-	    expect(err).to.be.falsy;
+    	Cat.findOne({name: "foo"}, function(err) {
+	    	expect(err).not.to.be.ok;
     	    done(err);
     	});
     });
 
     it("should remove cat foo", function(done) {
-    	Cat.remove({name: "foo"}, function(err, cat) {
-	    expect(err).to.be.falsy;
+    	Cat.deleteMany({name: "foo"}, function(err) {
+	    	expect(err).not.to.be.ok;
     	    done(err);
     	});
     });
 
     it("reset", function(done) {
-    	mockgoose.reset(function() {
+    	mockgoose.helper.reset().then(function() {
     	    done();
     	});
     });
-
-    it("unmock", function(done) {
-	mongoose.unmock(function() {
-	    done();
-	});
-    });
-
-    if ( process.env.MOCKGOOSE_LIVE ) {
-    	it("unmockAndReconnect", function(done) {
-    	    mongoose.unmockAndReconnect(function(err) {
-    	    	expect(mongoose.isMocked).to.be.undefined;
-    	    	expect(err).to.be.falsy;
-    	    	done(err);
-    	    });
-    	});
-    }
-
 });

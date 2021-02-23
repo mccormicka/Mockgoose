@@ -1,11 +1,16 @@
 {
   "name": "ni-mockgoose",
+  "main": "built/mockgoose.js",
+  "types": "built/mockgoose.d.ts",
   "description": "Mockgoose is an in memory database mock to allow for testing of applications that rely on Mongoose.",
-  "version": "3.0.5",
+  "version": "8.0.4-beta",
   "author": {
     "name": "Anthony McCormick",
-    "email": "anthony.mccormick AT gmail.com"
+    "email": "anthony.mccormick@gmail.com"
   },
+  "contributors": [
+    "Jonathon Hill <jhill9693@gmail.com>"
+  ],
   "keywords": [
     "mongodb",
     "mongoose",
@@ -20,34 +25,41 @@
   ],
   "scripts": {
     "hint": "jshint --config .jshintrc Mockgoose.js test",
-    "test": "DEBUG=mongodb*,Mockgoose mocha --timeout 3000 test",
-    "test-debug": "DEBUG=mongodb*,Mockgoose mocha debug --timeout 3000 test"
+    "pretest": "jshint src test",
+    "test": "mocha test",
+    "test-debug": "DEBUG=mongodb*,Mockgoose mocha inspect --timeout 3000 test"
   },
-  "main": "Mockgoose",
-  "files": [
-    "Mockgoose.js",
-    "lib/"
-  ],
   "engines": {
-    "node": ">=0.10.0"
+    "node": ">=6"
   },
   "dependencies": {
-    "deasync": "^0.1.4",
-    "debug": "2.2.0",
-    "mongodb-prebuilt": "^4.6.0",
-    "portfinder": "1.0.2",
-    "rimraf": "^2.5.1"
+    "async": "^2.6.1",
+    "deasync": "^0.1.21",
+    "debug": "^4.0.1",
+    "fs-extra": "^7.0.0",
+    "https-proxy-agent": "^2.2.1",
+    "mongodb-prebuilt": "^6.4.0",
+    "portfinder": "^1.0.13",
+    "rimraf": "^2.6.1",
+    "uuid": "^3.0.1"
   },
   "devDependencies": {
-    "chai": "~2.2.0",
-    "mocha": "~2.2.4",
-    "mongoose": "*"
+    "@types/async": "~2.0.39",
+    "@types/fs-extra": "^5.0.4",
+    "@types/mongoose": "^5.2.17",
+    "@types/node": "^8.10.30",
+    "@types/node-uuid": "0.0.28",
+    "chai": "^4.1.2",
+    "jshint": "^2.9.6",
+    "mocha": "^5.2.0",
+    "mongoose": "*",
+    "typescript": "^3.2.2"
   },
   "bugs": {
-    "url": "https://github.com/mccormicka/Mockgoose/issues"
+    "url": "https://github.com/Mockgoose/Mockgoose/issues"
   },
-  "repository": "mccormicka/Mockgoose",
-  "homepage": "https://github.com/mccormicka/Mockgoose",
+  "repository": "Mockgoose/Mockgoose",
+  "homepage": "https://github.com/Mockgoose/Mockgoose",
   "readmeFilename": "README.md",
   "license": "MIT"
 }

@@ -1,0 +1,27 @@
+{
+    "compilerOptions": {
+        "target": "es5",
+        "module": "commonjs",
+        "noImplicitAny": true,
+        "strictNullChecks": false,
+        "removeComments": false,
+        "preserveConstEnums": true,
+        "declaration": true,
+        "sourceMap": true,
+        "moduleResolution": "node",
+        "mapRoot": "./",
+        "noLib": false,
+        "outDir": "built",
+        "types" : ["node"],
+        "typeRoots": [ "node_modules/@types" ],
+        "lib": ["es2015.promise", "es5"]
+    },
+    "include": [
+        "src/"
+    ],
+    "exclude": [
+        "node_modules",
+        "typings",
+        "**/*.spec.ts"
+    ]
+}
